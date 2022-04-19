@@ -18,8 +18,6 @@ type Permission struct {
 func (Permission) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").NotEmpty(),
-		field.Int("content_type_id").
-			Optional(),
 		field.String("code").NotEmpty(),
 		field.Time("created_at").
 			Default(time.Now),
@@ -32,7 +30,9 @@ func (Permission) Fields() []ent.Field {
 // Edges of the Permission.
 func (Permission) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("ContentType", Permission.Type).Field("content_type_id").Unique(),
+		edge.To("ContentType", ContentType.Type).Unique(),
+		edge.To("users", User.Type),
+		edge.To("roles", Role.Type),
 	}
 }
 
@@ -41,6 +41,5 @@ func (Permission) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("name"),
 		index.Fields("code"),
-		index.Fields("content_type_id", "code").Unique(),
 	}
 }

@@ -12,8 +12,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/wgbbiao/xadminent/ent/permission"
 	"github.com/wgbbiao/xadminent/ent/predicate"
 	"github.com/wgbbiao/xadminent/ent/role"
+	"github.com/wgbbiao/xadminent/ent/user"
 )
 
 // RoleQuery is the builder for querying Role entities.
@@ -26,7 +28,8 @@ type RoleQuery struct {
 	fields     []string
 	predicates []predicate.Role
 	// eager-loading edges.
-	withPermissions *RoleQuery
+	withUsers       *UserQuery
+	withPermissions *PermissionQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -63,9 +66,9 @@ func (rq *RoleQuery) Order(o ...OrderFunc) *RoleQuery {
 	return rq
 }
 
-// QueryPermissions chains the current query on the "permissions" edge.
-func (rq *RoleQuery) QueryPermissions() *RoleQuery {
-	query := &RoleQuery{config: rq.config}
+// QueryUsers chains the current query on the "users" edge.
+func (rq *RoleQuery) QueryUsers() *UserQuery {
+	query := &UserQuery{config: rq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := rq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -76,8 +79,30 @@ func (rq *RoleQuery) QueryPermissions() *RoleQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(role.Table, role.FieldID, selector),
-			sqlgraph.To(role.Table, role.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, role.PermissionsTable, role.PermissionsPrimaryKey...),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, role.UsersTable, role.UsersPrimaryKey...),
+		)
+		fromU = sqlgraph.SetNeighbors(rq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryPermissions chains the current query on the "permissions" edge.
+func (rq *RoleQuery) QueryPermissions() *PermissionQuery {
+	query := &PermissionQuery{config: rq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := rq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := rq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(role.Table, role.FieldID, selector),
+			sqlgraph.To(permission.Table, permission.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, role.PermissionsTable, role.PermissionsPrimaryKey...),
 		)
 		fromU = sqlgraph.SetNeighbors(rq.driver.Dialect(), step)
 		return fromU, nil
@@ -266,6 +291,7 @@ func (rq *RoleQuery) Clone() *RoleQuery {
 		offset:          rq.offset,
 		order:           append([]OrderFunc{}, rq.order...),
 		predicates:      append([]predicate.Role{}, rq.predicates...),
+		withUsers:       rq.withUsers.Clone(),
 		withPermissions: rq.withPermissions.Clone(),
 		// clone intermediate query.
 		sql:    rq.sql.Clone(),
@@ -274,10 +300,21 @@ func (rq *RoleQuery) Clone() *RoleQuery {
 	}
 }
 
+// WithUsers tells the query-builder to eager-load the nodes that are connected to
+// the "users" edge. The optional arguments are used to configure the query builder of the edge.
+func (rq *RoleQuery) WithUsers(opts ...func(*UserQuery)) *RoleQuery {
+	query := &UserQuery{config: rq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	rq.withUsers = query
+	return rq
+}
+
 // WithPermissions tells the query-builder to eager-load the nodes that are connected to
 // the "permissions" edge. The optional arguments are used to configure the query builder of the edge.
-func (rq *RoleQuery) WithPermissions(opts ...func(*RoleQuery)) *RoleQuery {
-	query := &RoleQuery{config: rq.config}
+func (rq *RoleQuery) WithPermissions(opts ...func(*PermissionQuery)) *RoleQuery {
+	query := &PermissionQuery{config: rq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
@@ -350,7 +387,8 @@ func (rq *RoleQuery) sqlAll(ctx context.Context) ([]*Role, error) {
 	var (
 		nodes       = []*Role{}
 		_spec       = rq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
+			rq.withUsers != nil,
 			rq.withPermissions != nil,
 		}
 	)
@@ -374,13 +412,13 @@ func (rq *RoleQuery) sqlAll(ctx context.Context) ([]*Role, error) {
 		return nodes, nil
 	}
 
-	if query := rq.withPermissions; query != nil {
+	if query := rq.withUsers; query != nil {
 		fks := make([]driver.Value, 0, len(nodes))
 		ids := make(map[int]*Role, len(nodes))
 		for _, node := range nodes {
 			ids[node.ID] = node
 			fks = append(fks, node.ID)
-			node.Edges.Permissions = []*Role{}
+			node.Edges.Users = []*User{}
 		}
 		var (
 			edgeids []int
@@ -389,11 +427,76 @@ func (rq *RoleQuery) sqlAll(ctx context.Context) ([]*Role, error) {
 		_spec := &sqlgraph.EdgeQuerySpec{
 			Edge: &sqlgraph.EdgeSpec{
 				Inverse: false,
+				Table:   role.UsersTable,
+				Columns: role.UsersPrimaryKey,
+			},
+			Predicate: func(s *sql.Selector) {
+				s.Where(sql.InValues(role.UsersPrimaryKey[0], fks...))
+			},
+			ScanValues: func() [2]interface{} {
+				return [2]interface{}{new(sql.NullInt64), new(sql.NullInt64)}
+			},
+			Assign: func(out, in interface{}) error {
+				eout, ok := out.(*sql.NullInt64)
+				if !ok || eout == nil {
+					return fmt.Errorf("unexpected id value for edge-out")
+				}
+				ein, ok := in.(*sql.NullInt64)
+				if !ok || ein == nil {
+					return fmt.Errorf("unexpected id value for edge-in")
+				}
+				outValue := int(eout.Int64)
+				inValue := int(ein.Int64)
+				node, ok := ids[outValue]
+				if !ok {
+					return fmt.Errorf("unexpected node id in edges: %v", outValue)
+				}
+				if _, ok := edges[inValue]; !ok {
+					edgeids = append(edgeids, inValue)
+				}
+				edges[inValue] = append(edges[inValue], node)
+				return nil
+			},
+		}
+		if err := sqlgraph.QueryEdges(ctx, rq.driver, _spec); err != nil {
+			return nil, fmt.Errorf(`query edges "users": %w`, err)
+		}
+		query.Where(user.IDIn(edgeids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := edges[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected "users" node returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Users = append(nodes[i].Edges.Users, n)
+			}
+		}
+	}
+
+	if query := rq.withPermissions; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		ids := make(map[int]*Role, len(nodes))
+		for _, node := range nodes {
+			ids[node.ID] = node
+			fks = append(fks, node.ID)
+			node.Edges.Permissions = []*Permission{}
+		}
+		var (
+			edgeids []int
+			edges   = make(map[int][]*Role)
+		)
+		_spec := &sqlgraph.EdgeQuerySpec{
+			Edge: &sqlgraph.EdgeSpec{
+				Inverse: true,
 				Table:   role.PermissionsTable,
 				Columns: role.PermissionsPrimaryKey,
 			},
 			Predicate: func(s *sql.Selector) {
-				s.Where(sql.InValues(role.PermissionsPrimaryKey[0], fks...))
+				s.Where(sql.InValues(role.PermissionsPrimaryKey[1], fks...))
 			},
 			ScanValues: func() [2]interface{} {
 				return [2]interface{}{new(sql.NullInt64), new(sql.NullInt64)}
@@ -423,7 +526,7 @@ func (rq *RoleQuery) sqlAll(ctx context.Context) ([]*Role, error) {
 		if err := sqlgraph.QueryEdges(ctx, rq.driver, _spec); err != nil {
 			return nil, fmt.Errorf(`query edges "permissions": %w`, err)
 		}
-		query.Where(role.IDIn(edgeids...))
+		query.Where(permission.IDIn(edgeids...))
 		neighbors, err := query.All(ctx)
 		if err != nil {
 			return nil, err

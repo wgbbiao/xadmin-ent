@@ -10,7 +10,10 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/wgbbiao/xadminent/ent/contenttype"
 	"github.com/wgbbiao/xadminent/ent/permission"
+	"github.com/wgbbiao/xadminent/ent/role"
+	"github.com/wgbbiao/xadminent/ent/user"
 )
 
 // PermissionCreate is the builder for creating a Permission entity.
@@ -23,20 +26,6 @@ type PermissionCreate struct {
 // SetName sets the "name" field.
 func (pc *PermissionCreate) SetName(s string) *PermissionCreate {
 	pc.mutation.SetName(s)
-	return pc
-}
-
-// SetContentTypeID sets the "content_type_id" field.
-func (pc *PermissionCreate) SetContentTypeID(i int) *PermissionCreate {
-	pc.mutation.SetContentTypeID(i)
-	return pc
-}
-
-// SetNillableContentTypeID sets the "content_type_id" field if the given value is not nil.
-func (pc *PermissionCreate) SetNillableContentTypeID(i *int) *PermissionCreate {
-	if i != nil {
-		pc.SetContentTypeID(*i)
-	}
 	return pc
 }
 
@@ -74,9 +63,53 @@ func (pc *PermissionCreate) SetNillableUpdatedAt(t *time.Time) *PermissionCreate
 	return pc
 }
 
-// SetContentType sets the "ContentType" edge to the Permission entity.
-func (pc *PermissionCreate) SetContentType(p *Permission) *PermissionCreate {
-	return pc.SetContentTypeID(p.ID)
+// SetContentTypeID sets the "ContentType" edge to the ContentType entity by ID.
+func (pc *PermissionCreate) SetContentTypeID(id int) *PermissionCreate {
+	pc.mutation.SetContentTypeID(id)
+	return pc
+}
+
+// SetNillableContentTypeID sets the "ContentType" edge to the ContentType entity by ID if the given value is not nil.
+func (pc *PermissionCreate) SetNillableContentTypeID(id *int) *PermissionCreate {
+	if id != nil {
+		pc = pc.SetContentTypeID(*id)
+	}
+	return pc
+}
+
+// SetContentType sets the "ContentType" edge to the ContentType entity.
+func (pc *PermissionCreate) SetContentType(c *ContentType) *PermissionCreate {
+	return pc.SetContentTypeID(c.ID)
+}
+
+// AddUserIDs adds the "users" edge to the User entity by IDs.
+func (pc *PermissionCreate) AddUserIDs(ids ...int) *PermissionCreate {
+	pc.mutation.AddUserIDs(ids...)
+	return pc
+}
+
+// AddUsers adds the "users" edges to the User entity.
+func (pc *PermissionCreate) AddUsers(u ...*User) *PermissionCreate {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return pc.AddUserIDs(ids...)
+}
+
+// AddRoleIDs adds the "roles" edge to the Role entity by IDs.
+func (pc *PermissionCreate) AddRoleIDs(ids ...int) *PermissionCreate {
+	pc.mutation.AddRoleIDs(ids...)
+	return pc
+}
+
+// AddRoles adds the "roles" edges to the Role entity.
+func (pc *PermissionCreate) AddRoles(r ...*Role) *PermissionCreate {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return pc.AddRoleIDs(ids...)
 }
 
 // Mutation returns the PermissionMutation object of the builder.
@@ -245,22 +278,60 @@ func (pc *PermissionCreate) createSpec() (*Permission, *sqlgraph.CreateSpec) {
 	}
 	if nodes := pc.mutation.ContentTypeIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   permission.ContentTypeTable,
 			Columns: []string{permission.ContentTypeColumn},
-			Bidi:    true,
+			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: permission.FieldID,
+					Column: contenttype.FieldID,
 				},
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.ContentTypeID = nodes[0]
+		_node.permission_content_type = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := pc.mutation.UsersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   permission.UsersTable,
+			Columns: permission.UsersPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := pc.mutation.RolesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   permission.RolesTable,
+			Columns: permission.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: role.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

@@ -11,7 +11,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/wgbbiao/xadminent/ent/permission"
 	"github.com/wgbbiao/xadminent/ent/predicate"
+	"github.com/wgbbiao/xadminent/ent/role"
 	"github.com/wgbbiao/xadminent/ent/user"
 )
 
@@ -78,32 +80,32 @@ func (uu *UserUpdate) SetUpdatedAt(t time.Time) *UserUpdate {
 	return uu
 }
 
-// AddRoleIDs adds the "roles" edge to the User entity by IDs.
+// AddRoleIDs adds the "roles" edge to the Role entity by IDs.
 func (uu *UserUpdate) AddRoleIDs(ids ...int) *UserUpdate {
 	uu.mutation.AddRoleIDs(ids...)
 	return uu
 }
 
-// AddRoles adds the "roles" edges to the User entity.
-func (uu *UserUpdate) AddRoles(u ...*User) *UserUpdate {
-	ids := make([]int, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
+// AddRoles adds the "roles" edges to the Role entity.
+func (uu *UserUpdate) AddRoles(r ...*Role) *UserUpdate {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
 	}
 	return uu.AddRoleIDs(ids...)
 }
 
-// AddPermissionIDs adds the "permissions" edge to the User entity by IDs.
+// AddPermissionIDs adds the "permissions" edge to the Permission entity by IDs.
 func (uu *UserUpdate) AddPermissionIDs(ids ...int) *UserUpdate {
 	uu.mutation.AddPermissionIDs(ids...)
 	return uu
 }
 
-// AddPermissions adds the "permissions" edges to the User entity.
-func (uu *UserUpdate) AddPermissions(u ...*User) *UserUpdate {
-	ids := make([]int, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
+// AddPermissions adds the "permissions" edges to the Permission entity.
+func (uu *UserUpdate) AddPermissions(p ...*Permission) *UserUpdate {
+	ids := make([]int, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
 	}
 	return uu.AddPermissionIDs(ids...)
 }
@@ -113,44 +115,44 @@ func (uu *UserUpdate) Mutation() *UserMutation {
 	return uu.mutation
 }
 
-// ClearRoles clears all "roles" edges to the User entity.
+// ClearRoles clears all "roles" edges to the Role entity.
 func (uu *UserUpdate) ClearRoles() *UserUpdate {
 	uu.mutation.ClearRoles()
 	return uu
 }
 
-// RemoveRoleIDs removes the "roles" edge to User entities by IDs.
+// RemoveRoleIDs removes the "roles" edge to Role entities by IDs.
 func (uu *UserUpdate) RemoveRoleIDs(ids ...int) *UserUpdate {
 	uu.mutation.RemoveRoleIDs(ids...)
 	return uu
 }
 
-// RemoveRoles removes "roles" edges to User entities.
-func (uu *UserUpdate) RemoveRoles(u ...*User) *UserUpdate {
-	ids := make([]int, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
+// RemoveRoles removes "roles" edges to Role entities.
+func (uu *UserUpdate) RemoveRoles(r ...*Role) *UserUpdate {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
 	}
 	return uu.RemoveRoleIDs(ids...)
 }
 
-// ClearPermissions clears all "permissions" edges to the User entity.
+// ClearPermissions clears all "permissions" edges to the Permission entity.
 func (uu *UserUpdate) ClearPermissions() *UserUpdate {
 	uu.mutation.ClearPermissions()
 	return uu
 }
 
-// RemovePermissionIDs removes the "permissions" edge to User entities by IDs.
+// RemovePermissionIDs removes the "permissions" edge to Permission entities by IDs.
 func (uu *UserUpdate) RemovePermissionIDs(ids ...int) *UserUpdate {
 	uu.mutation.RemovePermissionIDs(ids...)
 	return uu
 }
 
-// RemovePermissions removes "permissions" edges to User entities.
-func (uu *UserUpdate) RemovePermissions(u ...*User) *UserUpdate {
-	ids := make([]int, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
+// RemovePermissions removes "permissions" edges to Permission entities.
+func (uu *UserUpdate) RemovePermissions(p ...*Permission) *UserUpdate {
+	ids := make([]int, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
 	}
 	return uu.RemovePermissionIDs(ids...)
 }
@@ -288,14 +290,14 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if uu.mutation.RolesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
-			Inverse: false,
+			Inverse: true,
 			Table:   user.RolesTable,
 			Columns: user.RolesPrimaryKey,
-			Bidi:    true,
+			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: user.FieldID,
+					Column: role.FieldID,
 				},
 			},
 		}
@@ -304,14 +306,14 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if nodes := uu.mutation.RemovedRolesIDs(); len(nodes) > 0 && !uu.mutation.RolesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
-			Inverse: false,
+			Inverse: true,
 			Table:   user.RolesTable,
 			Columns: user.RolesPrimaryKey,
-			Bidi:    true,
+			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: user.FieldID,
+					Column: role.FieldID,
 				},
 			},
 		}
@@ -323,14 +325,14 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if nodes := uu.mutation.RolesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
-			Inverse: false,
+			Inverse: true,
 			Table:   user.RolesTable,
 			Columns: user.RolesPrimaryKey,
-			Bidi:    true,
+			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: user.FieldID,
+					Column: role.FieldID,
 				},
 			},
 		}
@@ -342,14 +344,14 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if uu.mutation.PermissionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
-			Inverse: false,
+			Inverse: true,
 			Table:   user.PermissionsTable,
 			Columns: user.PermissionsPrimaryKey,
-			Bidi:    true,
+			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: user.FieldID,
+					Column: permission.FieldID,
 				},
 			},
 		}
@@ -358,14 +360,14 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if nodes := uu.mutation.RemovedPermissionsIDs(); len(nodes) > 0 && !uu.mutation.PermissionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
-			Inverse: false,
+			Inverse: true,
 			Table:   user.PermissionsTable,
 			Columns: user.PermissionsPrimaryKey,
-			Bidi:    true,
+			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: user.FieldID,
+					Column: permission.FieldID,
 				},
 			},
 		}
@@ -377,14 +379,14 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if nodes := uu.mutation.PermissionsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
-			Inverse: false,
+			Inverse: true,
 			Table:   user.PermissionsTable,
 			Columns: user.PermissionsPrimaryKey,
-			Bidi:    true,
+			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: user.FieldID,
+					Column: permission.FieldID,
 				},
 			},
 		}
@@ -462,32 +464,32 @@ func (uuo *UserUpdateOne) SetUpdatedAt(t time.Time) *UserUpdateOne {
 	return uuo
 }
 
-// AddRoleIDs adds the "roles" edge to the User entity by IDs.
+// AddRoleIDs adds the "roles" edge to the Role entity by IDs.
 func (uuo *UserUpdateOne) AddRoleIDs(ids ...int) *UserUpdateOne {
 	uuo.mutation.AddRoleIDs(ids...)
 	return uuo
 }
 
-// AddRoles adds the "roles" edges to the User entity.
-func (uuo *UserUpdateOne) AddRoles(u ...*User) *UserUpdateOne {
-	ids := make([]int, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
+// AddRoles adds the "roles" edges to the Role entity.
+func (uuo *UserUpdateOne) AddRoles(r ...*Role) *UserUpdateOne {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
 	}
 	return uuo.AddRoleIDs(ids...)
 }
 
-// AddPermissionIDs adds the "permissions" edge to the User entity by IDs.
+// AddPermissionIDs adds the "permissions" edge to the Permission entity by IDs.
 func (uuo *UserUpdateOne) AddPermissionIDs(ids ...int) *UserUpdateOne {
 	uuo.mutation.AddPermissionIDs(ids...)
 	return uuo
 }
 
-// AddPermissions adds the "permissions" edges to the User entity.
-func (uuo *UserUpdateOne) AddPermissions(u ...*User) *UserUpdateOne {
-	ids := make([]int, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
+// AddPermissions adds the "permissions" edges to the Permission entity.
+func (uuo *UserUpdateOne) AddPermissions(p ...*Permission) *UserUpdateOne {
+	ids := make([]int, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
 	}
 	return uuo.AddPermissionIDs(ids...)
 }
@@ -497,44 +499,44 @@ func (uuo *UserUpdateOne) Mutation() *UserMutation {
 	return uuo.mutation
 }
 
-// ClearRoles clears all "roles" edges to the User entity.
+// ClearRoles clears all "roles" edges to the Role entity.
 func (uuo *UserUpdateOne) ClearRoles() *UserUpdateOne {
 	uuo.mutation.ClearRoles()
 	return uuo
 }
 
-// RemoveRoleIDs removes the "roles" edge to User entities by IDs.
+// RemoveRoleIDs removes the "roles" edge to Role entities by IDs.
 func (uuo *UserUpdateOne) RemoveRoleIDs(ids ...int) *UserUpdateOne {
 	uuo.mutation.RemoveRoleIDs(ids...)
 	return uuo
 }
 
-// RemoveRoles removes "roles" edges to User entities.
-func (uuo *UserUpdateOne) RemoveRoles(u ...*User) *UserUpdateOne {
-	ids := make([]int, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
+// RemoveRoles removes "roles" edges to Role entities.
+func (uuo *UserUpdateOne) RemoveRoles(r ...*Role) *UserUpdateOne {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
 	}
 	return uuo.RemoveRoleIDs(ids...)
 }
 
-// ClearPermissions clears all "permissions" edges to the User entity.
+// ClearPermissions clears all "permissions" edges to the Permission entity.
 func (uuo *UserUpdateOne) ClearPermissions() *UserUpdateOne {
 	uuo.mutation.ClearPermissions()
 	return uuo
 }
 
-// RemovePermissionIDs removes the "permissions" edge to User entities by IDs.
+// RemovePermissionIDs removes the "permissions" edge to Permission entities by IDs.
 func (uuo *UserUpdateOne) RemovePermissionIDs(ids ...int) *UserUpdateOne {
 	uuo.mutation.RemovePermissionIDs(ids...)
 	return uuo
 }
 
-// RemovePermissions removes "permissions" edges to User entities.
-func (uuo *UserUpdateOne) RemovePermissions(u ...*User) *UserUpdateOne {
-	ids := make([]int, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
+// RemovePermissions removes "permissions" edges to Permission entities.
+func (uuo *UserUpdateOne) RemovePermissions(p ...*Permission) *UserUpdateOne {
+	ids := make([]int, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
 	}
 	return uuo.RemovePermissionIDs(ids...)
 }
@@ -696,14 +698,14 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	if uuo.mutation.RolesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
-			Inverse: false,
+			Inverse: true,
 			Table:   user.RolesTable,
 			Columns: user.RolesPrimaryKey,
-			Bidi:    true,
+			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: user.FieldID,
+					Column: role.FieldID,
 				},
 			},
 		}
@@ -712,14 +714,14 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	if nodes := uuo.mutation.RemovedRolesIDs(); len(nodes) > 0 && !uuo.mutation.RolesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
-			Inverse: false,
+			Inverse: true,
 			Table:   user.RolesTable,
 			Columns: user.RolesPrimaryKey,
-			Bidi:    true,
+			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: user.FieldID,
+					Column: role.FieldID,
 				},
 			},
 		}
@@ -731,14 +733,14 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	if nodes := uuo.mutation.RolesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
-			Inverse: false,
+			Inverse: true,
 			Table:   user.RolesTable,
 			Columns: user.RolesPrimaryKey,
-			Bidi:    true,
+			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: user.FieldID,
+					Column: role.FieldID,
 				},
 			},
 		}
@@ -750,14 +752,14 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	if uuo.mutation.PermissionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
-			Inverse: false,
+			Inverse: true,
 			Table:   user.PermissionsTable,
 			Columns: user.PermissionsPrimaryKey,
-			Bidi:    true,
+			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: user.FieldID,
+					Column: permission.FieldID,
 				},
 			},
 		}
@@ -766,14 +768,14 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	if nodes := uuo.mutation.RemovedPermissionsIDs(); len(nodes) > 0 && !uuo.mutation.PermissionsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
-			Inverse: false,
+			Inverse: true,
 			Table:   user.PermissionsTable,
 			Columns: user.PermissionsPrimaryKey,
-			Bidi:    true,
+			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: user.FieldID,
+					Column: permission.FieldID,
 				},
 			},
 		}
@@ -785,14 +787,14 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	if nodes := uuo.mutation.PermissionsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
-			Inverse: false,
+			Inverse: true,
 			Table:   user.PermissionsTable,
 			Columns: user.PermissionsPrimaryKey,
-			Bidi:    true,
+			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: user.FieldID,
+					Column: permission.FieldID,
 				},
 			},
 		}

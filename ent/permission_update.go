@@ -11,8 +11,11 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/wgbbiao/xadminent/ent/contenttype"
 	"github.com/wgbbiao/xadminent/ent/permission"
 	"github.com/wgbbiao/xadminent/ent/predicate"
+	"github.com/wgbbiao/xadminent/ent/role"
+	"github.com/wgbbiao/xadminent/ent/user"
 )
 
 // PermissionUpdate is the builder for updating Permission entities.
@@ -31,26 +34,6 @@ func (pu *PermissionUpdate) Where(ps ...predicate.Permission) *PermissionUpdate 
 // SetName sets the "name" field.
 func (pu *PermissionUpdate) SetName(s string) *PermissionUpdate {
 	pu.mutation.SetName(s)
-	return pu
-}
-
-// SetContentTypeID sets the "content_type_id" field.
-func (pu *PermissionUpdate) SetContentTypeID(i int) *PermissionUpdate {
-	pu.mutation.SetContentTypeID(i)
-	return pu
-}
-
-// SetNillableContentTypeID sets the "content_type_id" field if the given value is not nil.
-func (pu *PermissionUpdate) SetNillableContentTypeID(i *int) *PermissionUpdate {
-	if i != nil {
-		pu.SetContentTypeID(*i)
-	}
-	return pu
-}
-
-// ClearContentTypeID clears the value of the "content_type_id" field.
-func (pu *PermissionUpdate) ClearContentTypeID() *PermissionUpdate {
-	pu.mutation.ClearContentTypeID()
 	return pu
 }
 
@@ -80,9 +63,53 @@ func (pu *PermissionUpdate) SetUpdatedAt(t time.Time) *PermissionUpdate {
 	return pu
 }
 
-// SetContentType sets the "ContentType" edge to the Permission entity.
-func (pu *PermissionUpdate) SetContentType(p *Permission) *PermissionUpdate {
-	return pu.SetContentTypeID(p.ID)
+// SetContentTypeID sets the "ContentType" edge to the ContentType entity by ID.
+func (pu *PermissionUpdate) SetContentTypeID(id int) *PermissionUpdate {
+	pu.mutation.SetContentTypeID(id)
+	return pu
+}
+
+// SetNillableContentTypeID sets the "ContentType" edge to the ContentType entity by ID if the given value is not nil.
+func (pu *PermissionUpdate) SetNillableContentTypeID(id *int) *PermissionUpdate {
+	if id != nil {
+		pu = pu.SetContentTypeID(*id)
+	}
+	return pu
+}
+
+// SetContentType sets the "ContentType" edge to the ContentType entity.
+func (pu *PermissionUpdate) SetContentType(c *ContentType) *PermissionUpdate {
+	return pu.SetContentTypeID(c.ID)
+}
+
+// AddUserIDs adds the "users" edge to the User entity by IDs.
+func (pu *PermissionUpdate) AddUserIDs(ids ...int) *PermissionUpdate {
+	pu.mutation.AddUserIDs(ids...)
+	return pu
+}
+
+// AddUsers adds the "users" edges to the User entity.
+func (pu *PermissionUpdate) AddUsers(u ...*User) *PermissionUpdate {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return pu.AddUserIDs(ids...)
+}
+
+// AddRoleIDs adds the "roles" edge to the Role entity by IDs.
+func (pu *PermissionUpdate) AddRoleIDs(ids ...int) *PermissionUpdate {
+	pu.mutation.AddRoleIDs(ids...)
+	return pu
+}
+
+// AddRoles adds the "roles" edges to the Role entity.
+func (pu *PermissionUpdate) AddRoles(r ...*Role) *PermissionUpdate {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return pu.AddRoleIDs(ids...)
 }
 
 // Mutation returns the PermissionMutation object of the builder.
@@ -90,10 +117,52 @@ func (pu *PermissionUpdate) Mutation() *PermissionMutation {
 	return pu.mutation
 }
 
-// ClearContentType clears the "ContentType" edge to the Permission entity.
+// ClearContentType clears the "ContentType" edge to the ContentType entity.
 func (pu *PermissionUpdate) ClearContentType() *PermissionUpdate {
 	pu.mutation.ClearContentType()
 	return pu
+}
+
+// ClearUsers clears all "users" edges to the User entity.
+func (pu *PermissionUpdate) ClearUsers() *PermissionUpdate {
+	pu.mutation.ClearUsers()
+	return pu
+}
+
+// RemoveUserIDs removes the "users" edge to User entities by IDs.
+func (pu *PermissionUpdate) RemoveUserIDs(ids ...int) *PermissionUpdate {
+	pu.mutation.RemoveUserIDs(ids...)
+	return pu
+}
+
+// RemoveUsers removes "users" edges to User entities.
+func (pu *PermissionUpdate) RemoveUsers(u ...*User) *PermissionUpdate {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return pu.RemoveUserIDs(ids...)
+}
+
+// ClearRoles clears all "roles" edges to the Role entity.
+func (pu *PermissionUpdate) ClearRoles() *PermissionUpdate {
+	pu.mutation.ClearRoles()
+	return pu
+}
+
+// RemoveRoleIDs removes the "roles" edge to Role entities by IDs.
+func (pu *PermissionUpdate) RemoveRoleIDs(ids ...int) *PermissionUpdate {
+	pu.mutation.RemoveRoleIDs(ids...)
+	return pu
+}
+
+// RemoveRoles removes "roles" edges to Role entities.
+func (pu *PermissionUpdate) RemoveRoles(r ...*Role) *PermissionUpdate {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return pu.RemoveRoleIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -228,15 +297,15 @@ func (pu *PermissionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if pu.mutation.ContentTypeCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   permission.ContentTypeTable,
 			Columns: []string{permission.ContentTypeColumn},
-			Bidi:    true,
+			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: permission.FieldID,
+					Column: contenttype.FieldID,
 				},
 			},
 		}
@@ -244,15 +313,123 @@ func (pu *PermissionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if nodes := pu.mutation.ContentTypeIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   permission.ContentTypeTable,
 			Columns: []string{permission.ContentTypeColumn},
-			Bidi:    true,
+			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: permission.FieldID,
+					Column: contenttype.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if pu.mutation.UsersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   permission.UsersTable,
+			Columns: permission.UsersPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: user.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := pu.mutation.RemovedUsersIDs(); len(nodes) > 0 && !pu.mutation.UsersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   permission.UsersTable,
+			Columns: permission.UsersPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := pu.mutation.UsersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   permission.UsersTable,
+			Columns: permission.UsersPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if pu.mutation.RolesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   permission.RolesTable,
+			Columns: permission.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: role.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := pu.mutation.RemovedRolesIDs(); len(nodes) > 0 && !pu.mutation.RolesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   permission.RolesTable,
+			Columns: permission.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: role.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := pu.mutation.RolesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   permission.RolesTable,
+			Columns: permission.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: role.FieldID,
 				},
 			},
 		}
@@ -286,26 +463,6 @@ func (puo *PermissionUpdateOne) SetName(s string) *PermissionUpdateOne {
 	return puo
 }
 
-// SetContentTypeID sets the "content_type_id" field.
-func (puo *PermissionUpdateOne) SetContentTypeID(i int) *PermissionUpdateOne {
-	puo.mutation.SetContentTypeID(i)
-	return puo
-}
-
-// SetNillableContentTypeID sets the "content_type_id" field if the given value is not nil.
-func (puo *PermissionUpdateOne) SetNillableContentTypeID(i *int) *PermissionUpdateOne {
-	if i != nil {
-		puo.SetContentTypeID(*i)
-	}
-	return puo
-}
-
-// ClearContentTypeID clears the value of the "content_type_id" field.
-func (puo *PermissionUpdateOne) ClearContentTypeID() *PermissionUpdateOne {
-	puo.mutation.ClearContentTypeID()
-	return puo
-}
-
 // SetCode sets the "code" field.
 func (puo *PermissionUpdateOne) SetCode(s string) *PermissionUpdateOne {
 	puo.mutation.SetCode(s)
@@ -332,9 +489,53 @@ func (puo *PermissionUpdateOne) SetUpdatedAt(t time.Time) *PermissionUpdateOne {
 	return puo
 }
 
-// SetContentType sets the "ContentType" edge to the Permission entity.
-func (puo *PermissionUpdateOne) SetContentType(p *Permission) *PermissionUpdateOne {
-	return puo.SetContentTypeID(p.ID)
+// SetContentTypeID sets the "ContentType" edge to the ContentType entity by ID.
+func (puo *PermissionUpdateOne) SetContentTypeID(id int) *PermissionUpdateOne {
+	puo.mutation.SetContentTypeID(id)
+	return puo
+}
+
+// SetNillableContentTypeID sets the "ContentType" edge to the ContentType entity by ID if the given value is not nil.
+func (puo *PermissionUpdateOne) SetNillableContentTypeID(id *int) *PermissionUpdateOne {
+	if id != nil {
+		puo = puo.SetContentTypeID(*id)
+	}
+	return puo
+}
+
+// SetContentType sets the "ContentType" edge to the ContentType entity.
+func (puo *PermissionUpdateOne) SetContentType(c *ContentType) *PermissionUpdateOne {
+	return puo.SetContentTypeID(c.ID)
+}
+
+// AddUserIDs adds the "users" edge to the User entity by IDs.
+func (puo *PermissionUpdateOne) AddUserIDs(ids ...int) *PermissionUpdateOne {
+	puo.mutation.AddUserIDs(ids...)
+	return puo
+}
+
+// AddUsers adds the "users" edges to the User entity.
+func (puo *PermissionUpdateOne) AddUsers(u ...*User) *PermissionUpdateOne {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return puo.AddUserIDs(ids...)
+}
+
+// AddRoleIDs adds the "roles" edge to the Role entity by IDs.
+func (puo *PermissionUpdateOne) AddRoleIDs(ids ...int) *PermissionUpdateOne {
+	puo.mutation.AddRoleIDs(ids...)
+	return puo
+}
+
+// AddRoles adds the "roles" edges to the Role entity.
+func (puo *PermissionUpdateOne) AddRoles(r ...*Role) *PermissionUpdateOne {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return puo.AddRoleIDs(ids...)
 }
 
 // Mutation returns the PermissionMutation object of the builder.
@@ -342,10 +543,52 @@ func (puo *PermissionUpdateOne) Mutation() *PermissionMutation {
 	return puo.mutation
 }
 
-// ClearContentType clears the "ContentType" edge to the Permission entity.
+// ClearContentType clears the "ContentType" edge to the ContentType entity.
 func (puo *PermissionUpdateOne) ClearContentType() *PermissionUpdateOne {
 	puo.mutation.ClearContentType()
 	return puo
+}
+
+// ClearUsers clears all "users" edges to the User entity.
+func (puo *PermissionUpdateOne) ClearUsers() *PermissionUpdateOne {
+	puo.mutation.ClearUsers()
+	return puo
+}
+
+// RemoveUserIDs removes the "users" edge to User entities by IDs.
+func (puo *PermissionUpdateOne) RemoveUserIDs(ids ...int) *PermissionUpdateOne {
+	puo.mutation.RemoveUserIDs(ids...)
+	return puo
+}
+
+// RemoveUsers removes "users" edges to User entities.
+func (puo *PermissionUpdateOne) RemoveUsers(u ...*User) *PermissionUpdateOne {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return puo.RemoveUserIDs(ids...)
+}
+
+// ClearRoles clears all "roles" edges to the Role entity.
+func (puo *PermissionUpdateOne) ClearRoles() *PermissionUpdateOne {
+	puo.mutation.ClearRoles()
+	return puo
+}
+
+// RemoveRoleIDs removes the "roles" edge to Role entities by IDs.
+func (puo *PermissionUpdateOne) RemoveRoleIDs(ids ...int) *PermissionUpdateOne {
+	puo.mutation.RemoveRoleIDs(ids...)
+	return puo
+}
+
+// RemoveRoles removes "roles" edges to Role entities.
+func (puo *PermissionUpdateOne) RemoveRoles(r ...*Role) *PermissionUpdateOne {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
+	}
+	return puo.RemoveRoleIDs(ids...)
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -504,15 +747,15 @@ func (puo *PermissionUpdateOne) sqlSave(ctx context.Context) (_node *Permission,
 	}
 	if puo.mutation.ContentTypeCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   permission.ContentTypeTable,
 			Columns: []string{permission.ContentTypeColumn},
-			Bidi:    true,
+			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: permission.FieldID,
+					Column: contenttype.FieldID,
 				},
 			},
 		}
@@ -520,15 +763,123 @@ func (puo *PermissionUpdateOne) sqlSave(ctx context.Context) (_node *Permission,
 	}
 	if nodes := puo.mutation.ContentTypeIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   permission.ContentTypeTable,
 			Columns: []string{permission.ContentTypeColumn},
-			Bidi:    true,
+			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: permission.FieldID,
+					Column: contenttype.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if puo.mutation.UsersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   permission.UsersTable,
+			Columns: permission.UsersPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: user.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := puo.mutation.RemovedUsersIDs(); len(nodes) > 0 && !puo.mutation.UsersCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   permission.UsersTable,
+			Columns: permission.UsersPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := puo.mutation.UsersIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   permission.UsersTable,
+			Columns: permission.UsersPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if puo.mutation.RolesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   permission.RolesTable,
+			Columns: permission.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: role.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := puo.mutation.RemovedRolesIDs(); len(nodes) > 0 && !puo.mutation.RolesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   permission.RolesTable,
+			Columns: permission.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: role.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := puo.mutation.RolesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   permission.RolesTable,
+			Columns: permission.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: role.FieldID,
 				},
 			},
 		}

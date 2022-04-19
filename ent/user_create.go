@@ -10,6 +10,8 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/wgbbiao/xadminent/ent/permission"
+	"github.com/wgbbiao/xadminent/ent/role"
 	"github.com/wgbbiao/xadminent/ent/user"
 )
 
@@ -78,32 +80,32 @@ func (uc *UserCreate) SetNillableUpdatedAt(t *time.Time) *UserCreate {
 	return uc
 }
 
-// AddRoleIDs adds the "roles" edge to the User entity by IDs.
+// AddRoleIDs adds the "roles" edge to the Role entity by IDs.
 func (uc *UserCreate) AddRoleIDs(ids ...int) *UserCreate {
 	uc.mutation.AddRoleIDs(ids...)
 	return uc
 }
 
-// AddRoles adds the "roles" edges to the User entity.
-func (uc *UserCreate) AddRoles(u ...*User) *UserCreate {
-	ids := make([]int, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
+// AddRoles adds the "roles" edges to the Role entity.
+func (uc *UserCreate) AddRoles(r ...*Role) *UserCreate {
+	ids := make([]int, len(r))
+	for i := range r {
+		ids[i] = r[i].ID
 	}
 	return uc.AddRoleIDs(ids...)
 }
 
-// AddPermissionIDs adds the "permissions" edge to the User entity by IDs.
+// AddPermissionIDs adds the "permissions" edge to the Permission entity by IDs.
 func (uc *UserCreate) AddPermissionIDs(ids ...int) *UserCreate {
 	uc.mutation.AddPermissionIDs(ids...)
 	return uc
 }
 
-// AddPermissions adds the "permissions" edges to the User entity.
-func (uc *UserCreate) AddPermissions(u ...*User) *UserCreate {
-	ids := make([]int, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
+// AddPermissions adds the "permissions" edges to the Permission entity.
+func (uc *UserCreate) AddPermissions(p ...*Permission) *UserCreate {
+	ids := make([]int, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
 	}
 	return uc.AddPermissionIDs(ids...)
 }
@@ -298,14 +300,14 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if nodes := uc.mutation.RolesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
-			Inverse: false,
+			Inverse: true,
 			Table:   user.RolesTable,
 			Columns: user.RolesPrimaryKey,
-			Bidi:    true,
+			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: user.FieldID,
+					Column: role.FieldID,
 				},
 			},
 		}
@@ -317,14 +319,14 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if nodes := uc.mutation.PermissionsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
-			Inverse: false,
+			Inverse: true,
 			Table:   user.PermissionsTable,
 			Columns: user.PermissionsPrimaryKey,
-			Bidi:    true,
+			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: user.FieldID,
+					Column: permission.FieldID,
 				},
 			},
 		}

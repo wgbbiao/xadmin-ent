@@ -63,7 +63,8 @@ type XadminConfig struct {
 var Xadmin *XadminConfig
 
 //NewXadmin 新建配置
-func NewXadmin() *XadminConfig {
+func NewXadmin(db *DatabaseConfig) *XadminConfig {
+	database = db
 	Xadmin = &XadminConfig{
 		Models: make(map[string]Config),
 	}
@@ -134,7 +135,7 @@ func (o *XadminConfig) Init() {
 		}
 	}
 
-	o.IrisParty.Get("/refreshjwt", o.JwtCheckFunc, RefreshJwt)
+	// o.IrisParty.Get("/refreshjwt", o.JwtCheckFunc, RefreshJwt)
 	// o.IrisParty.Get("/{model:string  min(3)}/{table:string  min(3)}", o.JwtCheckFunc, ListHandel)
 	// o.IrisParty.Get("/{model:string  min(3)}/{table:string  min(3)}/{id:int}", o.JwtCheckFunc, DetailHandel)
 	// o.IrisParty.Put("/{model:string  min(3)}/{table:string  min(3)}/{id:int}", o.JwtCheckFunc, UpdateHandel)

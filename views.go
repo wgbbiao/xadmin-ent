@@ -1,7 +1,7 @@
 package xadminent
 
 import (
-	"context"
+	"reflect"
 	"time"
 
 	"github.com/kataras/iris/v12"
@@ -82,7 +82,8 @@ func ListView(ctx iris.Context) {
 	// config := GetConfig(ctx.Params().Get("model"), ctx.Params().Get("table"))
 
 	client := GetDb()
-
-	client.User.Query().All(context.Background())
+	v := reflect.ValueOf(client)
+	v2 := v.FieldByName("User")
+	v2.MethodByName("Create").Call([]reflect.Value{})
 
 }

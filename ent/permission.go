@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/wgbbiao/xadminent/ent/contenttype"
 	"github.com/wgbbiao/xadminent/ent/permission"
 )
 
@@ -18,8 +19,6 @@ type Permission struct {
 	ID int `json:"id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
-	// ContentTypeID holds the value of the "content_type_id" field.
-	ContentTypeID int `json:"content_type_id,omitempty"`
 	// Code holds the value of the "code" field.
 	Code string `json:"code,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -28,30 +27,53 @@ type Permission struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the PermissionQuery when eager-loading is set.
-	Edges PermissionEdges `json:"edges"`
+	Edges                   PermissionEdges `json:"edges"`
+	permission_content_type *int
 }
 
 // PermissionEdges holds the relations/edges for other nodes in the graph.
 type PermissionEdges struct {
 	// ContentType holds the value of the ContentType edge.
-	ContentType *Permission `json:"ContentType,omitempty"`
+	ContentType *ContentType `json:"ContentType,omitempty"`
+	// Users holds the value of the users edge.
+	Users []*User `json:"users,omitempty"`
+	// Roles holds the value of the roles edge.
+	Roles []*Role `json:"roles,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [3]bool
 }
 
 // ContentTypeOrErr returns the ContentType value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e PermissionEdges) ContentTypeOrErr() (*Permission, error) {
+func (e PermissionEdges) ContentTypeOrErr() (*ContentType, error) {
 	if e.loadedTypes[0] {
 		if e.ContentType == nil {
 			// The edge ContentType was loaded in eager-loading,
 			// but was not found.
-			return nil, &NotFoundError{label: permission.Label}
+			return nil, &NotFoundError{label: contenttype.Label}
 		}
 		return e.ContentType, nil
 	}
 	return nil, &NotLoadedError{edge: "ContentType"}
+}
+
+// UsersOrErr returns the Users value or an error if the edge
+// was not loaded in eager-loading.
+func (e PermissionEdges) UsersOrErr() ([]*User, error) {
+	if e.loadedTypes[1] {
+		return e.Users, nil
+	}
+	return nil, &NotLoadedError{edge: "users"}
+}
+
+// RolesOrErr returns the Roles value or an error if the edge
+// was not loaded in eager-loading.
+func (e PermissionEdges) RolesOrErr() ([]*Role, error) {
+	if e.loadedTypes[2] {
+		return e.Roles, nil
+	}
+	return nil, &NotLoadedError{edge: "roles"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -59,12 +81,14 @@ func (*Permission) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case permission.FieldID, permission.FieldContentTypeID:
+		case permission.FieldID:
 			values[i] = new(sql.NullInt64)
 		case permission.FieldName, permission.FieldCode:
 			values[i] = new(sql.NullString)
 		case permission.FieldCreatedAt, permission.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
+		case permission.ForeignKeys[0]: // permission_content_type
+			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Permission", columns[i])
 		}
@@ -92,12 +116,6 @@ func (pe *Permission) assignValues(columns []string, values []interface{}) error
 			} else if value.Valid {
 				pe.Name = value.String
 			}
-		case permission.FieldContentTypeID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field content_type_id", values[i])
-			} else if value.Valid {
-				pe.ContentTypeID = int(value.Int64)
-			}
 		case permission.FieldCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field code", values[i])
@@ -116,14 +134,31 @@ func (pe *Permission) assignValues(columns []string, values []interface{}) error
 			} else if value.Valid {
 				pe.UpdatedAt = value.Time
 			}
+		case permission.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field permission_content_type", value)
+			} else if value.Valid {
+				pe.permission_content_type = new(int)
+				*pe.permission_content_type = int(value.Int64)
+			}
 		}
 	}
 	return nil
 }
 
 // QueryContentType queries the "ContentType" edge of the Permission entity.
-func (pe *Permission) QueryContentType() *PermissionQuery {
+func (pe *Permission) QueryContentType() *ContentTypeQuery {
 	return (&PermissionClient{config: pe.config}).QueryContentType(pe)
+}
+
+// QueryUsers queries the "users" edge of the Permission entity.
+func (pe *Permission) QueryUsers() *UserQuery {
+	return (&PermissionClient{config: pe.config}).QueryUsers(pe)
+}
+
+// QueryRoles queries the "roles" edge of the Permission entity.
+func (pe *Permission) QueryRoles() *RoleQuery {
+	return (&PermissionClient{config: pe.config}).QueryRoles(pe)
 }
 
 // Update returns a builder for updating this Permission.
@@ -151,8 +186,6 @@ func (pe *Permission) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v", pe.ID))
 	builder.WriteString(", name=")
 	builder.WriteString(pe.Name)
-	builder.WriteString(", content_type_id=")
-	builder.WriteString(fmt.Sprintf("%v", pe.ContentTypeID))
 	builder.WriteString(", code=")
 	builder.WriteString(pe.Code)
 	builder.WriteString(", created_at=")

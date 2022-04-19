@@ -38,9 +38,9 @@ type User struct {
 // UserEdges holds the relations/edges for other nodes in the graph.
 type UserEdges struct {
 	// Roles holds the value of the roles edge.
-	Roles []*User `json:"roles,omitempty"`
+	Roles []*Role `json:"roles,omitempty"`
 	// Permissions holds the value of the permissions edge.
-	Permissions []*User `json:"permissions,omitempty"`
+	Permissions []*Permission `json:"permissions,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [2]bool
@@ -48,7 +48,7 @@ type UserEdges struct {
 
 // RolesOrErr returns the Roles value or an error if the edge
 // was not loaded in eager-loading.
-func (e UserEdges) RolesOrErr() ([]*User, error) {
+func (e UserEdges) RolesOrErr() ([]*Role, error) {
 	if e.loadedTypes[0] {
 		return e.Roles, nil
 	}
@@ -57,7 +57,7 @@ func (e UserEdges) RolesOrErr() ([]*User, error) {
 
 // PermissionsOrErr returns the Permissions value or an error if the edge
 // was not loaded in eager-loading.
-func (e UserEdges) PermissionsOrErr() ([]*User, error) {
+func (e UserEdges) PermissionsOrErr() ([]*Permission, error) {
 	if e.loadedTypes[1] {
 		return e.Permissions, nil
 	}
@@ -146,12 +146,12 @@ func (u *User) assignValues(columns []string, values []interface{}) error {
 }
 
 // QueryRoles queries the "roles" edge of the User entity.
-func (u *User) QueryRoles() *UserQuery {
+func (u *User) QueryRoles() *RoleQuery {
 	return (&UserClient{config: u.config}).QueryRoles(u)
 }
 
 // QueryPermissions queries the "permissions" edge of the User entity.
-func (u *User) QueryPermissions() *UserQuery {
+func (u *User) QueryPermissions() *PermissionQuery {
 	return (&UserClient{config: u.config}).QueryPermissions(u)
 }
 

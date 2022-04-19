@@ -32,9 +32,15 @@ const (
 	// Table holds the table name of the user in the database.
 	Table = "users"
 	// RolesTable is the table that holds the roles relation/edge. The primary key declared below.
-	RolesTable = "user_roles"
+	RolesTable = "role_users"
+	// RolesInverseTable is the table name for the Role entity.
+	// It exists in this package in order to avoid circular dependency with the "role" package.
+	RolesInverseTable = "roles"
 	// PermissionsTable is the table that holds the permissions relation/edge. The primary key declared below.
-	PermissionsTable = "user_permissions"
+	PermissionsTable = "permission_users"
+	// PermissionsInverseTable is the table name for the Permission entity.
+	// It exists in this package in order to avoid circular dependency with the "permission" package.
+	PermissionsInverseTable = "permissions"
 )
 
 // Columns holds all SQL columns for user fields.
@@ -52,10 +58,10 @@ var Columns = []string{
 var (
 	// RolesPrimaryKey and RolesColumn2 are the table columns denoting the
 	// primary key for the roles relation (M2M).
-	RolesPrimaryKey = []string{"user_id", "role_id"}
+	RolesPrimaryKey = []string{"role_id", "user_id"}
 	// PermissionsPrimaryKey and PermissionsColumn2 are the table columns denoting the
 	// primary key for the permissions relation (M2M).
-	PermissionsPrimaryKey = []string{"user_id", "permission_id"}
+	PermissionsPrimaryKey = []string{"permission_id", "user_id"}
 )
 
 // ValidColumn reports if the column name is valid (part of the table columns).

@@ -100,13 +100,6 @@ func Name(v string) predicate.Permission {
 	})
 }
 
-// ContentTypeID applies equality check predicate on the "content_type_id" field. It's identical to ContentTypeIDEQ.
-func ContentTypeID(v int) predicate.Permission {
-	return predicate.Permission(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldContentTypeID), v))
-	})
-}
-
 // Code applies equality check predicate on the "code" field. It's identical to CodeEQ.
 func Code(v string) predicate.Permission {
 	return predicate.Permission(func(s *sql.Selector) {
@@ -236,68 +229,6 @@ func NameEqualFold(v string) predicate.Permission {
 func NameContainsFold(v string) predicate.Permission {
 	return predicate.Permission(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldName), v))
-	})
-}
-
-// ContentTypeIDEQ applies the EQ predicate on the "content_type_id" field.
-func ContentTypeIDEQ(v int) predicate.Permission {
-	return predicate.Permission(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldContentTypeID), v))
-	})
-}
-
-// ContentTypeIDNEQ applies the NEQ predicate on the "content_type_id" field.
-func ContentTypeIDNEQ(v int) predicate.Permission {
-	return predicate.Permission(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldContentTypeID), v))
-	})
-}
-
-// ContentTypeIDIn applies the In predicate on the "content_type_id" field.
-func ContentTypeIDIn(vs ...int) predicate.Permission {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Permission(func(s *sql.Selector) {
-		// if not arguments were provided, append the FALSE constants,
-		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
-			s.Where(sql.False())
-			return
-		}
-		s.Where(sql.In(s.C(FieldContentTypeID), v...))
-	})
-}
-
-// ContentTypeIDNotIn applies the NotIn predicate on the "content_type_id" field.
-func ContentTypeIDNotIn(vs ...int) predicate.Permission {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Permission(func(s *sql.Selector) {
-		// if not arguments were provided, append the FALSE constants,
-		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
-			s.Where(sql.False())
-			return
-		}
-		s.Where(sql.NotIn(s.C(FieldContentTypeID), v...))
-	})
-}
-
-// ContentTypeIDIsNil applies the IsNil predicate on the "content_type_id" field.
-func ContentTypeIDIsNil() predicate.Permission {
-	return predicate.Permission(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldContentTypeID)))
-	})
-}
-
-// ContentTypeIDNotNil applies the NotNil predicate on the "content_type_id" field.
-func ContentTypeIDNotNil() predicate.Permission {
-	return predicate.Permission(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldContentTypeID)))
 	})
 }
 
@@ -570,19 +501,75 @@ func HasContentType() predicate.Permission {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
 			sqlgraph.To(ContentTypeTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, ContentTypeTable, ContentTypeColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, ContentTypeTable, ContentTypeColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
 // HasContentTypeWith applies the HasEdge predicate on the "ContentType" edge with a given conditions (other predicates).
-func HasContentTypeWith(preds ...predicate.Permission) predicate.Permission {
+func HasContentTypeWith(preds ...predicate.ContentType) predicate.Permission {
 	return predicate.Permission(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, ContentTypeTable, ContentTypeColumn),
+			sqlgraph.To(ContentTypeInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, ContentTypeTable, ContentTypeColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasUsers applies the HasEdge predicate on the "users" edge.
+func HasUsers() predicate.Permission {
+	return predicate.Permission(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(UsersTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, UsersTable, UsersPrimaryKey...),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasUsersWith applies the HasEdge predicate on the "users" edge with a given conditions (other predicates).
+func HasUsersWith(preds ...predicate.User) predicate.Permission {
+	return predicate.Permission(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(UsersInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, UsersTable, UsersPrimaryKey...),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasRoles applies the HasEdge predicate on the "roles" edge.
+func HasRoles() predicate.Permission {
+	return predicate.Permission(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(RolesTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, RolesTable, RolesPrimaryKey...),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasRolesWith applies the HasEdge predicate on the "roles" edge with a given conditions (other predicates).
+func HasRolesWith(preds ...predicate.Role) predicate.Permission {
+	return predicate.Permission(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(RolesInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, RolesTable, RolesPrimaryKey...),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {

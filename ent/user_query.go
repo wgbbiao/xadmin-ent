@@ -12,7 +12,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/wgbbiao/xadminent/ent/permission"
 	"github.com/wgbbiao/xadminent/ent/predicate"
+	"github.com/wgbbiao/xadminent/ent/role"
 	"github.com/wgbbiao/xadminent/ent/user"
 )
 
@@ -26,8 +28,8 @@ type UserQuery struct {
 	fields     []string
 	predicates []predicate.User
 	// eager-loading edges.
-	withRoles       *UserQuery
-	withPermissions *UserQuery
+	withRoles       *RoleQuery
+	withPermissions *PermissionQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -65,8 +67,8 @@ func (uq *UserQuery) Order(o ...OrderFunc) *UserQuery {
 }
 
 // QueryRoles chains the current query on the "roles" edge.
-func (uq *UserQuery) QueryRoles() *UserQuery {
-	query := &UserQuery{config: uq.config}
+func (uq *UserQuery) QueryRoles() *RoleQuery {
+	query := &RoleQuery{config: uq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := uq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -77,8 +79,8 @@ func (uq *UserQuery) QueryRoles() *UserQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, selector),
-			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, user.RolesTable, user.RolesPrimaryKey...),
+			sqlgraph.To(role.Table, role.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, user.RolesTable, user.RolesPrimaryKey...),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -87,8 +89,8 @@ func (uq *UserQuery) QueryRoles() *UserQuery {
 }
 
 // QueryPermissions chains the current query on the "permissions" edge.
-func (uq *UserQuery) QueryPermissions() *UserQuery {
-	query := &UserQuery{config: uq.config}
+func (uq *UserQuery) QueryPermissions() *PermissionQuery {
+	query := &PermissionQuery{config: uq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := uq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -99,8 +101,8 @@ func (uq *UserQuery) QueryPermissions() *UserQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, selector),
-			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, user.PermissionsTable, user.PermissionsPrimaryKey...),
+			sqlgraph.To(permission.Table, permission.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, user.PermissionsTable, user.PermissionsPrimaryKey...),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -300,8 +302,8 @@ func (uq *UserQuery) Clone() *UserQuery {
 
 // WithRoles tells the query-builder to eager-load the nodes that are connected to
 // the "roles" edge. The optional arguments are used to configure the query builder of the edge.
-func (uq *UserQuery) WithRoles(opts ...func(*UserQuery)) *UserQuery {
-	query := &UserQuery{config: uq.config}
+func (uq *UserQuery) WithRoles(opts ...func(*RoleQuery)) *UserQuery {
+	query := &RoleQuery{config: uq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
@@ -311,8 +313,8 @@ func (uq *UserQuery) WithRoles(opts ...func(*UserQuery)) *UserQuery {
 
 // WithPermissions tells the query-builder to eager-load the nodes that are connected to
 // the "permissions" edge. The optional arguments are used to configure the query builder of the edge.
-func (uq *UserQuery) WithPermissions(opts ...func(*UserQuery)) *UserQuery {
-	query := &UserQuery{config: uq.config}
+func (uq *UserQuery) WithPermissions(opts ...func(*PermissionQuery)) *UserQuery {
+	query := &PermissionQuery{config: uq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
@@ -416,7 +418,7 @@ func (uq *UserQuery) sqlAll(ctx context.Context) ([]*User, error) {
 		for _, node := range nodes {
 			ids[node.ID] = node
 			fks = append(fks, node.ID)
-			node.Edges.Roles = []*User{}
+			node.Edges.Roles = []*Role{}
 		}
 		var (
 			edgeids []int
@@ -424,12 +426,12 @@ func (uq *UserQuery) sqlAll(ctx context.Context) ([]*User, error) {
 		)
 		_spec := &sqlgraph.EdgeQuerySpec{
 			Edge: &sqlgraph.EdgeSpec{
-				Inverse: false,
+				Inverse: true,
 				Table:   user.RolesTable,
 				Columns: user.RolesPrimaryKey,
 			},
 			Predicate: func(s *sql.Selector) {
-				s.Where(sql.InValues(user.RolesPrimaryKey[0], fks...))
+				s.Where(sql.InValues(user.RolesPrimaryKey[1], fks...))
 			},
 			ScanValues: func() [2]interface{} {
 				return [2]interface{}{new(sql.NullInt64), new(sql.NullInt64)}
@@ -459,7 +461,7 @@ func (uq *UserQuery) sqlAll(ctx context.Context) ([]*User, error) {
 		if err := sqlgraph.QueryEdges(ctx, uq.driver, _spec); err != nil {
 			return nil, fmt.Errorf(`query edges "roles": %w`, err)
 		}
-		query.Where(user.IDIn(edgeids...))
+		query.Where(role.IDIn(edgeids...))
 		neighbors, err := query.All(ctx)
 		if err != nil {
 			return nil, err
@@ -481,7 +483,7 @@ func (uq *UserQuery) sqlAll(ctx context.Context) ([]*User, error) {
 		for _, node := range nodes {
 			ids[node.ID] = node
 			fks = append(fks, node.ID)
-			node.Edges.Permissions = []*User{}
+			node.Edges.Permissions = []*Permission{}
 		}
 		var (
 			edgeids []int
@@ -489,12 +491,12 @@ func (uq *UserQuery) sqlAll(ctx context.Context) ([]*User, error) {
 		)
 		_spec := &sqlgraph.EdgeQuerySpec{
 			Edge: &sqlgraph.EdgeSpec{
-				Inverse: false,
+				Inverse: true,
 				Table:   user.PermissionsTable,
 				Columns: user.PermissionsPrimaryKey,
 			},
 			Predicate: func(s *sql.Selector) {
-				s.Where(sql.InValues(user.PermissionsPrimaryKey[0], fks...))
+				s.Where(sql.InValues(user.PermissionsPrimaryKey[1], fks...))
 			},
 			ScanValues: func() [2]interface{} {
 				return [2]interface{}{new(sql.NullInt64), new(sql.NullInt64)}
@@ -524,7 +526,7 @@ func (uq *UserQuery) sqlAll(ctx context.Context) ([]*User, error) {
 		if err := sqlgraph.QueryEdges(ctx, uq.driver, _spec); err != nil {
 			return nil, fmt.Errorf(`query edges "permissions": %w`, err)
 		}
-		query.Where(user.IDIn(edgeids...))
+		query.Where(permission.IDIn(edgeids...))
 		neighbors, err := query.All(ctx)
 		if err != nil {
 			return nil, err
