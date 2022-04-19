@@ -5,6 +5,7 @@ package ent
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/wgbbiao/xadminent/ent/contenttype"
@@ -19,6 +20,10 @@ type ContentType struct {
 	AppLabel string `json:"app_label,omitempty"`
 	// Model holds the value of the "model" field.
 	Model string `json:"model,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -30,6 +35,8 @@ func (*ContentType) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullInt64)
 		case contenttype.FieldAppLabel, contenttype.FieldModel:
 			values[i] = new(sql.NullString)
+		case contenttype.FieldCreatedAt, contenttype.FieldUpdatedAt:
+			values[i] = new(sql.NullTime)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type ContentType", columns[i])
 		}
@@ -63,6 +70,18 @@ func (ct *ContentType) assignValues(columns []string, values []interface{}) erro
 			} else if value.Valid {
 				ct.Model = value.String
 			}
+		case contenttype.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				ct.CreatedAt = value.Time
+			}
+		case contenttype.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				ct.UpdatedAt = value.Time
+			}
 		}
 	}
 	return nil
@@ -95,6 +114,10 @@ func (ct *ContentType) String() string {
 	builder.WriteString(ct.AppLabel)
 	builder.WriteString(", model=")
 	builder.WriteString(ct.Model)
+	builder.WriteString(", created_at=")
+	builder.WriteString(ct.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", updated_at=")
+	builder.WriteString(ct.UpdatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

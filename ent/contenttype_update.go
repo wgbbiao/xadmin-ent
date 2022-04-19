@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -39,6 +40,26 @@ func (ctu *ContentTypeUpdate) SetModel(s string) *ContentTypeUpdate {
 	return ctu
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (ctu *ContentTypeUpdate) SetCreatedAt(t time.Time) *ContentTypeUpdate {
+	ctu.mutation.SetCreatedAt(t)
+	return ctu
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (ctu *ContentTypeUpdate) SetNillableCreatedAt(t *time.Time) *ContentTypeUpdate {
+	if t != nil {
+		ctu.SetCreatedAt(*t)
+	}
+	return ctu
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (ctu *ContentTypeUpdate) SetUpdatedAt(t time.Time) *ContentTypeUpdate {
+	ctu.mutation.SetUpdatedAt(t)
+	return ctu
+}
+
 // Mutation returns the ContentTypeMutation object of the builder.
 func (ctu *ContentTypeUpdate) Mutation() *ContentTypeMutation {
 	return ctu.mutation
@@ -50,6 +71,7 @@ func (ctu *ContentTypeUpdate) Save(ctx context.Context) (int, error) {
 		err      error
 		affected int
 	)
+	ctu.defaults()
 	if len(ctu.hooks) == 0 {
 		if err = ctu.check(); err != nil {
 			return 0, err
@@ -104,6 +126,14 @@ func (ctu *ContentTypeUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (ctu *ContentTypeUpdate) defaults() {
+	if _, ok := ctu.mutation.UpdatedAt(); !ok {
+		v := contenttype.UpdateDefaultUpdatedAt()
+		ctu.mutation.SetUpdatedAt(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (ctu *ContentTypeUpdate) check() error {
 	if v, ok := ctu.mutation.AppLabel(); ok {
@@ -151,6 +181,20 @@ func (ctu *ContentTypeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: contenttype.FieldModel,
 		})
 	}
+	if value, ok := ctu.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: contenttype.FieldCreatedAt,
+		})
+	}
+	if value, ok := ctu.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: contenttype.FieldUpdatedAt,
+		})
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, ctu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{contenttype.Label}
@@ -182,6 +226,26 @@ func (ctuo *ContentTypeUpdateOne) SetModel(s string) *ContentTypeUpdateOne {
 	return ctuo
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (ctuo *ContentTypeUpdateOne) SetCreatedAt(t time.Time) *ContentTypeUpdateOne {
+	ctuo.mutation.SetCreatedAt(t)
+	return ctuo
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (ctuo *ContentTypeUpdateOne) SetNillableCreatedAt(t *time.Time) *ContentTypeUpdateOne {
+	if t != nil {
+		ctuo.SetCreatedAt(*t)
+	}
+	return ctuo
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (ctuo *ContentTypeUpdateOne) SetUpdatedAt(t time.Time) *ContentTypeUpdateOne {
+	ctuo.mutation.SetUpdatedAt(t)
+	return ctuo
+}
+
 // Mutation returns the ContentTypeMutation object of the builder.
 func (ctuo *ContentTypeUpdateOne) Mutation() *ContentTypeMutation {
 	return ctuo.mutation
@@ -200,6 +264,7 @@ func (ctuo *ContentTypeUpdateOne) Save(ctx context.Context) (*ContentType, error
 		err  error
 		node *ContentType
 	)
+	ctuo.defaults()
 	if len(ctuo.hooks) == 0 {
 		if err = ctuo.check(); err != nil {
 			return nil, err
@@ -251,6 +316,14 @@ func (ctuo *ContentTypeUpdateOne) Exec(ctx context.Context) error {
 func (ctuo *ContentTypeUpdateOne) ExecX(ctx context.Context) {
 	if err := ctuo.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (ctuo *ContentTypeUpdateOne) defaults() {
+	if _, ok := ctuo.mutation.UpdatedAt(); !ok {
+		v := contenttype.UpdateDefaultUpdatedAt()
+		ctuo.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -316,6 +389,20 @@ func (ctuo *ContentTypeUpdateOne) sqlSave(ctx context.Context) (_node *ContentTy
 			Type:   field.TypeString,
 			Value:  value,
 			Column: contenttype.FieldModel,
+		})
+	}
+	if value, ok := ctuo.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: contenttype.FieldCreatedAt,
+		})
+	}
+	if value, ok := ctuo.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: contenttype.FieldUpdatedAt,
 		})
 	}
 	_node = &ContentType{config: ctuo.config}

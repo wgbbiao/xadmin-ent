@@ -24,6 +24,8 @@ type PermissionQuery struct {
 	order      []OrderFunc
 	fields     []string
 	predicates []predicate.Permission
+	// eager-loading edges.
+	withContentType *PermissionQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -58,6 +60,28 @@ func (pq *PermissionQuery) Unique(unique bool) *PermissionQuery {
 func (pq *PermissionQuery) Order(o ...OrderFunc) *PermissionQuery {
 	pq.order = append(pq.order, o...)
 	return pq
+}
+
+// QueryContentType chains the current query on the "ContentType" edge.
+func (pq *PermissionQuery) QueryContentType() *PermissionQuery {
+	query := &PermissionQuery{config: pq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := pq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := pq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(permission.Table, permission.FieldID, selector),
+			sqlgraph.To(permission.Table, permission.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, permission.ContentTypeTable, permission.ContentTypeColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first Permission entity from the query.
@@ -236,16 +260,28 @@ func (pq *PermissionQuery) Clone() *PermissionQuery {
 		return nil
 	}
 	return &PermissionQuery{
-		config:     pq.config,
-		limit:      pq.limit,
-		offset:     pq.offset,
-		order:      append([]OrderFunc{}, pq.order...),
-		predicates: append([]predicate.Permission{}, pq.predicates...),
+		config:          pq.config,
+		limit:           pq.limit,
+		offset:          pq.offset,
+		order:           append([]OrderFunc{}, pq.order...),
+		predicates:      append([]predicate.Permission{}, pq.predicates...),
+		withContentType: pq.withContentType.Clone(),
 		// clone intermediate query.
 		sql:    pq.sql.Clone(),
 		path:   pq.path,
 		unique: pq.unique,
 	}
+}
+
+// WithContentType tells the query-builder to eager-load the nodes that are connected to
+// the "ContentType" edge. The optional arguments are used to configure the query builder of the edge.
+func (pq *PermissionQuery) WithContentType(opts ...func(*PermissionQuery)) *PermissionQuery {
+	query := &PermissionQuery{config: pq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	pq.withContentType = query
+	return pq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -311,8 +347,11 @@ func (pq *PermissionQuery) prepareQuery(ctx context.Context) error {
 
 func (pq *PermissionQuery) sqlAll(ctx context.Context) ([]*Permission, error) {
 	var (
-		nodes = []*Permission{}
-		_spec = pq.querySpec()
+		nodes       = []*Permission{}
+		_spec       = pq.querySpec()
+		loadedTypes = [1]bool{
+			pq.withContentType != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
 		node := &Permission{config: pq.config}
@@ -324,6 +363,7 @@ func (pq *PermissionQuery) sqlAll(ctx context.Context) ([]*Permission, error) {
 			return fmt.Errorf("ent: Assign called without calling ScanValues")
 		}
 		node := nodes[len(nodes)-1]
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	if err := sqlgraph.QueryNodes(ctx, pq.driver, _spec); err != nil {
@@ -332,6 +372,33 @@ func (pq *PermissionQuery) sqlAll(ctx context.Context) ([]*Permission, error) {
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+
+	if query := pq.withContentType; query != nil {
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*Permission)
+		for i := range nodes {
+			fk := nodes[i].ContentTypeID
+			if _, ok := nodeids[fk]; !ok {
+				ids = append(ids, fk)
+			}
+			nodeids[fk] = append(nodeids[fk], nodes[i])
+		}
+		query.Where(permission.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "content_type_id" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.ContentType = n
+			}
+		}
+	}
+
 	return nodes, nil
 }
 

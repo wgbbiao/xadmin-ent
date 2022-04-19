@@ -1,7 +1,10 @@
 package schema
 
 import (
+	"time"
+
 	"entgo.io/ent"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -18,10 +21,18 @@ func (User) Fields() []ent.Field {
 		field.String("salt"),
 		field.Bool("is_super"),
 		field.Time("last_login_at"),
+		field.Time("created_at").
+			Default(time.Now),
+		field.Time("updated_at").
+			Default(time.Now).
+			UpdateDefault(time.Now),
 	}
 }
 
 // Edges of the User.
 func (User) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.To("roles", User.Type),
+		edge.To("permissions", User.Type),
+	}
 }

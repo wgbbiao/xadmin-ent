@@ -1,7 +1,10 @@
 package schema
 
 import (
+	"time"
+
 	"entgo.io/ent"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -14,12 +17,20 @@ type Permission struct {
 func (Permission) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").NotEmpty(),
-		field.Uint("content_type_id"),
+		field.Int("content_type_id").
+			Optional(),
 		field.String("model_code").NotEmpty(),
+		field.Time("created_at").
+			Default(time.Now),
+		field.Time("updated_at").
+			Default(time.Now).
+			UpdateDefault(time.Now),
 	}
 }
 
 // Edges of the Permission.
 func (Permission) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.To("ContentType", Permission.Type).Field("content_type_id").Unique(),
+	}
 }

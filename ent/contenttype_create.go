@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -31,6 +32,34 @@ func (ctc *ContentTypeCreate) SetModel(s string) *ContentTypeCreate {
 	return ctc
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (ctc *ContentTypeCreate) SetCreatedAt(t time.Time) *ContentTypeCreate {
+	ctc.mutation.SetCreatedAt(t)
+	return ctc
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (ctc *ContentTypeCreate) SetNillableCreatedAt(t *time.Time) *ContentTypeCreate {
+	if t != nil {
+		ctc.SetCreatedAt(*t)
+	}
+	return ctc
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (ctc *ContentTypeCreate) SetUpdatedAt(t time.Time) *ContentTypeCreate {
+	ctc.mutation.SetUpdatedAt(t)
+	return ctc
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (ctc *ContentTypeCreate) SetNillableUpdatedAt(t *time.Time) *ContentTypeCreate {
+	if t != nil {
+		ctc.SetUpdatedAt(*t)
+	}
+	return ctc
+}
+
 // Mutation returns the ContentTypeMutation object of the builder.
 func (ctc *ContentTypeCreate) Mutation() *ContentTypeMutation {
 	return ctc.mutation
@@ -42,6 +71,7 @@ func (ctc *ContentTypeCreate) Save(ctx context.Context) (*ContentType, error) {
 		err  error
 		node *ContentType
 	)
+	ctc.defaults()
 	if len(ctc.hooks) == 0 {
 		if err = ctc.check(); err != nil {
 			return nil, err
@@ -99,6 +129,18 @@ func (ctc *ContentTypeCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (ctc *ContentTypeCreate) defaults() {
+	if _, ok := ctc.mutation.CreatedAt(); !ok {
+		v := contenttype.DefaultCreatedAt()
+		ctc.mutation.SetCreatedAt(v)
+	}
+	if _, ok := ctc.mutation.UpdatedAt(); !ok {
+		v := contenttype.DefaultUpdatedAt()
+		ctc.mutation.SetUpdatedAt(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (ctc *ContentTypeCreate) check() error {
 	if _, ok := ctc.mutation.AppLabel(); !ok {
@@ -116,6 +158,12 @@ func (ctc *ContentTypeCreate) check() error {
 		if err := contenttype.ModelValidator(v); err != nil {
 			return &ValidationError{Name: "model", err: fmt.Errorf(`ent: validator failed for field "ContentType.model": %w`, err)}
 		}
+	}
+	if _, ok := ctc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "ContentType.created_at"`)}
+	}
+	if _, ok := ctc.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "ContentType.updated_at"`)}
 	}
 	return nil
 }
@@ -160,6 +208,22 @@ func (ctc *ContentTypeCreate) createSpec() (*ContentType, *sqlgraph.CreateSpec) 
 		})
 		_node.Model = value
 	}
+	if value, ok := ctc.mutation.CreatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: contenttype.FieldCreatedAt,
+		})
+		_node.CreatedAt = value
+	}
+	if value, ok := ctc.mutation.UpdatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: contenttype.FieldUpdatedAt,
+		})
+		_node.UpdatedAt = value
+	}
 	return _node, _spec
 }
 
@@ -177,6 +241,7 @@ func (ctcb *ContentTypeCreateBulk) Save(ctx context.Context) ([]*ContentType, er
 	for i := range ctcb.builders {
 		func(i int, root context.Context) {
 			builder := ctcb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*ContentTypeMutation)
 				if !ok {

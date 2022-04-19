@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -34,15 +35,22 @@ func (pu *PermissionUpdate) SetName(s string) *PermissionUpdate {
 }
 
 // SetContentTypeID sets the "content_type_id" field.
-func (pu *PermissionUpdate) SetContentTypeID(u uint) *PermissionUpdate {
-	pu.mutation.ResetContentTypeID()
-	pu.mutation.SetContentTypeID(u)
+func (pu *PermissionUpdate) SetContentTypeID(i int) *PermissionUpdate {
+	pu.mutation.SetContentTypeID(i)
 	return pu
 }
 
-// AddContentTypeID adds u to the "content_type_id" field.
-func (pu *PermissionUpdate) AddContentTypeID(u int) *PermissionUpdate {
-	pu.mutation.AddContentTypeID(u)
+// SetNillableContentTypeID sets the "content_type_id" field if the given value is not nil.
+func (pu *PermissionUpdate) SetNillableContentTypeID(i *int) *PermissionUpdate {
+	if i != nil {
+		pu.SetContentTypeID(*i)
+	}
+	return pu
+}
+
+// ClearContentTypeID clears the value of the "content_type_id" field.
+func (pu *PermissionUpdate) ClearContentTypeID() *PermissionUpdate {
+	pu.mutation.ClearContentTypeID()
 	return pu
 }
 
@@ -52,9 +60,40 @@ func (pu *PermissionUpdate) SetModelCode(s string) *PermissionUpdate {
 	return pu
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (pu *PermissionUpdate) SetCreatedAt(t time.Time) *PermissionUpdate {
+	pu.mutation.SetCreatedAt(t)
+	return pu
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (pu *PermissionUpdate) SetNillableCreatedAt(t *time.Time) *PermissionUpdate {
+	if t != nil {
+		pu.SetCreatedAt(*t)
+	}
+	return pu
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (pu *PermissionUpdate) SetUpdatedAt(t time.Time) *PermissionUpdate {
+	pu.mutation.SetUpdatedAt(t)
+	return pu
+}
+
+// SetContentType sets the "ContentType" edge to the Permission entity.
+func (pu *PermissionUpdate) SetContentType(p *Permission) *PermissionUpdate {
+	return pu.SetContentTypeID(p.ID)
+}
+
 // Mutation returns the PermissionMutation object of the builder.
 func (pu *PermissionUpdate) Mutation() *PermissionMutation {
 	return pu.mutation
+}
+
+// ClearContentType clears the "ContentType" edge to the Permission entity.
+func (pu *PermissionUpdate) ClearContentType() *PermissionUpdate {
+	pu.mutation.ClearContentType()
+	return pu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -63,6 +102,7 @@ func (pu *PermissionUpdate) Save(ctx context.Context) (int, error) {
 		err      error
 		affected int
 	)
+	pu.defaults()
 	if len(pu.hooks) == 0 {
 		if err = pu.check(); err != nil {
 			return 0, err
@@ -117,6 +157,14 @@ func (pu *PermissionUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (pu *PermissionUpdate) defaults() {
+	if _, ok := pu.mutation.UpdatedAt(); !ok {
+		v := permission.UpdateDefaultUpdatedAt()
+		pu.mutation.SetUpdatedAt(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (pu *PermissionUpdate) check() error {
 	if v, ok := pu.mutation.Name(); ok {
@@ -157,26 +205,61 @@ func (pu *PermissionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: permission.FieldName,
 		})
 	}
-	if value, ok := pu.mutation.ContentTypeID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint,
-			Value:  value,
-			Column: permission.FieldContentTypeID,
-		})
-	}
-	if value, ok := pu.mutation.AddedContentTypeID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint,
-			Value:  value,
-			Column: permission.FieldContentTypeID,
-		})
-	}
 	if value, ok := pu.mutation.ModelCode(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
 			Column: permission.FieldModelCode,
 		})
+	}
+	if value, ok := pu.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: permission.FieldCreatedAt,
+		})
+	}
+	if value, ok := pu.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: permission.FieldUpdatedAt,
+		})
+	}
+	if pu.mutation.ContentTypeCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   permission.ContentTypeTable,
+			Columns: []string{permission.ContentTypeColumn},
+			Bidi:    true,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: permission.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := pu.mutation.ContentTypeIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   permission.ContentTypeTable,
+			Columns: []string{permission.ContentTypeColumn},
+			Bidi:    true,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: permission.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, pu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -204,15 +287,22 @@ func (puo *PermissionUpdateOne) SetName(s string) *PermissionUpdateOne {
 }
 
 // SetContentTypeID sets the "content_type_id" field.
-func (puo *PermissionUpdateOne) SetContentTypeID(u uint) *PermissionUpdateOne {
-	puo.mutation.ResetContentTypeID()
-	puo.mutation.SetContentTypeID(u)
+func (puo *PermissionUpdateOne) SetContentTypeID(i int) *PermissionUpdateOne {
+	puo.mutation.SetContentTypeID(i)
 	return puo
 }
 
-// AddContentTypeID adds u to the "content_type_id" field.
-func (puo *PermissionUpdateOne) AddContentTypeID(u int) *PermissionUpdateOne {
-	puo.mutation.AddContentTypeID(u)
+// SetNillableContentTypeID sets the "content_type_id" field if the given value is not nil.
+func (puo *PermissionUpdateOne) SetNillableContentTypeID(i *int) *PermissionUpdateOne {
+	if i != nil {
+		puo.SetContentTypeID(*i)
+	}
+	return puo
+}
+
+// ClearContentTypeID clears the value of the "content_type_id" field.
+func (puo *PermissionUpdateOne) ClearContentTypeID() *PermissionUpdateOne {
+	puo.mutation.ClearContentTypeID()
 	return puo
 }
 
@@ -222,9 +312,40 @@ func (puo *PermissionUpdateOne) SetModelCode(s string) *PermissionUpdateOne {
 	return puo
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (puo *PermissionUpdateOne) SetCreatedAt(t time.Time) *PermissionUpdateOne {
+	puo.mutation.SetCreatedAt(t)
+	return puo
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (puo *PermissionUpdateOne) SetNillableCreatedAt(t *time.Time) *PermissionUpdateOne {
+	if t != nil {
+		puo.SetCreatedAt(*t)
+	}
+	return puo
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (puo *PermissionUpdateOne) SetUpdatedAt(t time.Time) *PermissionUpdateOne {
+	puo.mutation.SetUpdatedAt(t)
+	return puo
+}
+
+// SetContentType sets the "ContentType" edge to the Permission entity.
+func (puo *PermissionUpdateOne) SetContentType(p *Permission) *PermissionUpdateOne {
+	return puo.SetContentTypeID(p.ID)
+}
+
 // Mutation returns the PermissionMutation object of the builder.
 func (puo *PermissionUpdateOne) Mutation() *PermissionMutation {
 	return puo.mutation
+}
+
+// ClearContentType clears the "ContentType" edge to the Permission entity.
+func (puo *PermissionUpdateOne) ClearContentType() *PermissionUpdateOne {
+	puo.mutation.ClearContentType()
+	return puo
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -240,6 +361,7 @@ func (puo *PermissionUpdateOne) Save(ctx context.Context) (*Permission, error) {
 		err  error
 		node *Permission
 	)
+	puo.defaults()
 	if len(puo.hooks) == 0 {
 		if err = puo.check(); err != nil {
 			return nil, err
@@ -291,6 +413,14 @@ func (puo *PermissionUpdateOne) Exec(ctx context.Context) error {
 func (puo *PermissionUpdateOne) ExecX(ctx context.Context) {
 	if err := puo.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (puo *PermissionUpdateOne) defaults() {
+	if _, ok := puo.mutation.UpdatedAt(); !ok {
+		v := permission.UpdateDefaultUpdatedAt()
+		puo.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -351,26 +481,61 @@ func (puo *PermissionUpdateOne) sqlSave(ctx context.Context) (_node *Permission,
 			Column: permission.FieldName,
 		})
 	}
-	if value, ok := puo.mutation.ContentTypeID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint,
-			Value:  value,
-			Column: permission.FieldContentTypeID,
-		})
-	}
-	if value, ok := puo.mutation.AddedContentTypeID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint,
-			Value:  value,
-			Column: permission.FieldContentTypeID,
-		})
-	}
 	if value, ok := puo.mutation.ModelCode(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
 			Column: permission.FieldModelCode,
 		})
+	}
+	if value, ok := puo.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: permission.FieldCreatedAt,
+		})
+	}
+	if value, ok := puo.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: permission.FieldUpdatedAt,
+		})
+	}
+	if puo.mutation.ContentTypeCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   permission.ContentTypeTable,
+			Columns: []string{permission.ContentTypeColumn},
+			Bidi:    true,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: permission.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := puo.mutation.ContentTypeIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   permission.ContentTypeTable,
+			Columns: []string{permission.ContentTypeColumn},
+			Bidi:    true,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: permission.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Permission{config: puo.config}
 	_spec.Assign = _node.assignValues

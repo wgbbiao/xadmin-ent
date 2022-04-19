@@ -5,6 +5,7 @@ package ent
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/wgbbiao/xadminent/ent/permission"
@@ -18,9 +19,39 @@ type Permission struct {
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// ContentTypeID holds the value of the "content_type_id" field.
-	ContentTypeID uint `json:"content_type_id,omitempty"`
+	ContentTypeID int `json:"content_type_id,omitempty"`
 	// ModelCode holds the value of the "model_code" field.
 	ModelCode string `json:"model_code,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the PermissionQuery when eager-loading is set.
+	Edges PermissionEdges `json:"edges"`
+}
+
+// PermissionEdges holds the relations/edges for other nodes in the graph.
+type PermissionEdges struct {
+	// ContentType holds the value of the ContentType edge.
+	ContentType *Permission `json:"ContentType,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// ContentTypeOrErr returns the ContentType value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e PermissionEdges) ContentTypeOrErr() (*Permission, error) {
+	if e.loadedTypes[0] {
+		if e.ContentType == nil {
+			// The edge ContentType was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: permission.Label}
+		}
+		return e.ContentType, nil
+	}
+	return nil, &NotLoadedError{edge: "ContentType"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -32,6 +63,8 @@ func (*Permission) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullInt64)
 		case permission.FieldName, permission.FieldModelCode:
 			values[i] = new(sql.NullString)
+		case permission.FieldCreatedAt, permission.FieldUpdatedAt:
+			values[i] = new(sql.NullTime)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Permission", columns[i])
 		}
@@ -63,7 +96,7 @@ func (pe *Permission) assignValues(columns []string, values []interface{}) error
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field content_type_id", values[i])
 			} else if value.Valid {
-				pe.ContentTypeID = uint(value.Int64)
+				pe.ContentTypeID = int(value.Int64)
 			}
 		case permission.FieldModelCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -71,9 +104,26 @@ func (pe *Permission) assignValues(columns []string, values []interface{}) error
 			} else if value.Valid {
 				pe.ModelCode = value.String
 			}
+		case permission.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				pe.CreatedAt = value.Time
+			}
+		case permission.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				pe.UpdatedAt = value.Time
+			}
 		}
 	}
 	return nil
+}
+
+// QueryContentType queries the "ContentType" edge of the Permission entity.
+func (pe *Permission) QueryContentType() *PermissionQuery {
+	return (&PermissionClient{config: pe.config}).QueryContentType(pe)
 }
 
 // Update returns a builder for updating this Permission.
@@ -105,6 +155,10 @@ func (pe *Permission) String() string {
 	builder.WriteString(fmt.Sprintf("%v", pe.ContentTypeID))
 	builder.WriteString(", model_code=")
 	builder.WriteString(pe.ModelCode)
+	builder.WriteString(", created_at=")
+	builder.WriteString(pe.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", updated_at=")
+	builder.WriteString(pe.UpdatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -2,6 +2,10 @@
 
 package permission
 
+import (
+	"time"
+)
+
 const (
 	// Label holds the string label denoting the permission type in the database.
 	Label = "permission"
@@ -13,8 +17,18 @@ const (
 	FieldContentTypeID = "content_type_id"
 	// FieldModelCode holds the string denoting the model_code field in the database.
 	FieldModelCode = "model_code"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
+	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
+	FieldUpdatedAt = "updated_at"
+	// EdgeContentType holds the string denoting the contenttype edge name in mutations.
+	EdgeContentType = "ContentType"
 	// Table holds the table name of the permission in the database.
 	Table = "permissions"
+	// ContentTypeTable is the table that holds the ContentType relation/edge.
+	ContentTypeTable = "permissions"
+	// ContentTypeColumn is the table column denoting the ContentType relation/edge.
+	ContentTypeColumn = "content_type_id"
 )
 
 // Columns holds all SQL columns for permission fields.
@@ -23,6 +37,8 @@ var Columns = []string{
 	FieldName,
 	FieldContentTypeID,
 	FieldModelCode,
+	FieldCreatedAt,
+	FieldUpdatedAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -40,4 +56,10 @@ var (
 	NameValidator func(string) error
 	// ModelCodeValidator is a validator for the "model_code" field. It is called by the builders before save.
 	ModelCodeValidator func(string) error
+	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
+	DefaultCreatedAt func() time.Time
+	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
+	DefaultUpdatedAt func() time.Time
+	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
+	UpdateDefaultUpdatedAt func() time.Time
 )
