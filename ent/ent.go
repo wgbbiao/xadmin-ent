@@ -8,6 +8,9 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/wgbbiao/xadminent/ent/contenttype"
+	"github.com/wgbbiao/xadminent/ent/permission"
+	"github.com/wgbbiao/xadminent/ent/role"
 	"github.com/wgbbiao/xadminent/ent/user"
 )
 
@@ -29,7 +32,10 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
-		user.Table: user.ValidColumn,
+		contenttype.Table: contenttype.ValidColumn,
+		permission.Table:  permission.ValidColumn,
+		role.Table:        role.ValidColumn,
+		user.Table:        user.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {

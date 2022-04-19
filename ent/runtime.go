@@ -2,8 +2,41 @@
 
 package ent
 
+import (
+	"github.com/wgbbiao/xadminent/ent/contenttype"
+	"github.com/wgbbiao/xadminent/ent/permission"
+	"github.com/wgbbiao/xadminent/ent/role"
+	"github.com/wgbbiao/xadminent/ent/schema"
+)
+
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	contenttypeFields := schema.ContentType{}.Fields()
+	_ = contenttypeFields
+	// contenttypeDescAppLabel is the schema descriptor for app_label field.
+	contenttypeDescAppLabel := contenttypeFields[0].Descriptor()
+	// contenttype.AppLabelValidator is a validator for the "app_label" field. It is called by the builders before save.
+	contenttype.AppLabelValidator = contenttypeDescAppLabel.Validators[0].(func(string) error)
+	// contenttypeDescModel is the schema descriptor for model field.
+	contenttypeDescModel := contenttypeFields[1].Descriptor()
+	// contenttype.ModelValidator is a validator for the "model" field. It is called by the builders before save.
+	contenttype.ModelValidator = contenttypeDescModel.Validators[0].(func(string) error)
+	permissionFields := schema.Permission{}.Fields()
+	_ = permissionFields
+	// permissionDescName is the schema descriptor for name field.
+	permissionDescName := permissionFields[0].Descriptor()
+	// permission.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	permission.NameValidator = permissionDescName.Validators[0].(func(string) error)
+	// permissionDescModelCode is the schema descriptor for model_code field.
+	permissionDescModelCode := permissionFields[2].Descriptor()
+	// permission.ModelCodeValidator is a validator for the "model_code" field. It is called by the builders before save.
+	permission.ModelCodeValidator = permissionDescModelCode.Validators[0].(func(string) error)
+	roleFields := schema.Role{}.Fields()
+	_ = roleFields
+	// roleDescName is the schema descriptor for name field.
+	roleDescName := roleFields[0].Descriptor()
+	// role.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	role.NameValidator = roleDescName.Validators[0].(func(string) error)
 }

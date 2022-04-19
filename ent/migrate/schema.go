@@ -8,6 +8,42 @@ import (
 )
 
 var (
+	// ContentTypesColumns holds the columns for the "content_types" table.
+	ContentTypesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "app_label", Type: field.TypeString},
+		{Name: "model", Type: field.TypeString},
+	}
+	// ContentTypesTable holds the schema information for the "content_types" table.
+	ContentTypesTable = &schema.Table{
+		Name:       "content_types",
+		Columns:    ContentTypesColumns,
+		PrimaryKey: []*schema.Column{ContentTypesColumns[0]},
+	}
+	// PermissionsColumns holds the columns for the "permissions" table.
+	PermissionsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "content_type_id", Type: field.TypeUint},
+		{Name: "model_code", Type: field.TypeString},
+	}
+	// PermissionsTable holds the schema information for the "permissions" table.
+	PermissionsTable = &schema.Table{
+		Name:       "permissions",
+		Columns:    PermissionsColumns,
+		PrimaryKey: []*schema.Column{PermissionsColumns[0]},
+	}
+	// RolesColumns holds the columns for the "roles" table.
+	RolesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "name", Type: field.TypeString},
+	}
+	// RolesTable holds the schema information for the "roles" table.
+	RolesTable = &schema.Table{
+		Name:       "roles",
+		Columns:    RolesColumns,
+		PrimaryKey: []*schema.Column{RolesColumns[0]},
+	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -25,6 +61,9 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		ContentTypesTable,
+		PermissionsTable,
+		RolesTable,
 		UsersTable,
 	}
 )
