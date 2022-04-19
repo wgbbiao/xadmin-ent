@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/wgbbiao/xadminent"
 )
 
@@ -13,4 +15,7 @@ func main() {
 		Database: "testent",
 	})
 	xadminent.AutoMigrate()
+	xadmin := xadminent.NewXadmin()
+	xadmin.Init()
+	fmt.Println(xadmin)
 }
