@@ -513,7 +513,7 @@ type PermissionMutation struct {
 	typ                 string
 	id                  *int
 	name                *string
-	model_code          *string
+	code                *string
 	created_at          *time.Time
 	updated_at          *time.Time
 	clearedFields       map[string]struct{}
@@ -707,40 +707,40 @@ func (m *PermissionMutation) ResetContentTypeID() {
 	delete(m.clearedFields, permission.FieldContentTypeID)
 }
 
-// SetModelCode sets the "model_code" field.
-func (m *PermissionMutation) SetModelCode(s string) {
-	m.model_code = &s
+// SetCode sets the "code" field.
+func (m *PermissionMutation) SetCode(s string) {
+	m.code = &s
 }
 
-// ModelCode returns the value of the "model_code" field in the mutation.
-func (m *PermissionMutation) ModelCode() (r string, exists bool) {
-	v := m.model_code
+// Code returns the value of the "code" field in the mutation.
+func (m *PermissionMutation) Code() (r string, exists bool) {
+	v := m.code
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldModelCode returns the old "model_code" field's value of the Permission entity.
+// OldCode returns the old "code" field's value of the Permission entity.
 // If the Permission object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PermissionMutation) OldModelCode(ctx context.Context) (v string, err error) {
+func (m *PermissionMutation) OldCode(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldModelCode is only allowed on UpdateOne operations")
+		return v, errors.New("OldCode is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldModelCode requires an ID field in the mutation")
+		return v, errors.New("OldCode requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldModelCode: %w", err)
+		return v, fmt.Errorf("querying old value for OldCode: %w", err)
 	}
-	return oldValue.ModelCode, nil
+	return oldValue.Code, nil
 }
 
-// ResetModelCode resets all changes to the "model_code" field.
-func (m *PermissionMutation) ResetModelCode() {
-	m.model_code = nil
+// ResetCode resets all changes to the "code" field.
+func (m *PermissionMutation) ResetCode() {
+	m.code = nil
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -867,8 +867,8 @@ func (m *PermissionMutation) Fields() []string {
 	if m._ContentType != nil {
 		fields = append(fields, permission.FieldContentTypeID)
 	}
-	if m.model_code != nil {
-		fields = append(fields, permission.FieldModelCode)
+	if m.code != nil {
+		fields = append(fields, permission.FieldCode)
 	}
 	if m.created_at != nil {
 		fields = append(fields, permission.FieldCreatedAt)
@@ -888,8 +888,8 @@ func (m *PermissionMutation) Field(name string) (ent.Value, bool) {
 		return m.Name()
 	case permission.FieldContentTypeID:
 		return m.ContentTypeID()
-	case permission.FieldModelCode:
-		return m.ModelCode()
+	case permission.FieldCode:
+		return m.Code()
 	case permission.FieldCreatedAt:
 		return m.CreatedAt()
 	case permission.FieldUpdatedAt:
@@ -907,8 +907,8 @@ func (m *PermissionMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldName(ctx)
 	case permission.FieldContentTypeID:
 		return m.OldContentTypeID(ctx)
-	case permission.FieldModelCode:
-		return m.OldModelCode(ctx)
+	case permission.FieldCode:
+		return m.OldCode(ctx)
 	case permission.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case permission.FieldUpdatedAt:
@@ -936,12 +936,12 @@ func (m *PermissionMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetContentTypeID(v)
 		return nil
-	case permission.FieldModelCode:
+	case permission.FieldCode:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetModelCode(v)
+		m.SetCode(v)
 		return nil
 	case permission.FieldCreatedAt:
 		v, ok := value.(time.Time)
@@ -1024,8 +1024,8 @@ func (m *PermissionMutation) ResetField(name string) error {
 	case permission.FieldContentTypeID:
 		m.ResetContentTypeID()
 		return nil
-	case permission.FieldModelCode:
-		m.ResetModelCode()
+	case permission.FieldCode:
+		m.ResetCode()
 		return nil
 	case permission.FieldCreatedAt:
 		m.ResetCreatedAt()

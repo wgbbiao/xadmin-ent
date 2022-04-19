@@ -42,10 +42,10 @@ func init() {
 	permissionDescName := permissionFields[0].Descriptor()
 	// permission.NameValidator is a validator for the "name" field. It is called by the builders before save.
 	permission.NameValidator = permissionDescName.Validators[0].(func(string) error)
-	// permissionDescModelCode is the schema descriptor for model_code field.
-	permissionDescModelCode := permissionFields[2].Descriptor()
-	// permission.ModelCodeValidator is a validator for the "model_code" field. It is called by the builders before save.
-	permission.ModelCodeValidator = permissionDescModelCode.Validators[0].(func(string) error)
+	// permissionDescCode is the schema descriptor for code field.
+	permissionDescCode := permissionFields[2].Descriptor()
+	// permission.CodeValidator is a validator for the "code" field. It is called by the builders before save.
+	permission.CodeValidator = permissionDescCode.Validators[0].(func(string) error)
 	// permissionDescCreatedAt is the schema descriptor for created_at field.
 	permissionDescCreatedAt := permissionFields[3].Descriptor()
 	// permission.DefaultCreatedAt holds the default value on creation for the created_at field.

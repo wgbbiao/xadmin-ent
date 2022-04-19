@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // Role holds the schema definition for the Role entity.
@@ -29,5 +30,12 @@ func (Role) Fields() []ent.Field {
 func (Role) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("permissions", Role.Type),
+	}
+}
+
+// Indexes of the Role.
+func (Role) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("name"),
 	}
 }

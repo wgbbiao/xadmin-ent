@@ -20,8 +20,8 @@ type Permission struct {
 	Name string `json:"name,omitempty"`
 	// ContentTypeID holds the value of the "content_type_id" field.
 	ContentTypeID int `json:"content_type_id,omitempty"`
-	// ModelCode holds the value of the "model_code" field.
-	ModelCode string `json:"model_code,omitempty"`
+	// Code holds the value of the "code" field.
+	Code string `json:"code,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -61,7 +61,7 @@ func (*Permission) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case permission.FieldID, permission.FieldContentTypeID:
 			values[i] = new(sql.NullInt64)
-		case permission.FieldName, permission.FieldModelCode:
+		case permission.FieldName, permission.FieldCode:
 			values[i] = new(sql.NullString)
 		case permission.FieldCreatedAt, permission.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -98,11 +98,11 @@ func (pe *Permission) assignValues(columns []string, values []interface{}) error
 			} else if value.Valid {
 				pe.ContentTypeID = int(value.Int64)
 			}
-		case permission.FieldModelCode:
+		case permission.FieldCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field model_code", values[i])
+				return fmt.Errorf("unexpected type %T for field code", values[i])
 			} else if value.Valid {
-				pe.ModelCode = value.String
+				pe.Code = value.String
 			}
 		case permission.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -153,8 +153,8 @@ func (pe *Permission) String() string {
 	builder.WriteString(pe.Name)
 	builder.WriteString(", content_type_id=")
 	builder.WriteString(fmt.Sprintf("%v", pe.ContentTypeID))
-	builder.WriteString(", model_code=")
-	builder.WriteString(pe.ModelCode)
+	builder.WriteString(", code=")
+	builder.WriteString(pe.Code)
 	builder.WriteString(", created_at=")
 	builder.WriteString(pe.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", updated_at=")

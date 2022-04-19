@@ -15,8 +15,8 @@ const (
 	FieldName = "name"
 	// FieldContentTypeID holds the string denoting the content_type_id field in the database.
 	FieldContentTypeID = "content_type_id"
-	// FieldModelCode holds the string denoting the model_code field in the database.
-	FieldModelCode = "model_code"
+	// FieldCode holds the string denoting the code field in the database.
+	FieldCode = "code"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -36,7 +36,7 @@ var Columns = []string{
 	FieldID,
 	FieldName,
 	FieldContentTypeID,
-	FieldModelCode,
+	FieldCode,
 	FieldCreatedAt,
 	FieldUpdatedAt,
 }
@@ -54,8 +54,8 @@ func ValidColumn(column string) bool {
 var (
 	// NameValidator is a validator for the "name" field. It is called by the builders before save.
 	NameValidator func(string) error
-	// ModelCodeValidator is a validator for the "model_code" field. It is called by the builders before save.
-	ModelCodeValidator func(string) error
+	// CodeValidator is a validator for the "code" field. It is called by the builders before save.
+	CodeValidator func(string) error
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.

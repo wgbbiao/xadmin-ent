@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // Permission holds the schema definition for the Permission entity.
@@ -19,7 +20,7 @@ func (Permission) Fields() []ent.Field {
 		field.String("name").NotEmpty(),
 		field.Int("content_type_id").
 			Optional(),
-		field.String("model_code").NotEmpty(),
+		field.String("code").NotEmpty(),
 		field.Time("created_at").
 			Default(time.Now),
 		field.Time("updated_at").
@@ -32,5 +33,14 @@ func (Permission) Fields() []ent.Field {
 func (Permission) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("ContentType", Permission.Type).Field("content_type_id").Unique(),
+	}
+}
+
+// Indexes of the Permission.
+func (Permission) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("name"),
+		index.Fields("code"),
+		index.Fields("content_type_id", "code").Unique(),
 	}
 }

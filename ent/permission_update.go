@@ -54,9 +54,9 @@ func (pu *PermissionUpdate) ClearContentTypeID() *PermissionUpdate {
 	return pu
 }
 
-// SetModelCode sets the "model_code" field.
-func (pu *PermissionUpdate) SetModelCode(s string) *PermissionUpdate {
-	pu.mutation.SetModelCode(s)
+// SetCode sets the "code" field.
+func (pu *PermissionUpdate) SetCode(s string) *PermissionUpdate {
+	pu.mutation.SetCode(s)
 	return pu
 }
 
@@ -172,9 +172,9 @@ func (pu *PermissionUpdate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Permission.name": %w`, err)}
 		}
 	}
-	if v, ok := pu.mutation.ModelCode(); ok {
-		if err := permission.ModelCodeValidator(v); err != nil {
-			return &ValidationError{Name: "model_code", err: fmt.Errorf(`ent: validator failed for field "Permission.model_code": %w`, err)}
+	if v, ok := pu.mutation.Code(); ok {
+		if err := permission.CodeValidator(v); err != nil {
+			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "Permission.code": %w`, err)}
 		}
 	}
 	return nil
@@ -205,11 +205,11 @@ func (pu *PermissionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: permission.FieldName,
 		})
 	}
-	if value, ok := pu.mutation.ModelCode(); ok {
+	if value, ok := pu.mutation.Code(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: permission.FieldModelCode,
+			Column: permission.FieldCode,
 		})
 	}
 	if value, ok := pu.mutation.CreatedAt(); ok {
@@ -306,9 +306,9 @@ func (puo *PermissionUpdateOne) ClearContentTypeID() *PermissionUpdateOne {
 	return puo
 }
 
-// SetModelCode sets the "model_code" field.
-func (puo *PermissionUpdateOne) SetModelCode(s string) *PermissionUpdateOne {
-	puo.mutation.SetModelCode(s)
+// SetCode sets the "code" field.
+func (puo *PermissionUpdateOne) SetCode(s string) *PermissionUpdateOne {
+	puo.mutation.SetCode(s)
 	return puo
 }
 
@@ -431,9 +431,9 @@ func (puo *PermissionUpdateOne) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Permission.name": %w`, err)}
 		}
 	}
-	if v, ok := puo.mutation.ModelCode(); ok {
-		if err := permission.ModelCodeValidator(v); err != nil {
-			return &ValidationError{Name: "model_code", err: fmt.Errorf(`ent: validator failed for field "Permission.model_code": %w`, err)}
+	if v, ok := puo.mutation.Code(); ok {
+		if err := permission.CodeValidator(v); err != nil {
+			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "Permission.code": %w`, err)}
 		}
 	}
 	return nil
@@ -481,11 +481,11 @@ func (puo *PermissionUpdateOne) sqlSave(ctx context.Context) (_node *Permission,
 			Column: permission.FieldName,
 		})
 	}
-	if value, ok := puo.mutation.ModelCode(); ok {
+	if value, ok := puo.mutation.Code(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: permission.FieldModelCode,
+			Column: permission.FieldCode,
 		})
 	}
 	if value, ok := puo.mutation.CreatedAt(); ok {

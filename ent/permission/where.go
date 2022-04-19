@@ -107,10 +107,10 @@ func ContentTypeID(v int) predicate.Permission {
 	})
 }
 
-// ModelCode applies equality check predicate on the "model_code" field. It's identical to ModelCodeEQ.
-func ModelCode(v string) predicate.Permission {
+// Code applies equality check predicate on the "code" field. It's identical to CodeEQ.
+func Code(v string) predicate.Permission {
 	return predicate.Permission(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldModelCode), v))
+		s.Where(sql.EQ(s.C(FieldCode), v))
 	})
 }
 
@@ -301,22 +301,22 @@ func ContentTypeIDNotNil() predicate.Permission {
 	})
 }
 
-// ModelCodeEQ applies the EQ predicate on the "model_code" field.
-func ModelCodeEQ(v string) predicate.Permission {
+// CodeEQ applies the EQ predicate on the "code" field.
+func CodeEQ(v string) predicate.Permission {
 	return predicate.Permission(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldModelCode), v))
+		s.Where(sql.EQ(s.C(FieldCode), v))
 	})
 }
 
-// ModelCodeNEQ applies the NEQ predicate on the "model_code" field.
-func ModelCodeNEQ(v string) predicate.Permission {
+// CodeNEQ applies the NEQ predicate on the "code" field.
+func CodeNEQ(v string) predicate.Permission {
 	return predicate.Permission(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldModelCode), v))
+		s.Where(sql.NEQ(s.C(FieldCode), v))
 	})
 }
 
-// ModelCodeIn applies the In predicate on the "model_code" field.
-func ModelCodeIn(vs ...string) predicate.Permission {
+// CodeIn applies the In predicate on the "code" field.
+func CodeIn(vs ...string) predicate.Permission {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -328,12 +328,12 @@ func ModelCodeIn(vs ...string) predicate.Permission {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.In(s.C(FieldModelCode), v...))
+		s.Where(sql.In(s.C(FieldCode), v...))
 	})
 }
 
-// ModelCodeNotIn applies the NotIn predicate on the "model_code" field.
-func ModelCodeNotIn(vs ...string) predicate.Permission {
+// CodeNotIn applies the NotIn predicate on the "code" field.
+func CodeNotIn(vs ...string) predicate.Permission {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -345,70 +345,70 @@ func ModelCodeNotIn(vs ...string) predicate.Permission {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.NotIn(s.C(FieldModelCode), v...))
+		s.Where(sql.NotIn(s.C(FieldCode), v...))
 	})
 }
 
-// ModelCodeGT applies the GT predicate on the "model_code" field.
-func ModelCodeGT(v string) predicate.Permission {
+// CodeGT applies the GT predicate on the "code" field.
+func CodeGT(v string) predicate.Permission {
 	return predicate.Permission(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldModelCode), v))
+		s.Where(sql.GT(s.C(FieldCode), v))
 	})
 }
 
-// ModelCodeGTE applies the GTE predicate on the "model_code" field.
-func ModelCodeGTE(v string) predicate.Permission {
+// CodeGTE applies the GTE predicate on the "code" field.
+func CodeGTE(v string) predicate.Permission {
 	return predicate.Permission(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldModelCode), v))
+		s.Where(sql.GTE(s.C(FieldCode), v))
 	})
 }
 
-// ModelCodeLT applies the LT predicate on the "model_code" field.
-func ModelCodeLT(v string) predicate.Permission {
+// CodeLT applies the LT predicate on the "code" field.
+func CodeLT(v string) predicate.Permission {
 	return predicate.Permission(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldModelCode), v))
+		s.Where(sql.LT(s.C(FieldCode), v))
 	})
 }
 
-// ModelCodeLTE applies the LTE predicate on the "model_code" field.
-func ModelCodeLTE(v string) predicate.Permission {
+// CodeLTE applies the LTE predicate on the "code" field.
+func CodeLTE(v string) predicate.Permission {
 	return predicate.Permission(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldModelCode), v))
+		s.Where(sql.LTE(s.C(FieldCode), v))
 	})
 }
 
-// ModelCodeContains applies the Contains predicate on the "model_code" field.
-func ModelCodeContains(v string) predicate.Permission {
+// CodeContains applies the Contains predicate on the "code" field.
+func CodeContains(v string) predicate.Permission {
 	return predicate.Permission(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldModelCode), v))
+		s.Where(sql.Contains(s.C(FieldCode), v))
 	})
 }
 
-// ModelCodeHasPrefix applies the HasPrefix predicate on the "model_code" field.
-func ModelCodeHasPrefix(v string) predicate.Permission {
+// CodeHasPrefix applies the HasPrefix predicate on the "code" field.
+func CodeHasPrefix(v string) predicate.Permission {
 	return predicate.Permission(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldModelCode), v))
+		s.Where(sql.HasPrefix(s.C(FieldCode), v))
 	})
 }
 
-// ModelCodeHasSuffix applies the HasSuffix predicate on the "model_code" field.
-func ModelCodeHasSuffix(v string) predicate.Permission {
+// CodeHasSuffix applies the HasSuffix predicate on the "code" field.
+func CodeHasSuffix(v string) predicate.Permission {
 	return predicate.Permission(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldModelCode), v))
+		s.Where(sql.HasSuffix(s.C(FieldCode), v))
 	})
 }
 
-// ModelCodeEqualFold applies the EqualFold predicate on the "model_code" field.
-func ModelCodeEqualFold(v string) predicate.Permission {
+// CodeEqualFold applies the EqualFold predicate on the "code" field.
+func CodeEqualFold(v string) predicate.Permission {
 	return predicate.Permission(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldModelCode), v))
+		s.Where(sql.EqualFold(s.C(FieldCode), v))
 	})
 }
 
-// ModelCodeContainsFold applies the ContainsFold predicate on the "model_code" field.
-func ModelCodeContainsFold(v string) predicate.Permission {
+// CodeContainsFold applies the ContainsFold predicate on the "code" field.
+func CodeContainsFold(v string) predicate.Permission {
 	return predicate.Permission(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldModelCode), v))
+		s.Where(sql.ContainsFold(s.C(FieldCode), v))
 	})
 }
 

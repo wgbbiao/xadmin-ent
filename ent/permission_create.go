@@ -40,9 +40,9 @@ func (pc *PermissionCreate) SetNillableContentTypeID(i *int) *PermissionCreate {
 	return pc
 }
 
-// SetModelCode sets the "model_code" field.
-func (pc *PermissionCreate) SetModelCode(s string) *PermissionCreate {
-	pc.mutation.SetModelCode(s)
+// SetCode sets the "code" field.
+func (pc *PermissionCreate) SetCode(s string) *PermissionCreate {
+	pc.mutation.SetCode(s)
 	return pc
 }
 
@@ -170,12 +170,12 @@ func (pc *PermissionCreate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Permission.name": %w`, err)}
 		}
 	}
-	if _, ok := pc.mutation.ModelCode(); !ok {
-		return &ValidationError{Name: "model_code", err: errors.New(`ent: missing required field "Permission.model_code"`)}
+	if _, ok := pc.mutation.Code(); !ok {
+		return &ValidationError{Name: "code", err: errors.New(`ent: missing required field "Permission.code"`)}
 	}
-	if v, ok := pc.mutation.ModelCode(); ok {
-		if err := permission.ModelCodeValidator(v); err != nil {
-			return &ValidationError{Name: "model_code", err: fmt.Errorf(`ent: validator failed for field "Permission.model_code": %w`, err)}
+	if v, ok := pc.mutation.Code(); ok {
+		if err := permission.CodeValidator(v); err != nil {
+			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "Permission.code": %w`, err)}
 		}
 	}
 	if _, ok := pc.mutation.CreatedAt(); !ok {
@@ -219,13 +219,13 @@ func (pc *PermissionCreate) createSpec() (*Permission, *sqlgraph.CreateSpec) {
 		})
 		_node.Name = value
 	}
-	if value, ok := pc.mutation.ModelCode(); ok {
+	if value, ok := pc.mutation.Code(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: permission.FieldModelCode,
+			Column: permission.FieldCode,
 		})
-		_node.ModelCode = value
+		_node.Code = value
 	}
 	if value, ok := pc.mutation.CreatedAt(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
