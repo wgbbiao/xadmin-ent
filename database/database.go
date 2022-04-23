@@ -1,4 +1,4 @@
-package xadminent
+package database
 
 import (
 	"fmt"

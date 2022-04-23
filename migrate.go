@@ -4,11 +4,12 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/wgbbiao/xadminent/database"
 	"github.com/wgbbiao/xadminent/ent/migrate"
 )
 
 func AutoMigrate() {
-	client := GetDb()
+	client := database.GetDb()
 	err := client.Schema.Create(context.Background(),
 		migrate.WithDropIndex(true),
 		migrate.WithDropColumn(true),

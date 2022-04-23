@@ -1,13 +1,22 @@
-package xadminent
+package j
 
 import (
-	"reflect"
 	"time"
 
 	"github.com/kataras/iris/v12"
+	"github.com/kataras/iris/v12/context"
 	"github.com/kataras/iris/v12/middleware/jwt"
 	"github.com/wgbbiao/xadminent/ent"
 )
+
+//JwtKey JwtKey
+var JwtKey string = "Auys7;fq272/csH6"
+
+//JwtTimeOut jwt过期时间
+var JwtTimeOut int64 = 86400
+
+// JwtCheckFunc JwtCheckFunc
+var JwtCheckFunc func(c iris.Context)
 
 //CheckJWTAndSetUser 检查jwt并把User放到Values
 func CheckJWTAndSetUser(ctx iris.Context) {
@@ -48,14 +57,14 @@ func getSigner() *jwt.Signer {
 	return signer
 }
 
-type fooClaims struct {
+type FooClaims struct {
 	Uid int `json:"uid"`
 }
 
-func getToken(_ iris.Context, u ent.User) (tokenString string) {
+func GetToken(u *ent.User) (tokenString string) {
 	signer := getSigner()
 
-	foo := fooClaims{
+	foo := FooClaims{
 		Uid: u.ID,
 	}
 
@@ -64,26 +73,14 @@ func getToken(_ iris.Context, u ent.User) (tokenString string) {
 	return
 }
 
-//RefreshJwt 刷新jwt
-func RefreshJwt(c iris.Context) {
-	u := c.Values().Get("u").(ent.User)
-	tokenString := getToken(c, u)
-	c.JSON(iris.Map{
-		"status": 0,
-		"data": iris.Map{
-			"token": tokenString,
-			// "username": u.Username,
-		},
+func VerifyMiddleware() context.Handler {
+	verifier := jwt.NewVerifier(jwt.HS256, JwtKey)
+	// Enable server-side token block feature (even before its expiration time):
+	verifier.WithDefaultBlocklist()
+	// Enable payload decryption with:
+	// verifier.WithDecryption(encKey, nil)
+	verifyMiddleware := verifier.Verify(func() interface{} {
+		return new(FooClaims)
 	})
-}
-
-// 列表视图
-func ListView(ctx iris.Context) {
-	// config := GetConfig(ctx.Params().Get("model"), ctx.Params().Get("table"))
-
-	client := GetDb()
-	v := reflect.ValueOf(client)
-	v2 := v.FieldByName("User")
-	v2.MethodByName("Create").Call([]reflect.Value{})
-
+	return verifyMiddleware
 }
