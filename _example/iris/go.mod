@@ -5,6 +5,7 @@ go 1.18
 replace github.com/wgbbiao/xadminent => /Users/guangbiao/work/xadmin-ent
 
 require (
+	github.com/iris-contrib/middleware/cors v0.0.0-20220417122231-60b1fdb1e02b
 	github.com/kataras/iris/v12 v12.2.0-alpha9
 	github.com/wgbbiao/xadminent v0.0.0-00010101000000-000000000000
 )
