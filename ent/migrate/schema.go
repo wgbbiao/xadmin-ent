@@ -92,11 +92,11 @@ var (
 	// XadminUsersColumns holds the columns for the "xadmin_users" table.
 	XadminUsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "username", Type: field.TypeString},
+		{Name: "username", Type: field.TypeString, Unique: true},
 		{Name: "password", Type: field.TypeString},
 		{Name: "salt", Type: field.TypeString},
 		{Name: "is_super", Type: field.TypeBool},
-		{Name: "last_login_at", Type: field.TypeTime},
+		{Name: "last_login_at", Type: field.TypeTime, Nullable: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 	}
@@ -110,11 +110,6 @@ var (
 				Name:    "xadminuser_is_super",
 				Unique:  false,
 				Columns: []*schema.Column{XadminUsersColumns[4]},
-			},
-			{
-				Name:    "xadminuser_username",
-				Unique:  false,
-				Columns: []*schema.Column{XadminUsersColumns[1]},
 			},
 		},
 	}

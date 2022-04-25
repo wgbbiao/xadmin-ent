@@ -52,6 +52,14 @@ func (xuc *XadminUserCreate) SetLastLoginAt(t time.Time) *XadminUserCreate {
 	return xuc
 }
 
+// SetNillableLastLoginAt sets the "last_login_at" field if the given value is not nil.
+func (xuc *XadminUserCreate) SetNillableLastLoginAt(t *time.Time) *XadminUserCreate {
+	if t != nil {
+		xuc.SetLastLoginAt(*t)
+	}
+	return xuc
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (xuc *XadminUserCreate) SetCreatedAt(t time.Time) *XadminUserCreate {
 	xuc.mutation.SetCreatedAt(t)
@@ -205,9 +213,6 @@ func (xuc *XadminUserCreate) check() error {
 	if _, ok := xuc.mutation.IsSuper(); !ok {
 		return &ValidationError{Name: "is_super", err: errors.New(`ent: missing required field "XadminUser.is_super"`)}
 	}
-	if _, ok := xuc.mutation.LastLoginAt(); !ok {
-		return &ValidationError{Name: "last_login_at", err: errors.New(`ent: missing required field "XadminUser.last_login_at"`)}
-	}
 	if _, ok := xuc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "XadminUser.created_at"`)}
 	}
@@ -279,7 +284,7 @@ func (xuc *XadminUserCreate) createSpec() (*XadminUser, *sqlgraph.CreateSpec) {
 			Value:  value,
 			Column: xadminuser.FieldLastLoginAt,
 		})
-		_node.LastLoginAt = value
+		_node.LastLoginAt = &value
 	}
 	if value, ok := xuc.mutation.CreatedAt(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

@@ -60,6 +60,20 @@ func (xuu *XadminUserUpdate) SetLastLoginAt(t time.Time) *XadminUserUpdate {
 	return xuu
 }
 
+// SetNillableLastLoginAt sets the "last_login_at" field if the given value is not nil.
+func (xuu *XadminUserUpdate) SetNillableLastLoginAt(t *time.Time) *XadminUserUpdate {
+	if t != nil {
+		xuu.SetLastLoginAt(*t)
+	}
+	return xuu
+}
+
+// ClearLastLoginAt clears the value of the "last_login_at" field.
+func (xuu *XadminUserUpdate) ClearLastLoginAt() *XadminUserUpdate {
+	xuu.mutation.ClearLastLoginAt()
+	return xuu
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (xuu *XadminUserUpdate) SetCreatedAt(t time.Time) *XadminUserUpdate {
 	xuu.mutation.SetCreatedAt(t)
@@ -273,6 +287,12 @@ func (xuu *XadminUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: xadminuser.FieldLastLoginAt,
 		})
 	}
+	if xuu.mutation.LastLoginAtCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Column: xadminuser.FieldLastLoginAt,
+		})
+	}
 	if value, ok := xuu.mutation.CreatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -441,6 +461,20 @@ func (xuuo *XadminUserUpdateOne) SetIsSuper(b bool) *XadminUserUpdateOne {
 // SetLastLoginAt sets the "last_login_at" field.
 func (xuuo *XadminUserUpdateOne) SetLastLoginAt(t time.Time) *XadminUserUpdateOne {
 	xuuo.mutation.SetLastLoginAt(t)
+	return xuuo
+}
+
+// SetNillableLastLoginAt sets the "last_login_at" field if the given value is not nil.
+func (xuuo *XadminUserUpdateOne) SetNillableLastLoginAt(t *time.Time) *XadminUserUpdateOne {
+	if t != nil {
+		xuuo.SetLastLoginAt(*t)
+	}
+	return xuuo
+}
+
+// ClearLastLoginAt clears the value of the "last_login_at" field.
+func (xuuo *XadminUserUpdateOne) ClearLastLoginAt() *XadminUserUpdateOne {
+	xuuo.mutation.ClearLastLoginAt()
 	return xuuo
 }
 
@@ -678,6 +712,12 @@ func (xuuo *XadminUserUpdateOne) sqlSave(ctx context.Context) (_node *XadminUser
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  value,
+			Column: xadminuser.FieldLastLoginAt,
+		})
+	}
+	if xuuo.mutation.LastLoginAtCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
 			Column: xadminuser.FieldLastLoginAt,
 		})
 	}

@@ -7,6 +7,7 @@ require (
 	github.com/go-playground/validator/v10 v10.10.1
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/kataras/iris/v12 v12.2.0-alpha9
+	github.com/unknwon/com v1.0.1
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
 )
 

@@ -1,6 +1,9 @@
 package cmd
 
 import (
+	"fmt"
+
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/spf13/cobra"
 	"github.com/wgbbiao/xadminent"
 )
@@ -12,8 +15,13 @@ var create_super_user = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		u, err := xadminent.CreateAdmin()
 		if err != nil {
-			panic(err)
+			if sqlgraph.IsUniqueConstraintError(err) {
+				fmt.Println("管理员账号已存在")
+			} else {
+				fmt.Println("创建管理员失败:", err)
+			}
+		} else {
+			fmt.Println("创建超级管理员成功,ID：", u.ID)
 		}
-		println("创建超级管理员成功", u.ID)
 	},
 }

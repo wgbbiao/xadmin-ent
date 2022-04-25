@@ -2093,7 +2093,7 @@ func (m *XadminUserMutation) LastLoginAt() (r time.Time, exists bool) {
 // OldLastLoginAt returns the old "last_login_at" field's value of the XadminUser entity.
 // If the XadminUser object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *XadminUserMutation) OldLastLoginAt(ctx context.Context) (v time.Time, err error) {
+func (m *XadminUserMutation) OldLastLoginAt(ctx context.Context) (v *time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldLastLoginAt is only allowed on UpdateOne operations")
 	}
@@ -2107,9 +2107,22 @@ func (m *XadminUserMutation) OldLastLoginAt(ctx context.Context) (v time.Time, e
 	return oldValue.LastLoginAt, nil
 }
 
+// ClearLastLoginAt clears the value of the "last_login_at" field.
+func (m *XadminUserMutation) ClearLastLoginAt() {
+	m.last_login_at = nil
+	m.clearedFields[xadminuser.FieldLastLoginAt] = struct{}{}
+}
+
+// LastLoginAtCleared returns if the "last_login_at" field was cleared in this mutation.
+func (m *XadminUserMutation) LastLoginAtCleared() bool {
+	_, ok := m.clearedFields[xadminuser.FieldLastLoginAt]
+	return ok
+}
+
 // ResetLastLoginAt resets all changes to the "last_login_at" field.
 func (m *XadminUserMutation) ResetLastLoginAt() {
 	m.last_login_at = nil
+	delete(m.clearedFields, xadminuser.FieldLastLoginAt)
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -2465,7 +2478,11 @@ func (m *XadminUserMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *XadminUserMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(xadminuser.FieldLastLoginAt) {
+		fields = append(fields, xadminuser.FieldLastLoginAt)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -2478,6 +2495,11 @@ func (m *XadminUserMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *XadminUserMutation) ClearField(name string) error {
+	switch name {
+	case xadminuser.FieldLastLoginAt:
+		m.ClearLastLoginAt()
+		return nil
+	}
 	return fmt.Errorf("unknown XadminUser nullable field %s", name)
 }
 

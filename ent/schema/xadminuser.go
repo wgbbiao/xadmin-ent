@@ -17,11 +17,11 @@ type XadminUser struct {
 // Fields of the XadminUser.
 func (XadminUser) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("username"),
+		field.String("username").Unique(),
 		field.String("password"),
 		field.String("salt"),
 		field.Bool("is_super"),
-		field.Time("last_login_at"),
+		field.Time("last_login_at").Optional().Nillable(),
 		field.Time("created_at").
 			Default(time.Now),
 		field.Time("updated_at").
@@ -41,6 +41,5 @@ func (XadminUser) Edges() []ent.Edge {
 func (XadminUser) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("is_super"),
-		index.Fields("username"),
 	}
 }

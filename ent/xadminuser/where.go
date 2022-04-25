@@ -565,6 +565,20 @@ func LastLoginAtLTE(v time.Time) predicate.XadminUser {
 	})
 }
 
+// LastLoginAtIsNil applies the IsNil predicate on the "last_login_at" field.
+func LastLoginAtIsNil() predicate.XadminUser {
+	return predicate.XadminUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldLastLoginAt)))
+	})
+}
+
+// LastLoginAtNotNil applies the NotNil predicate on the "last_login_at" field.
+func LastLoginAtNotNil() predicate.XadminUser {
+	return predicate.XadminUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldLastLoginAt)))
+	})
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.XadminUser {
 	return predicate.XadminUser(func(s *sql.Selector) {

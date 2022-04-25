@@ -25,7 +25,7 @@ type XadminUser struct {
 	// IsSuper holds the value of the "is_super" field.
 	IsSuper bool `json:"is_super,omitempty"`
 	// LastLoginAt holds the value of the "last_login_at" field.
-	LastLoginAt time.Time `json:"last_login_at,omitempty"`
+	LastLoginAt *time.Time `json:"last_login_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -126,7 +126,8 @@ func (xu *XadminUser) assignValues(columns []string, values []interface{}) error
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field last_login_at", values[i])
 			} else if value.Valid {
-				xu.LastLoginAt = value.Time
+				xu.LastLoginAt = new(time.Time)
+				*xu.LastLoginAt = value.Time
 			}
 		case xadminuser.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -186,8 +187,10 @@ func (xu *XadminUser) String() string {
 	builder.WriteString(xu.Salt)
 	builder.WriteString(", is_super=")
 	builder.WriteString(fmt.Sprintf("%v", xu.IsSuper))
-	builder.WriteString(", last_login_at=")
-	builder.WriteString(xu.LastLoginAt.Format(time.ANSIC))
+	if v := xu.LastLoginAt; v != nil {
+		builder.WriteString(", last_login_at=")
+		builder.WriteString(v.Format(time.ANSIC))
+	}
 	builder.WriteString(", created_at=")
 	builder.WriteString(xu.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", updated_at=")
