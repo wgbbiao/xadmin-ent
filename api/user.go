@@ -84,7 +84,7 @@ func Login(ctx iris.Context) {
 
 // 用户信息
 func UserInfo(ctx iris.Context) {
-	u, err := getUser(ctx)
+	u, err := getUserFromJwt(ctx)
 
 	if err != nil {
 		ctx.JSON(iris.Map{
@@ -99,7 +99,58 @@ func UserInfo(ctx iris.Context) {
 	})
 }
 
-func getUser(ctx iris.Context) (*ent.User, error) {
+// 用户列表
+func UserList(ctx iris.Context) {
+	var query struct {
+		Page     int    `url:"page"`
+		Limit    int    `url:"limit"`
+		Username string `url:"username"`
+		IsSuper  *bool  `url:"is_super"`
+	}
+	result := AmisResult{}
+	if err := ctx.ReadQuery(&query); err != nil {
+		result.Status = 1
+		if errs, ok := err.(validator.ValidationErrors); ok {
+			result.Msg = "表单验证错误"
+			validationErrors := wrapValidationErrors(errs)
+
+			result.Data = iris.NewProblem().
+				Title("Validation error").
+				Detail("One or more fields failed to be validated").
+				Type("/user/validation-errors").
+				Key("errors", validationErrors)
+		} else {
+			result.Msg = "表单读取错误"
+		}
+		ctx.JSON(result)
+		return
+	}
+	q := database.GetDb().User.
+		Query().
+		Offset((query.Page - 1) * query.Limit).
+		Limit(query.Limit)
+
+	if query.Username != "" {
+		q = q.Where(user.UsernameContains(query.Username))
+	}
+	if query.IsSuper != nil {
+		q = q.Where(user.IsSuper(true))
+	}
+
+	users, err := q.All(ctx.Request().Context())
+	if err != nil {
+		result.Status = 1
+		result.Msg = "用户不存在"
+		ctx.JSON(result)
+		return
+	}
+	result.Status = 0
+	result.Msg = "用户列表"
+	result.Data = users
+	ctx.JSON(result)
+}
+
+func getUserFromJwt(ctx iris.Context) (*ent.User, error) {
 	claims := jwt.Get(ctx).(*j.FooClaims)
 	return database.GetDb().
 		User.Query().

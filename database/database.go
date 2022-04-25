@@ -3,7 +3,9 @@ package database
 import (
 	"fmt"
 	"sync"
+	"time"
 
+	"entgo.io/ent/dialect/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/wgbbiao/xadminent/ent"
 )
@@ -31,9 +33,8 @@ var client *ent.Client
 var clientSync sync.Once
 
 func GetDb() *ent.Client {
-	var err error
 	clientSync.Do(func() {
-		client, err = ent.Open("mysql",
+		drv, err := sql.Open("mysql",
 			fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
 				database.User,
 				database.Password,
@@ -43,6 +44,12 @@ func GetDb() *ent.Client {
 		if err != nil {
 			panic(err)
 		}
+		// 获取数据库驱动中的sql.DB对象。
+		db := drv.DB()
+		db.SetMaxIdleConns(10)
+		db.SetMaxOpenConns(100)
+		db.SetConnMaxLifetime(time.Hour)
+		client = ent.NewClient(ent.Driver(drv))
 	})
 	return client
 }

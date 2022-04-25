@@ -1,7 +1,9 @@
 package xadminent
 
-import "fmt"
+import (
+	"github.com/wgbbiao/xadminent/database"
+)
 
-func init() {
-	fmt.Println("1")
+func SetDatabase(db *database.DatabaseConfig) {
+	database.SetDatabase(db)
 }
