@@ -8,89 +8,89 @@ import (
 )
 
 var (
-	// ContentTypesColumns holds the columns for the "content_types" table.
-	ContentTypesColumns = []*schema.Column{
+	// XadminContenttypesColumns holds the columns for the "xadmin_contenttypes" table.
+	XadminContenttypesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "app_label", Type: field.TypeString},
 		{Name: "model", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 	}
-	// ContentTypesTable holds the schema information for the "content_types" table.
-	ContentTypesTable = &schema.Table{
-		Name:       "content_types",
-		Columns:    ContentTypesColumns,
-		PrimaryKey: []*schema.Column{ContentTypesColumns[0]},
+	// XadminContenttypesTable holds the schema information for the "xadmin_contenttypes" table.
+	XadminContenttypesTable = &schema.Table{
+		Name:       "xadmin_contenttypes",
+		Columns:    XadminContenttypesColumns,
+		PrimaryKey: []*schema.Column{XadminContenttypesColumns[0]},
 		Indexes: []*schema.Index{
 			{
-				Name:    "contenttype_app_label",
+				Name:    "xadmincontenttype_app_label",
 				Unique:  false,
-				Columns: []*schema.Column{ContentTypesColumns[1]},
+				Columns: []*schema.Column{XadminContenttypesColumns[1]},
 			},
 			{
-				Name:    "contenttype_model",
+				Name:    "xadmincontenttype_model",
 				Unique:  false,
-				Columns: []*schema.Column{ContentTypesColumns[2]},
+				Columns: []*schema.Column{XadminContenttypesColumns[2]},
 			},
 		},
 	}
-	// PermissionsColumns holds the columns for the "permissions" table.
-	PermissionsColumns = []*schema.Column{
+	// XadminPermissionsColumns holds the columns for the "xadmin_permissions" table.
+	XadminPermissionsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "name", Type: field.TypeString},
 		{Name: "code", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "permission_content_type", Type: field.TypeInt, Nullable: true},
+		{Name: "xadmin_permission_content_type", Type: field.TypeInt, Nullable: true},
 	}
-	// PermissionsTable holds the schema information for the "permissions" table.
-	PermissionsTable = &schema.Table{
-		Name:       "permissions",
-		Columns:    PermissionsColumns,
-		PrimaryKey: []*schema.Column{PermissionsColumns[0]},
+	// XadminPermissionsTable holds the schema information for the "xadmin_permissions" table.
+	XadminPermissionsTable = &schema.Table{
+		Name:       "xadmin_permissions",
+		Columns:    XadminPermissionsColumns,
+		PrimaryKey: []*schema.Column{XadminPermissionsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "permissions_content_types_ContentType",
-				Columns:    []*schema.Column{PermissionsColumns[5]},
-				RefColumns: []*schema.Column{ContentTypesColumns[0]},
+				Symbol:     "xadmin_permissions_xadmin_contenttypes_ContentType",
+				Columns:    []*schema.Column{XadminPermissionsColumns[5]},
+				RefColumns: []*schema.Column{XadminContenttypesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "permission_name",
+				Name:    "xadminpermission_name",
 				Unique:  false,
-				Columns: []*schema.Column{PermissionsColumns[1]},
+				Columns: []*schema.Column{XadminPermissionsColumns[1]},
 			},
 			{
-				Name:    "permission_code",
+				Name:    "xadminpermission_code",
 				Unique:  false,
-				Columns: []*schema.Column{PermissionsColumns[2]},
+				Columns: []*schema.Column{XadminPermissionsColumns[2]},
 			},
 		},
 	}
-	// RolesColumns holds the columns for the "roles" table.
-	RolesColumns = []*schema.Column{
+	// XadminRolesColumns holds the columns for the "xadmin_roles" table.
+	XadminRolesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "name", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 	}
-	// RolesTable holds the schema information for the "roles" table.
-	RolesTable = &schema.Table{
-		Name:       "roles",
-		Columns:    RolesColumns,
-		PrimaryKey: []*schema.Column{RolesColumns[0]},
+	// XadminRolesTable holds the schema information for the "xadmin_roles" table.
+	XadminRolesTable = &schema.Table{
+		Name:       "xadmin_roles",
+		Columns:    XadminRolesColumns,
+		PrimaryKey: []*schema.Column{XadminRolesColumns[0]},
 		Indexes: []*schema.Index{
 			{
-				Name:    "role_name",
+				Name:    "xadminrole_name",
 				Unique:  false,
-				Columns: []*schema.Column{RolesColumns[1]},
+				Columns: []*schema.Column{XadminRolesColumns[1]},
 			},
 		},
 	}
-	// UsersColumns holds the columns for the "users" table.
-	UsersColumns = []*schema.Column{
+	// XadminUsersColumns holds the columns for the "xadmin_users" table.
+	XadminUsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "username", Type: field.TypeString},
 		{Name: "password", Type: field.TypeString},
@@ -100,117 +100,117 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 	}
-	// UsersTable holds the schema information for the "users" table.
-	UsersTable = &schema.Table{
-		Name:       "users",
-		Columns:    UsersColumns,
-		PrimaryKey: []*schema.Column{UsersColumns[0]},
+	// XadminUsersTable holds the schema information for the "xadmin_users" table.
+	XadminUsersTable = &schema.Table{
+		Name:       "xadmin_users",
+		Columns:    XadminUsersColumns,
+		PrimaryKey: []*schema.Column{XadminUsersColumns[0]},
 		Indexes: []*schema.Index{
 			{
-				Name:    "user_is_super",
+				Name:    "xadminuser_is_super",
 				Unique:  false,
-				Columns: []*schema.Column{UsersColumns[4]},
+				Columns: []*schema.Column{XadminUsersColumns[4]},
 			},
 			{
-				Name:    "user_username",
+				Name:    "xadminuser_username",
 				Unique:  false,
-				Columns: []*schema.Column{UsersColumns[1]},
+				Columns: []*schema.Column{XadminUsersColumns[1]},
 			},
 		},
 	}
-	// PermissionUsersColumns holds the columns for the "permission_users" table.
-	PermissionUsersColumns = []*schema.Column{
-		{Name: "permission_id", Type: field.TypeInt},
-		{Name: "user_id", Type: field.TypeInt},
+	// XadminPermissionUsersColumns holds the columns for the "xadmin_permission_users" table.
+	XadminPermissionUsersColumns = []*schema.Column{
+		{Name: "xadmin_permission_id", Type: field.TypeInt},
+		{Name: "xadmin_user_id", Type: field.TypeInt},
 	}
-	// PermissionUsersTable holds the schema information for the "permission_users" table.
-	PermissionUsersTable = &schema.Table{
-		Name:       "permission_users",
-		Columns:    PermissionUsersColumns,
-		PrimaryKey: []*schema.Column{PermissionUsersColumns[0], PermissionUsersColumns[1]},
+	// XadminPermissionUsersTable holds the schema information for the "xadmin_permission_users" table.
+	XadminPermissionUsersTable = &schema.Table{
+		Name:       "xadmin_permission_users",
+		Columns:    XadminPermissionUsersColumns,
+		PrimaryKey: []*schema.Column{XadminPermissionUsersColumns[0], XadminPermissionUsersColumns[1]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "permission_users_permission_id",
-				Columns:    []*schema.Column{PermissionUsersColumns[0]},
-				RefColumns: []*schema.Column{PermissionsColumns[0]},
+				Symbol:     "xadmin_permission_users_xadmin_permission_id",
+				Columns:    []*schema.Column{XadminPermissionUsersColumns[0]},
+				RefColumns: []*schema.Column{XadminPermissionsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
 			{
-				Symbol:     "permission_users_user_id",
-				Columns:    []*schema.Column{PermissionUsersColumns[1]},
-				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// PermissionRolesColumns holds the columns for the "permission_roles" table.
-	PermissionRolesColumns = []*schema.Column{
-		{Name: "permission_id", Type: field.TypeInt},
-		{Name: "role_id", Type: field.TypeInt},
-	}
-	// PermissionRolesTable holds the schema information for the "permission_roles" table.
-	PermissionRolesTable = &schema.Table{
-		Name:       "permission_roles",
-		Columns:    PermissionRolesColumns,
-		PrimaryKey: []*schema.Column{PermissionRolesColumns[0], PermissionRolesColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "permission_roles_permission_id",
-				Columns:    []*schema.Column{PermissionRolesColumns[0]},
-				RefColumns: []*schema.Column{PermissionsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "permission_roles_role_id",
-				Columns:    []*schema.Column{PermissionRolesColumns[1]},
-				RefColumns: []*schema.Column{RolesColumns[0]},
+				Symbol:     "xadmin_permission_users_xadmin_user_id",
+				Columns:    []*schema.Column{XadminPermissionUsersColumns[1]},
+				RefColumns: []*schema.Column{XadminUsersColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
 		},
 	}
-	// RoleUsersColumns holds the columns for the "role_users" table.
-	RoleUsersColumns = []*schema.Column{
-		{Name: "role_id", Type: field.TypeInt},
-		{Name: "user_id", Type: field.TypeInt},
+	// XadminPermissionRolesColumns holds the columns for the "xadmin_permission_roles" table.
+	XadminPermissionRolesColumns = []*schema.Column{
+		{Name: "xadmin_permission_id", Type: field.TypeInt},
+		{Name: "xadmin_role_id", Type: field.TypeInt},
 	}
-	// RoleUsersTable holds the schema information for the "role_users" table.
-	RoleUsersTable = &schema.Table{
-		Name:       "role_users",
-		Columns:    RoleUsersColumns,
-		PrimaryKey: []*schema.Column{RoleUsersColumns[0], RoleUsersColumns[1]},
+	// XadminPermissionRolesTable holds the schema information for the "xadmin_permission_roles" table.
+	XadminPermissionRolesTable = &schema.Table{
+		Name:       "xadmin_permission_roles",
+		Columns:    XadminPermissionRolesColumns,
+		PrimaryKey: []*schema.Column{XadminPermissionRolesColumns[0], XadminPermissionRolesColumns[1]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "role_users_role_id",
-				Columns:    []*schema.Column{RoleUsersColumns[0]},
-				RefColumns: []*schema.Column{RolesColumns[0]},
+				Symbol:     "xadmin_permission_roles_xadmin_permission_id",
+				Columns:    []*schema.Column{XadminPermissionRolesColumns[0]},
+				RefColumns: []*schema.Column{XadminPermissionsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
 			{
-				Symbol:     "role_users_user_id",
-				Columns:    []*schema.Column{RoleUsersColumns[1]},
-				RefColumns: []*schema.Column{UsersColumns[0]},
+				Symbol:     "xadmin_permission_roles_xadmin_role_id",
+				Columns:    []*schema.Column{XadminPermissionRolesColumns[1]},
+				RefColumns: []*schema.Column{XadminRolesColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+	}
+	// XadminRoleUsersColumns holds the columns for the "xadmin_role_users" table.
+	XadminRoleUsersColumns = []*schema.Column{
+		{Name: "xadmin_role_id", Type: field.TypeInt},
+		{Name: "xadmin_user_id", Type: field.TypeInt},
+	}
+	// XadminRoleUsersTable holds the schema information for the "xadmin_role_users" table.
+	XadminRoleUsersTable = &schema.Table{
+		Name:       "xadmin_role_users",
+		Columns:    XadminRoleUsersColumns,
+		PrimaryKey: []*schema.Column{XadminRoleUsersColumns[0], XadminRoleUsersColumns[1]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "xadmin_role_users_xadmin_role_id",
+				Columns:    []*schema.Column{XadminRoleUsersColumns[0]},
+				RefColumns: []*schema.Column{XadminRolesColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+			{
+				Symbol:     "xadmin_role_users_xadmin_user_id",
+				Columns:    []*schema.Column{XadminRoleUsersColumns[1]},
+				RefColumns: []*schema.Column{XadminUsersColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
 		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		ContentTypesTable,
-		PermissionsTable,
-		RolesTable,
-		UsersTable,
-		PermissionUsersTable,
-		PermissionRolesTable,
-		RoleUsersTable,
+		XadminContenttypesTable,
+		XadminPermissionsTable,
+		XadminRolesTable,
+		XadminUsersTable,
+		XadminPermissionUsersTable,
+		XadminPermissionRolesTable,
+		XadminRoleUsersTable,
 	}
 )
 
 func init() {
-	PermissionsTable.ForeignKeys[0].RefTable = ContentTypesTable
-	PermissionUsersTable.ForeignKeys[0].RefTable = PermissionsTable
-	PermissionUsersTable.ForeignKeys[1].RefTable = UsersTable
-	PermissionRolesTable.ForeignKeys[0].RefTable = PermissionsTable
-	PermissionRolesTable.ForeignKeys[1].RefTable = RolesTable
-	RoleUsersTable.ForeignKeys[0].RefTable = RolesTable
-	RoleUsersTable.ForeignKeys[1].RefTable = UsersTable
+	XadminPermissionsTable.ForeignKeys[0].RefTable = XadminContenttypesTable
+	XadminPermissionUsersTable.ForeignKeys[0].RefTable = XadminPermissionsTable
+	XadminPermissionUsersTable.ForeignKeys[1].RefTable = XadminUsersTable
+	XadminPermissionRolesTable.ForeignKeys[0].RefTable = XadminPermissionsTable
+	XadminPermissionRolesTable.ForeignKeys[1].RefTable = XadminRolesTable
+	XadminRoleUsersTable.ForeignKeys[0].RefTable = XadminRolesTable
+	XadminRoleUsersTable.ForeignKeys[1].RefTable = XadminUsersTable
 }

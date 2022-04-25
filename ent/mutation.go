@@ -9,11 +9,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/wgbbiao/xadminent/ent/contenttype"
-	"github.com/wgbbiao/xadminent/ent/permission"
 	"github.com/wgbbiao/xadminent/ent/predicate"
-	"github.com/wgbbiao/xadminent/ent/role"
-	"github.com/wgbbiao/xadminent/ent/user"
+	"github.com/wgbbiao/xadminent/ent/xadmincontenttype"
+	"github.com/wgbbiao/xadminent/ent/xadminpermission"
+	"github.com/wgbbiao/xadminent/ent/xadminrole"
+	"github.com/wgbbiao/xadminent/ent/xadminuser"
 
 	"entgo.io/ent"
 )
@@ -27,14 +27,14 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeContentType = "ContentType"
-	TypePermission  = "Permission"
-	TypeRole        = "Role"
-	TypeUser        = "User"
+	TypeXadminContenttype = "XadminContenttype"
+	TypeXadminPermission  = "XadminPermission"
+	TypeXadminRole        = "XadminRole"
+	TypeXadminUser        = "XadminUser"
 )
 
-// ContentTypeMutation represents an operation that mutates the ContentType nodes in the graph.
-type ContentTypeMutation struct {
+// XadminContenttypeMutation represents an operation that mutates the XadminContenttype nodes in the graph.
+type XadminContenttypeMutation struct {
 	config
 	op            Op
 	typ           string
@@ -45,21 +45,21 @@ type ContentTypeMutation struct {
 	updated_at    *time.Time
 	clearedFields map[string]struct{}
 	done          bool
-	oldValue      func(context.Context) (*ContentType, error)
-	predicates    []predicate.ContentType
+	oldValue      func(context.Context) (*XadminContenttype, error)
+	predicates    []predicate.XadminContenttype
 }
 
-var _ ent.Mutation = (*ContentTypeMutation)(nil)
+var _ ent.Mutation = (*XadminContenttypeMutation)(nil)
 
-// contenttypeOption allows management of the mutation configuration using functional options.
-type contenttypeOption func(*ContentTypeMutation)
+// xadmincontenttypeOption allows management of the mutation configuration using functional options.
+type xadmincontenttypeOption func(*XadminContenttypeMutation)
 
-// newContentTypeMutation creates new mutation for the ContentType entity.
-func newContentTypeMutation(c config, op Op, opts ...contenttypeOption) *ContentTypeMutation {
-	m := &ContentTypeMutation{
+// newXadminContenttypeMutation creates new mutation for the XadminContenttype entity.
+func newXadminContenttypeMutation(c config, op Op, opts ...xadmincontenttypeOption) *XadminContenttypeMutation {
+	m := &XadminContenttypeMutation{
 		config:        c,
 		op:            op,
-		typ:           TypeContentType,
+		typ:           TypeXadminContenttype,
 		clearedFields: make(map[string]struct{}),
 	}
 	for _, opt := range opts {
@@ -68,20 +68,20 @@ func newContentTypeMutation(c config, op Op, opts ...contenttypeOption) *Content
 	return m
 }
 
-// withContentTypeID sets the ID field of the mutation.
-func withContentTypeID(id int) contenttypeOption {
-	return func(m *ContentTypeMutation) {
+// withXadminContenttypeID sets the ID field of the mutation.
+func withXadminContenttypeID(id int) xadmincontenttypeOption {
+	return func(m *XadminContenttypeMutation) {
 		var (
 			err   error
 			once  sync.Once
-			value *ContentType
+			value *XadminContenttype
 		)
-		m.oldValue = func(ctx context.Context) (*ContentType, error) {
+		m.oldValue = func(ctx context.Context) (*XadminContenttype, error) {
 			once.Do(func() {
 				if m.done {
 					err = errors.New("querying old values post mutation is not allowed")
 				} else {
-					value, err = m.Client().ContentType.Get(ctx, id)
+					value, err = m.Client().XadminContenttype.Get(ctx, id)
 				}
 			})
 			return value, err
@@ -90,10 +90,10 @@ func withContentTypeID(id int) contenttypeOption {
 	}
 }
 
-// withContentType sets the old ContentType of the mutation.
-func withContentType(node *ContentType) contenttypeOption {
-	return func(m *ContentTypeMutation) {
-		m.oldValue = func(context.Context) (*ContentType, error) {
+// withXadminContenttype sets the old XadminContenttype of the mutation.
+func withXadminContenttype(node *XadminContenttype) xadmincontenttypeOption {
+	return func(m *XadminContenttypeMutation) {
+		m.oldValue = func(context.Context) (*XadminContenttype, error) {
 			return node, nil
 		}
 		m.id = &node.ID
@@ -102,7 +102,7 @@ func withContentType(node *ContentType) contenttypeOption {
 
 // Client returns a new `ent.Client` from the mutation. If the mutation was
 // executed in a transaction (ent.Tx), a transactional client is returned.
-func (m ContentTypeMutation) Client() *Client {
+func (m XadminContenttypeMutation) Client() *Client {
 	client := &Client{config: m.config}
 	client.init()
 	return client
@@ -110,7 +110,7 @@ func (m ContentTypeMutation) Client() *Client {
 
 // Tx returns an `ent.Tx` for mutations that were executed in transactions;
 // it returns an error otherwise.
-func (m ContentTypeMutation) Tx() (*Tx, error) {
+func (m XadminContenttypeMutation) Tx() (*Tx, error) {
 	if _, ok := m.driver.(*txDriver); !ok {
 		return nil, errors.New("ent: mutation is not running in a transaction")
 	}
@@ -121,7 +121,7 @@ func (m ContentTypeMutation) Tx() (*Tx, error) {
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *ContentTypeMutation) ID() (id int, exists bool) {
+func (m *XadminContenttypeMutation) ID() (id int, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -132,7 +132,7 @@ func (m *ContentTypeMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *ContentTypeMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *XadminContenttypeMutation) IDs(ctx context.Context) ([]int, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
@@ -141,19 +141,19 @@ func (m *ContentTypeMutation) IDs(ctx context.Context) ([]int, error) {
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().ContentType.Query().Where(m.predicates...).IDs(ctx)
+		return m.Client().XadminContenttype.Query().Where(m.predicates...).IDs(ctx)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
 }
 
 // SetAppLabel sets the "app_label" field.
-func (m *ContentTypeMutation) SetAppLabel(s string) {
+func (m *XadminContenttypeMutation) SetAppLabel(s string) {
 	m.app_label = &s
 }
 
 // AppLabel returns the value of the "app_label" field in the mutation.
-func (m *ContentTypeMutation) AppLabel() (r string, exists bool) {
+func (m *XadminContenttypeMutation) AppLabel() (r string, exists bool) {
 	v := m.app_label
 	if v == nil {
 		return
@@ -161,10 +161,10 @@ func (m *ContentTypeMutation) AppLabel() (r string, exists bool) {
 	return *v, true
 }
 
-// OldAppLabel returns the old "app_label" field's value of the ContentType entity.
-// If the ContentType object wasn't provided to the builder, the object is fetched from the database.
+// OldAppLabel returns the old "app_label" field's value of the XadminContenttype entity.
+// If the XadminContenttype object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ContentTypeMutation) OldAppLabel(ctx context.Context) (v string, err error) {
+func (m *XadminContenttypeMutation) OldAppLabel(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldAppLabel is only allowed on UpdateOne operations")
 	}
@@ -179,17 +179,17 @@ func (m *ContentTypeMutation) OldAppLabel(ctx context.Context) (v string, err er
 }
 
 // ResetAppLabel resets all changes to the "app_label" field.
-func (m *ContentTypeMutation) ResetAppLabel() {
+func (m *XadminContenttypeMutation) ResetAppLabel() {
 	m.app_label = nil
 }
 
 // SetModel sets the "model" field.
-func (m *ContentTypeMutation) SetModel(s string) {
+func (m *XadminContenttypeMutation) SetModel(s string) {
 	m.model = &s
 }
 
 // Model returns the value of the "model" field in the mutation.
-func (m *ContentTypeMutation) Model() (r string, exists bool) {
+func (m *XadminContenttypeMutation) Model() (r string, exists bool) {
 	v := m.model
 	if v == nil {
 		return
@@ -197,10 +197,10 @@ func (m *ContentTypeMutation) Model() (r string, exists bool) {
 	return *v, true
 }
 
-// OldModel returns the old "model" field's value of the ContentType entity.
-// If the ContentType object wasn't provided to the builder, the object is fetched from the database.
+// OldModel returns the old "model" field's value of the XadminContenttype entity.
+// If the XadminContenttype object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ContentTypeMutation) OldModel(ctx context.Context) (v string, err error) {
+func (m *XadminContenttypeMutation) OldModel(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldModel is only allowed on UpdateOne operations")
 	}
@@ -215,17 +215,17 @@ func (m *ContentTypeMutation) OldModel(ctx context.Context) (v string, err error
 }
 
 // ResetModel resets all changes to the "model" field.
-func (m *ContentTypeMutation) ResetModel() {
+func (m *XadminContenttypeMutation) ResetModel() {
 	m.model = nil
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (m *ContentTypeMutation) SetCreatedAt(t time.Time) {
+func (m *XadminContenttypeMutation) SetCreatedAt(t time.Time) {
 	m.created_at = &t
 }
 
 // CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *ContentTypeMutation) CreatedAt() (r time.Time, exists bool) {
+func (m *XadminContenttypeMutation) CreatedAt() (r time.Time, exists bool) {
 	v := m.created_at
 	if v == nil {
 		return
@@ -233,10 +233,10 @@ func (m *ContentTypeMutation) CreatedAt() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldCreatedAt returns the old "created_at" field's value of the ContentType entity.
-// If the ContentType object wasn't provided to the builder, the object is fetched from the database.
+// OldCreatedAt returns the old "created_at" field's value of the XadminContenttype entity.
+// If the XadminContenttype object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ContentTypeMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+func (m *XadminContenttypeMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
 	}
@@ -251,17 +251,17 @@ func (m *ContentTypeMutation) OldCreatedAt(ctx context.Context) (v time.Time, er
 }
 
 // ResetCreatedAt resets all changes to the "created_at" field.
-func (m *ContentTypeMutation) ResetCreatedAt() {
+func (m *XadminContenttypeMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (m *ContentTypeMutation) SetUpdatedAt(t time.Time) {
+func (m *XadminContenttypeMutation) SetUpdatedAt(t time.Time) {
 	m.updated_at = &t
 }
 
 // UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *ContentTypeMutation) UpdatedAt() (r time.Time, exists bool) {
+func (m *XadminContenttypeMutation) UpdatedAt() (r time.Time, exists bool) {
 	v := m.updated_at
 	if v == nil {
 		return
@@ -269,10 +269,10 @@ func (m *ContentTypeMutation) UpdatedAt() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldUpdatedAt returns the old "updated_at" field's value of the ContentType entity.
-// If the ContentType object wasn't provided to the builder, the object is fetched from the database.
+// OldUpdatedAt returns the old "updated_at" field's value of the XadminContenttype entity.
+// If the XadminContenttype object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ContentTypeMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+func (m *XadminContenttypeMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
 	}
@@ -287,41 +287,41 @@ func (m *ContentTypeMutation) OldUpdatedAt(ctx context.Context) (v time.Time, er
 }
 
 // ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *ContentTypeMutation) ResetUpdatedAt() {
+func (m *XadminContenttypeMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
-// Where appends a list predicates to the ContentTypeMutation builder.
-func (m *ContentTypeMutation) Where(ps ...predicate.ContentType) {
+// Where appends a list predicates to the XadminContenttypeMutation builder.
+func (m *XadminContenttypeMutation) Where(ps ...predicate.XadminContenttype) {
 	m.predicates = append(m.predicates, ps...)
 }
 
 // Op returns the operation name.
-func (m *ContentTypeMutation) Op() Op {
+func (m *XadminContenttypeMutation) Op() Op {
 	return m.op
 }
 
-// Type returns the node type of this mutation (ContentType).
-func (m *ContentTypeMutation) Type() string {
+// Type returns the node type of this mutation (XadminContenttype).
+func (m *XadminContenttypeMutation) Type() string {
 	return m.typ
 }
 
 // Fields returns all fields that were changed during this mutation. Note that in
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
-func (m *ContentTypeMutation) Fields() []string {
+func (m *XadminContenttypeMutation) Fields() []string {
 	fields := make([]string, 0, 4)
 	if m.app_label != nil {
-		fields = append(fields, contenttype.FieldAppLabel)
+		fields = append(fields, xadmincontenttype.FieldAppLabel)
 	}
 	if m.model != nil {
-		fields = append(fields, contenttype.FieldModel)
+		fields = append(fields, xadmincontenttype.FieldModel)
 	}
 	if m.created_at != nil {
-		fields = append(fields, contenttype.FieldCreatedAt)
+		fields = append(fields, xadmincontenttype.FieldCreatedAt)
 	}
 	if m.updated_at != nil {
-		fields = append(fields, contenttype.FieldUpdatedAt)
+		fields = append(fields, xadmincontenttype.FieldUpdatedAt)
 	}
 	return fields
 }
@@ -329,15 +329,15 @@ func (m *ContentTypeMutation) Fields() []string {
 // Field returns the value of a field with the given name. The second boolean
 // return value indicates that this field was not set, or was not defined in the
 // schema.
-func (m *ContentTypeMutation) Field(name string) (ent.Value, bool) {
+func (m *XadminContenttypeMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case contenttype.FieldAppLabel:
+	case xadmincontenttype.FieldAppLabel:
 		return m.AppLabel()
-	case contenttype.FieldModel:
+	case xadmincontenttype.FieldModel:
 		return m.Model()
-	case contenttype.FieldCreatedAt:
+	case xadmincontenttype.FieldCreatedAt:
 		return m.CreatedAt()
-	case contenttype.FieldUpdatedAt:
+	case xadmincontenttype.FieldUpdatedAt:
 		return m.UpdatedAt()
 	}
 	return nil, false
@@ -346,47 +346,47 @@ func (m *ContentTypeMutation) Field(name string) (ent.Value, bool) {
 // OldField returns the old value of the field from the database. An error is
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
-func (m *ContentTypeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+func (m *XadminContenttypeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case contenttype.FieldAppLabel:
+	case xadmincontenttype.FieldAppLabel:
 		return m.OldAppLabel(ctx)
-	case contenttype.FieldModel:
+	case xadmincontenttype.FieldModel:
 		return m.OldModel(ctx)
-	case contenttype.FieldCreatedAt:
+	case xadmincontenttype.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
-	case contenttype.FieldUpdatedAt:
+	case xadmincontenttype.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
 	}
-	return nil, fmt.Errorf("unknown ContentType field %s", name)
+	return nil, fmt.Errorf("unknown XadminContenttype field %s", name)
 }
 
 // SetField sets the value of a field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *ContentTypeMutation) SetField(name string, value ent.Value) error {
+func (m *XadminContenttypeMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case contenttype.FieldAppLabel:
+	case xadmincontenttype.FieldAppLabel:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetAppLabel(v)
 		return nil
-	case contenttype.FieldModel:
+	case xadmincontenttype.FieldModel:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetModel(v)
 		return nil
-	case contenttype.FieldCreatedAt:
+	case xadmincontenttype.FieldCreatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCreatedAt(v)
 		return nil
-	case contenttype.FieldUpdatedAt:
+	case xadmincontenttype.FieldUpdatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -394,120 +394,120 @@ func (m *ContentTypeMutation) SetField(name string, value ent.Value) error {
 		m.SetUpdatedAt(v)
 		return nil
 	}
-	return fmt.Errorf("unknown ContentType field %s", name)
+	return fmt.Errorf("unknown XadminContenttype field %s", name)
 }
 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
-func (m *ContentTypeMutation) AddedFields() []string {
+func (m *XadminContenttypeMutation) AddedFields() []string {
 	return nil
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
-func (m *ContentTypeMutation) AddedField(name string) (ent.Value, bool) {
+func (m *XadminContenttypeMutation) AddedField(name string) (ent.Value, bool) {
 	return nil, false
 }
 
 // AddField adds the value to the field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *ContentTypeMutation) AddField(name string, value ent.Value) error {
+func (m *XadminContenttypeMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	}
-	return fmt.Errorf("unknown ContentType numeric field %s", name)
+	return fmt.Errorf("unknown XadminContenttype numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
-func (m *ContentTypeMutation) ClearedFields() []string {
+func (m *XadminContenttypeMutation) ClearedFields() []string {
 	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
-func (m *ContentTypeMutation) FieldCleared(name string) bool {
+func (m *XadminContenttypeMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
-func (m *ContentTypeMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown ContentType nullable field %s", name)
+func (m *XadminContenttypeMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown XadminContenttype nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
-func (m *ContentTypeMutation) ResetField(name string) error {
+func (m *XadminContenttypeMutation) ResetField(name string) error {
 	switch name {
-	case contenttype.FieldAppLabel:
+	case xadmincontenttype.FieldAppLabel:
 		m.ResetAppLabel()
 		return nil
-	case contenttype.FieldModel:
+	case xadmincontenttype.FieldModel:
 		m.ResetModel()
 		return nil
-	case contenttype.FieldCreatedAt:
+	case xadmincontenttype.FieldCreatedAt:
 		m.ResetCreatedAt()
 		return nil
-	case contenttype.FieldUpdatedAt:
+	case xadmincontenttype.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
 	}
-	return fmt.Errorf("unknown ContentType field %s", name)
+	return fmt.Errorf("unknown XadminContenttype field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
-func (m *ContentTypeMutation) AddedEdges() []string {
+func (m *XadminContenttypeMutation) AddedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
-func (m *ContentTypeMutation) AddedIDs(name string) []ent.Value {
+func (m *XadminContenttypeMutation) AddedIDs(name string) []ent.Value {
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
-func (m *ContentTypeMutation) RemovedEdges() []string {
+func (m *XadminContenttypeMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
-func (m *ContentTypeMutation) RemovedIDs(name string) []ent.Value {
+func (m *XadminContenttypeMutation) RemovedIDs(name string) []ent.Value {
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *ContentTypeMutation) ClearedEdges() []string {
+func (m *XadminContenttypeMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
-func (m *ContentTypeMutation) EdgeCleared(name string) bool {
+func (m *XadminContenttypeMutation) EdgeCleared(name string) bool {
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
-func (m *ContentTypeMutation) ClearEdge(name string) error {
-	return fmt.Errorf("unknown ContentType unique edge %s", name)
+func (m *XadminContenttypeMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown XadminContenttype unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
-func (m *ContentTypeMutation) ResetEdge(name string) error {
-	return fmt.Errorf("unknown ContentType edge %s", name)
+func (m *XadminContenttypeMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown XadminContenttype edge %s", name)
 }
 
-// PermissionMutation represents an operation that mutates the Permission nodes in the graph.
-type PermissionMutation struct {
+// XadminPermissionMutation represents an operation that mutates the XadminPermission nodes in the graph.
+type XadminPermissionMutation struct {
 	config
 	op                  Op
 	typ                 string
@@ -526,21 +526,21 @@ type PermissionMutation struct {
 	removedroles        map[int]struct{}
 	clearedroles        bool
 	done                bool
-	oldValue            func(context.Context) (*Permission, error)
-	predicates          []predicate.Permission
+	oldValue            func(context.Context) (*XadminPermission, error)
+	predicates          []predicate.XadminPermission
 }
 
-var _ ent.Mutation = (*PermissionMutation)(nil)
+var _ ent.Mutation = (*XadminPermissionMutation)(nil)
 
-// permissionOption allows management of the mutation configuration using functional options.
-type permissionOption func(*PermissionMutation)
+// xadminpermissionOption allows management of the mutation configuration using functional options.
+type xadminpermissionOption func(*XadminPermissionMutation)
 
-// newPermissionMutation creates new mutation for the Permission entity.
-func newPermissionMutation(c config, op Op, opts ...permissionOption) *PermissionMutation {
-	m := &PermissionMutation{
+// newXadminPermissionMutation creates new mutation for the XadminPermission entity.
+func newXadminPermissionMutation(c config, op Op, opts ...xadminpermissionOption) *XadminPermissionMutation {
+	m := &XadminPermissionMutation{
 		config:        c,
 		op:            op,
-		typ:           TypePermission,
+		typ:           TypeXadminPermission,
 		clearedFields: make(map[string]struct{}),
 	}
 	for _, opt := range opts {
@@ -549,20 +549,20 @@ func newPermissionMutation(c config, op Op, opts ...permissionOption) *Permissio
 	return m
 }
 
-// withPermissionID sets the ID field of the mutation.
-func withPermissionID(id int) permissionOption {
-	return func(m *PermissionMutation) {
+// withXadminPermissionID sets the ID field of the mutation.
+func withXadminPermissionID(id int) xadminpermissionOption {
+	return func(m *XadminPermissionMutation) {
 		var (
 			err   error
 			once  sync.Once
-			value *Permission
+			value *XadminPermission
 		)
-		m.oldValue = func(ctx context.Context) (*Permission, error) {
+		m.oldValue = func(ctx context.Context) (*XadminPermission, error) {
 			once.Do(func() {
 				if m.done {
 					err = errors.New("querying old values post mutation is not allowed")
 				} else {
-					value, err = m.Client().Permission.Get(ctx, id)
+					value, err = m.Client().XadminPermission.Get(ctx, id)
 				}
 			})
 			return value, err
@@ -571,10 +571,10 @@ func withPermissionID(id int) permissionOption {
 	}
 }
 
-// withPermission sets the old Permission of the mutation.
-func withPermission(node *Permission) permissionOption {
-	return func(m *PermissionMutation) {
-		m.oldValue = func(context.Context) (*Permission, error) {
+// withXadminPermission sets the old XadminPermission of the mutation.
+func withXadminPermission(node *XadminPermission) xadminpermissionOption {
+	return func(m *XadminPermissionMutation) {
+		m.oldValue = func(context.Context) (*XadminPermission, error) {
 			return node, nil
 		}
 		m.id = &node.ID
@@ -583,7 +583,7 @@ func withPermission(node *Permission) permissionOption {
 
 // Client returns a new `ent.Client` from the mutation. If the mutation was
 // executed in a transaction (ent.Tx), a transactional client is returned.
-func (m PermissionMutation) Client() *Client {
+func (m XadminPermissionMutation) Client() *Client {
 	client := &Client{config: m.config}
 	client.init()
 	return client
@@ -591,7 +591,7 @@ func (m PermissionMutation) Client() *Client {
 
 // Tx returns an `ent.Tx` for mutations that were executed in transactions;
 // it returns an error otherwise.
-func (m PermissionMutation) Tx() (*Tx, error) {
+func (m XadminPermissionMutation) Tx() (*Tx, error) {
 	if _, ok := m.driver.(*txDriver); !ok {
 		return nil, errors.New("ent: mutation is not running in a transaction")
 	}
@@ -602,7 +602,7 @@ func (m PermissionMutation) Tx() (*Tx, error) {
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *PermissionMutation) ID() (id int, exists bool) {
+func (m *XadminPermissionMutation) ID() (id int, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -613,7 +613,7 @@ func (m *PermissionMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *PermissionMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *XadminPermissionMutation) IDs(ctx context.Context) ([]int, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
@@ -622,19 +622,19 @@ func (m *PermissionMutation) IDs(ctx context.Context) ([]int, error) {
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().Permission.Query().Where(m.predicates...).IDs(ctx)
+		return m.Client().XadminPermission.Query().Where(m.predicates...).IDs(ctx)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
 }
 
 // SetName sets the "name" field.
-func (m *PermissionMutation) SetName(s string) {
+func (m *XadminPermissionMutation) SetName(s string) {
 	m.name = &s
 }
 
 // Name returns the value of the "name" field in the mutation.
-func (m *PermissionMutation) Name() (r string, exists bool) {
+func (m *XadminPermissionMutation) Name() (r string, exists bool) {
 	v := m.name
 	if v == nil {
 		return
@@ -642,10 +642,10 @@ func (m *PermissionMutation) Name() (r string, exists bool) {
 	return *v, true
 }
 
-// OldName returns the old "name" field's value of the Permission entity.
-// If the Permission object wasn't provided to the builder, the object is fetched from the database.
+// OldName returns the old "name" field's value of the XadminPermission entity.
+// If the XadminPermission object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PermissionMutation) OldName(ctx context.Context) (v string, err error) {
+func (m *XadminPermissionMutation) OldName(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldName is only allowed on UpdateOne operations")
 	}
@@ -660,17 +660,17 @@ func (m *PermissionMutation) OldName(ctx context.Context) (v string, err error) 
 }
 
 // ResetName resets all changes to the "name" field.
-func (m *PermissionMutation) ResetName() {
+func (m *XadminPermissionMutation) ResetName() {
 	m.name = nil
 }
 
 // SetCode sets the "code" field.
-func (m *PermissionMutation) SetCode(s string) {
+func (m *XadminPermissionMutation) SetCode(s string) {
 	m.code = &s
 }
 
 // Code returns the value of the "code" field in the mutation.
-func (m *PermissionMutation) Code() (r string, exists bool) {
+func (m *XadminPermissionMutation) Code() (r string, exists bool) {
 	v := m.code
 	if v == nil {
 		return
@@ -678,10 +678,10 @@ func (m *PermissionMutation) Code() (r string, exists bool) {
 	return *v, true
 }
 
-// OldCode returns the old "code" field's value of the Permission entity.
-// If the Permission object wasn't provided to the builder, the object is fetched from the database.
+// OldCode returns the old "code" field's value of the XadminPermission entity.
+// If the XadminPermission object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PermissionMutation) OldCode(ctx context.Context) (v string, err error) {
+func (m *XadminPermissionMutation) OldCode(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCode is only allowed on UpdateOne operations")
 	}
@@ -696,17 +696,17 @@ func (m *PermissionMutation) OldCode(ctx context.Context) (v string, err error) 
 }
 
 // ResetCode resets all changes to the "code" field.
-func (m *PermissionMutation) ResetCode() {
+func (m *XadminPermissionMutation) ResetCode() {
 	m.code = nil
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (m *PermissionMutation) SetCreatedAt(t time.Time) {
+func (m *XadminPermissionMutation) SetCreatedAt(t time.Time) {
 	m.created_at = &t
 }
 
 // CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *PermissionMutation) CreatedAt() (r time.Time, exists bool) {
+func (m *XadminPermissionMutation) CreatedAt() (r time.Time, exists bool) {
 	v := m.created_at
 	if v == nil {
 		return
@@ -714,10 +714,10 @@ func (m *PermissionMutation) CreatedAt() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldCreatedAt returns the old "created_at" field's value of the Permission entity.
-// If the Permission object wasn't provided to the builder, the object is fetched from the database.
+// OldCreatedAt returns the old "created_at" field's value of the XadminPermission entity.
+// If the XadminPermission object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PermissionMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+func (m *XadminPermissionMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
 	}
@@ -732,17 +732,17 @@ func (m *PermissionMutation) OldCreatedAt(ctx context.Context) (v time.Time, err
 }
 
 // ResetCreatedAt resets all changes to the "created_at" field.
-func (m *PermissionMutation) ResetCreatedAt() {
+func (m *XadminPermissionMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (m *PermissionMutation) SetUpdatedAt(t time.Time) {
+func (m *XadminPermissionMutation) SetUpdatedAt(t time.Time) {
 	m.updated_at = &t
 }
 
 // UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *PermissionMutation) UpdatedAt() (r time.Time, exists bool) {
+func (m *XadminPermissionMutation) UpdatedAt() (r time.Time, exists bool) {
 	v := m.updated_at
 	if v == nil {
 		return
@@ -750,10 +750,10 @@ func (m *PermissionMutation) UpdatedAt() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldUpdatedAt returns the old "updated_at" field's value of the Permission entity.
-// If the Permission object wasn't provided to the builder, the object is fetched from the database.
+// OldUpdatedAt returns the old "updated_at" field's value of the XadminPermission entity.
+// If the XadminPermission object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PermissionMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+func (m *XadminPermissionMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
 	}
@@ -768,27 +768,27 @@ func (m *PermissionMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err
 }
 
 // ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *PermissionMutation) ResetUpdatedAt() {
+func (m *XadminPermissionMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
-// SetContentTypeID sets the "ContentType" edge to the ContentType entity by id.
-func (m *PermissionMutation) SetContentTypeID(id int) {
+// SetContentTypeID sets the "ContentType" edge to the XadminContenttype entity by id.
+func (m *XadminPermissionMutation) SetContentTypeID(id int) {
 	m._ContentType = &id
 }
 
-// ClearContentType clears the "ContentType" edge to the ContentType entity.
-func (m *PermissionMutation) ClearContentType() {
+// ClearContentType clears the "ContentType" edge to the XadminContenttype entity.
+func (m *XadminPermissionMutation) ClearContentType() {
 	m.cleared_ContentType = true
 }
 
-// ContentTypeCleared reports if the "ContentType" edge to the ContentType entity was cleared.
-func (m *PermissionMutation) ContentTypeCleared() bool {
+// ContentTypeCleared reports if the "ContentType" edge to the XadminContenttype entity was cleared.
+func (m *XadminPermissionMutation) ContentTypeCleared() bool {
 	return m.cleared_ContentType
 }
 
 // ContentTypeID returns the "ContentType" edge ID in the mutation.
-func (m *PermissionMutation) ContentTypeID() (id int, exists bool) {
+func (m *XadminPermissionMutation) ContentTypeID() (id int, exists bool) {
 	if m._ContentType != nil {
 		return *m._ContentType, true
 	}
@@ -798,7 +798,7 @@ func (m *PermissionMutation) ContentTypeID() (id int, exists bool) {
 // ContentTypeIDs returns the "ContentType" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // ContentTypeID instead. It exists only for internal usage by the builders.
-func (m *PermissionMutation) ContentTypeIDs() (ids []int) {
+func (m *XadminPermissionMutation) ContentTypeIDs() (ids []int) {
 	if id := m._ContentType; id != nil {
 		ids = append(ids, *id)
 	}
@@ -806,13 +806,13 @@ func (m *PermissionMutation) ContentTypeIDs() (ids []int) {
 }
 
 // ResetContentType resets all changes to the "ContentType" edge.
-func (m *PermissionMutation) ResetContentType() {
+func (m *XadminPermissionMutation) ResetContentType() {
 	m._ContentType = nil
 	m.cleared_ContentType = false
 }
 
-// AddUserIDs adds the "users" edge to the User entity by ids.
-func (m *PermissionMutation) AddUserIDs(ids ...int) {
+// AddUserIDs adds the "users" edge to the XadminUser entity by ids.
+func (m *XadminPermissionMutation) AddUserIDs(ids ...int) {
 	if m.users == nil {
 		m.users = make(map[int]struct{})
 	}
@@ -821,18 +821,18 @@ func (m *PermissionMutation) AddUserIDs(ids ...int) {
 	}
 }
 
-// ClearUsers clears the "users" edge to the User entity.
-func (m *PermissionMutation) ClearUsers() {
+// ClearUsers clears the "users" edge to the XadminUser entity.
+func (m *XadminPermissionMutation) ClearUsers() {
 	m.clearedusers = true
 }
 
-// UsersCleared reports if the "users" edge to the User entity was cleared.
-func (m *PermissionMutation) UsersCleared() bool {
+// UsersCleared reports if the "users" edge to the XadminUser entity was cleared.
+func (m *XadminPermissionMutation) UsersCleared() bool {
 	return m.clearedusers
 }
 
-// RemoveUserIDs removes the "users" edge to the User entity by IDs.
-func (m *PermissionMutation) RemoveUserIDs(ids ...int) {
+// RemoveUserIDs removes the "users" edge to the XadminUser entity by IDs.
+func (m *XadminPermissionMutation) RemoveUserIDs(ids ...int) {
 	if m.removedusers == nil {
 		m.removedusers = make(map[int]struct{})
 	}
@@ -842,8 +842,8 @@ func (m *PermissionMutation) RemoveUserIDs(ids ...int) {
 	}
 }
 
-// RemovedUsers returns the removed IDs of the "users" edge to the User entity.
-func (m *PermissionMutation) RemovedUsersIDs() (ids []int) {
+// RemovedUsers returns the removed IDs of the "users" edge to the XadminUser entity.
+func (m *XadminPermissionMutation) RemovedUsersIDs() (ids []int) {
 	for id := range m.removedusers {
 		ids = append(ids, id)
 	}
@@ -851,7 +851,7 @@ func (m *PermissionMutation) RemovedUsersIDs() (ids []int) {
 }
 
 // UsersIDs returns the "users" edge IDs in the mutation.
-func (m *PermissionMutation) UsersIDs() (ids []int) {
+func (m *XadminPermissionMutation) UsersIDs() (ids []int) {
 	for id := range m.users {
 		ids = append(ids, id)
 	}
@@ -859,14 +859,14 @@ func (m *PermissionMutation) UsersIDs() (ids []int) {
 }
 
 // ResetUsers resets all changes to the "users" edge.
-func (m *PermissionMutation) ResetUsers() {
+func (m *XadminPermissionMutation) ResetUsers() {
 	m.users = nil
 	m.clearedusers = false
 	m.removedusers = nil
 }
 
-// AddRoleIDs adds the "roles" edge to the Role entity by ids.
-func (m *PermissionMutation) AddRoleIDs(ids ...int) {
+// AddRoleIDs adds the "roles" edge to the XadminRole entity by ids.
+func (m *XadminPermissionMutation) AddRoleIDs(ids ...int) {
 	if m.roles == nil {
 		m.roles = make(map[int]struct{})
 	}
@@ -875,18 +875,18 @@ func (m *PermissionMutation) AddRoleIDs(ids ...int) {
 	}
 }
 
-// ClearRoles clears the "roles" edge to the Role entity.
-func (m *PermissionMutation) ClearRoles() {
+// ClearRoles clears the "roles" edge to the XadminRole entity.
+func (m *XadminPermissionMutation) ClearRoles() {
 	m.clearedroles = true
 }
 
-// RolesCleared reports if the "roles" edge to the Role entity was cleared.
-func (m *PermissionMutation) RolesCleared() bool {
+// RolesCleared reports if the "roles" edge to the XadminRole entity was cleared.
+func (m *XadminPermissionMutation) RolesCleared() bool {
 	return m.clearedroles
 }
 
-// RemoveRoleIDs removes the "roles" edge to the Role entity by IDs.
-func (m *PermissionMutation) RemoveRoleIDs(ids ...int) {
+// RemoveRoleIDs removes the "roles" edge to the XadminRole entity by IDs.
+func (m *XadminPermissionMutation) RemoveRoleIDs(ids ...int) {
 	if m.removedroles == nil {
 		m.removedroles = make(map[int]struct{})
 	}
@@ -896,8 +896,8 @@ func (m *PermissionMutation) RemoveRoleIDs(ids ...int) {
 	}
 }
 
-// RemovedRoles returns the removed IDs of the "roles" edge to the Role entity.
-func (m *PermissionMutation) RemovedRolesIDs() (ids []int) {
+// RemovedRoles returns the removed IDs of the "roles" edge to the XadminRole entity.
+func (m *XadminPermissionMutation) RemovedRolesIDs() (ids []int) {
 	for id := range m.removedroles {
 		ids = append(ids, id)
 	}
@@ -905,7 +905,7 @@ func (m *PermissionMutation) RemovedRolesIDs() (ids []int) {
 }
 
 // RolesIDs returns the "roles" edge IDs in the mutation.
-func (m *PermissionMutation) RolesIDs() (ids []int) {
+func (m *XadminPermissionMutation) RolesIDs() (ids []int) {
 	for id := range m.roles {
 		ids = append(ids, id)
 	}
@@ -913,43 +913,43 @@ func (m *PermissionMutation) RolesIDs() (ids []int) {
 }
 
 // ResetRoles resets all changes to the "roles" edge.
-func (m *PermissionMutation) ResetRoles() {
+func (m *XadminPermissionMutation) ResetRoles() {
 	m.roles = nil
 	m.clearedroles = false
 	m.removedroles = nil
 }
 
-// Where appends a list predicates to the PermissionMutation builder.
-func (m *PermissionMutation) Where(ps ...predicate.Permission) {
+// Where appends a list predicates to the XadminPermissionMutation builder.
+func (m *XadminPermissionMutation) Where(ps ...predicate.XadminPermission) {
 	m.predicates = append(m.predicates, ps...)
 }
 
 // Op returns the operation name.
-func (m *PermissionMutation) Op() Op {
+func (m *XadminPermissionMutation) Op() Op {
 	return m.op
 }
 
-// Type returns the node type of this mutation (Permission).
-func (m *PermissionMutation) Type() string {
+// Type returns the node type of this mutation (XadminPermission).
+func (m *XadminPermissionMutation) Type() string {
 	return m.typ
 }
 
 // Fields returns all fields that were changed during this mutation. Note that in
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
-func (m *PermissionMutation) Fields() []string {
+func (m *XadminPermissionMutation) Fields() []string {
 	fields := make([]string, 0, 4)
 	if m.name != nil {
-		fields = append(fields, permission.FieldName)
+		fields = append(fields, xadminpermission.FieldName)
 	}
 	if m.code != nil {
-		fields = append(fields, permission.FieldCode)
+		fields = append(fields, xadminpermission.FieldCode)
 	}
 	if m.created_at != nil {
-		fields = append(fields, permission.FieldCreatedAt)
+		fields = append(fields, xadminpermission.FieldCreatedAt)
 	}
 	if m.updated_at != nil {
-		fields = append(fields, permission.FieldUpdatedAt)
+		fields = append(fields, xadminpermission.FieldUpdatedAt)
 	}
 	return fields
 }
@@ -957,15 +957,15 @@ func (m *PermissionMutation) Fields() []string {
 // Field returns the value of a field with the given name. The second boolean
 // return value indicates that this field was not set, or was not defined in the
 // schema.
-func (m *PermissionMutation) Field(name string) (ent.Value, bool) {
+func (m *XadminPermissionMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case permission.FieldName:
+	case xadminpermission.FieldName:
 		return m.Name()
-	case permission.FieldCode:
+	case xadminpermission.FieldCode:
 		return m.Code()
-	case permission.FieldCreatedAt:
+	case xadminpermission.FieldCreatedAt:
 		return m.CreatedAt()
-	case permission.FieldUpdatedAt:
+	case xadminpermission.FieldUpdatedAt:
 		return m.UpdatedAt()
 	}
 	return nil, false
@@ -974,47 +974,47 @@ func (m *PermissionMutation) Field(name string) (ent.Value, bool) {
 // OldField returns the old value of the field from the database. An error is
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
-func (m *PermissionMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+func (m *XadminPermissionMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case permission.FieldName:
+	case xadminpermission.FieldName:
 		return m.OldName(ctx)
-	case permission.FieldCode:
+	case xadminpermission.FieldCode:
 		return m.OldCode(ctx)
-	case permission.FieldCreatedAt:
+	case xadminpermission.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
-	case permission.FieldUpdatedAt:
+	case xadminpermission.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
 	}
-	return nil, fmt.Errorf("unknown Permission field %s", name)
+	return nil, fmt.Errorf("unknown XadminPermission field %s", name)
 }
 
 // SetField sets the value of a field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *PermissionMutation) SetField(name string, value ent.Value) error {
+func (m *XadminPermissionMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case permission.FieldName:
+	case xadminpermission.FieldName:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetName(v)
 		return nil
-	case permission.FieldCode:
+	case xadminpermission.FieldCode:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCode(v)
 		return nil
-	case permission.FieldCreatedAt:
+	case xadminpermission.FieldCreatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCreatedAt(v)
 		return nil
-	case permission.FieldUpdatedAt:
+	case xadminpermission.FieldUpdatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -1022,100 +1022,100 @@ func (m *PermissionMutation) SetField(name string, value ent.Value) error {
 		m.SetUpdatedAt(v)
 		return nil
 	}
-	return fmt.Errorf("unknown Permission field %s", name)
+	return fmt.Errorf("unknown XadminPermission field %s", name)
 }
 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
-func (m *PermissionMutation) AddedFields() []string {
+func (m *XadminPermissionMutation) AddedFields() []string {
 	return nil
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
-func (m *PermissionMutation) AddedField(name string) (ent.Value, bool) {
+func (m *XadminPermissionMutation) AddedField(name string) (ent.Value, bool) {
 	return nil, false
 }
 
 // AddField adds the value to the field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *PermissionMutation) AddField(name string, value ent.Value) error {
+func (m *XadminPermissionMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	}
-	return fmt.Errorf("unknown Permission numeric field %s", name)
+	return fmt.Errorf("unknown XadminPermission numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
-func (m *PermissionMutation) ClearedFields() []string {
+func (m *XadminPermissionMutation) ClearedFields() []string {
 	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
-func (m *PermissionMutation) FieldCleared(name string) bool {
+func (m *XadminPermissionMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
-func (m *PermissionMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown Permission nullable field %s", name)
+func (m *XadminPermissionMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown XadminPermission nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
-func (m *PermissionMutation) ResetField(name string) error {
+func (m *XadminPermissionMutation) ResetField(name string) error {
 	switch name {
-	case permission.FieldName:
+	case xadminpermission.FieldName:
 		m.ResetName()
 		return nil
-	case permission.FieldCode:
+	case xadminpermission.FieldCode:
 		m.ResetCode()
 		return nil
-	case permission.FieldCreatedAt:
+	case xadminpermission.FieldCreatedAt:
 		m.ResetCreatedAt()
 		return nil
-	case permission.FieldUpdatedAt:
+	case xadminpermission.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
 	}
-	return fmt.Errorf("unknown Permission field %s", name)
+	return fmt.Errorf("unknown XadminPermission field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
-func (m *PermissionMutation) AddedEdges() []string {
+func (m *XadminPermissionMutation) AddedEdges() []string {
 	edges := make([]string, 0, 3)
 	if m._ContentType != nil {
-		edges = append(edges, permission.EdgeContentType)
+		edges = append(edges, xadminpermission.EdgeContentType)
 	}
 	if m.users != nil {
-		edges = append(edges, permission.EdgeUsers)
+		edges = append(edges, xadminpermission.EdgeUsers)
 	}
 	if m.roles != nil {
-		edges = append(edges, permission.EdgeRoles)
+		edges = append(edges, xadminpermission.EdgeRoles)
 	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
-func (m *PermissionMutation) AddedIDs(name string) []ent.Value {
+func (m *XadminPermissionMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case permission.EdgeContentType:
+	case xadminpermission.EdgeContentType:
 		if id := m._ContentType; id != nil {
 			return []ent.Value{*id}
 		}
-	case permission.EdgeUsers:
+	case xadminpermission.EdgeUsers:
 		ids := make([]ent.Value, 0, len(m.users))
 		for id := range m.users {
 			ids = append(ids, id)
 		}
 		return ids
-	case permission.EdgeRoles:
+	case xadminpermission.EdgeRoles:
 		ids := make([]ent.Value, 0, len(m.roles))
 		for id := range m.roles {
 			ids = append(ids, id)
@@ -1126,28 +1126,28 @@ func (m *PermissionMutation) AddedIDs(name string) []ent.Value {
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
-func (m *PermissionMutation) RemovedEdges() []string {
+func (m *XadminPermissionMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 3)
 	if m.removedusers != nil {
-		edges = append(edges, permission.EdgeUsers)
+		edges = append(edges, xadminpermission.EdgeUsers)
 	}
 	if m.removedroles != nil {
-		edges = append(edges, permission.EdgeRoles)
+		edges = append(edges, xadminpermission.EdgeRoles)
 	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
-func (m *PermissionMutation) RemovedIDs(name string) []ent.Value {
+func (m *XadminPermissionMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case permission.EdgeUsers:
+	case xadminpermission.EdgeUsers:
 		ids := make([]ent.Value, 0, len(m.removedusers))
 		for id := range m.removedusers {
 			ids = append(ids, id)
 		}
 		return ids
-	case permission.EdgeRoles:
+	case xadminpermission.EdgeRoles:
 		ids := make([]ent.Value, 0, len(m.removedroles))
 		for id := range m.removedroles {
 			ids = append(ids, id)
@@ -1158,29 +1158,29 @@ func (m *PermissionMutation) RemovedIDs(name string) []ent.Value {
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *PermissionMutation) ClearedEdges() []string {
+func (m *XadminPermissionMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 3)
 	if m.cleared_ContentType {
-		edges = append(edges, permission.EdgeContentType)
+		edges = append(edges, xadminpermission.EdgeContentType)
 	}
 	if m.clearedusers {
-		edges = append(edges, permission.EdgeUsers)
+		edges = append(edges, xadminpermission.EdgeUsers)
 	}
 	if m.clearedroles {
-		edges = append(edges, permission.EdgeRoles)
+		edges = append(edges, xadminpermission.EdgeRoles)
 	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
-func (m *PermissionMutation) EdgeCleared(name string) bool {
+func (m *XadminPermissionMutation) EdgeCleared(name string) bool {
 	switch name {
-	case permission.EdgeContentType:
+	case xadminpermission.EdgeContentType:
 		return m.cleared_ContentType
-	case permission.EdgeUsers:
+	case xadminpermission.EdgeUsers:
 		return m.clearedusers
-	case permission.EdgeRoles:
+	case xadminpermission.EdgeRoles:
 		return m.clearedroles
 	}
 	return false
@@ -1188,34 +1188,34 @@ func (m *PermissionMutation) EdgeCleared(name string) bool {
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
-func (m *PermissionMutation) ClearEdge(name string) error {
+func (m *XadminPermissionMutation) ClearEdge(name string) error {
 	switch name {
-	case permission.EdgeContentType:
+	case xadminpermission.EdgeContentType:
 		m.ClearContentType()
 		return nil
 	}
-	return fmt.Errorf("unknown Permission unique edge %s", name)
+	return fmt.Errorf("unknown XadminPermission unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
-func (m *PermissionMutation) ResetEdge(name string) error {
+func (m *XadminPermissionMutation) ResetEdge(name string) error {
 	switch name {
-	case permission.EdgeContentType:
+	case xadminpermission.EdgeContentType:
 		m.ResetContentType()
 		return nil
-	case permission.EdgeUsers:
+	case xadminpermission.EdgeUsers:
 		m.ResetUsers()
 		return nil
-	case permission.EdgeRoles:
+	case xadminpermission.EdgeRoles:
 		m.ResetRoles()
 		return nil
 	}
-	return fmt.Errorf("unknown Permission edge %s", name)
+	return fmt.Errorf("unknown XadminPermission edge %s", name)
 }
 
-// RoleMutation represents an operation that mutates the Role nodes in the graph.
-type RoleMutation struct {
+// XadminRoleMutation represents an operation that mutates the XadminRole nodes in the graph.
+type XadminRoleMutation struct {
 	config
 	op                 Op
 	typ                string
@@ -1231,21 +1231,21 @@ type RoleMutation struct {
 	removedpermissions map[int]struct{}
 	clearedpermissions bool
 	done               bool
-	oldValue           func(context.Context) (*Role, error)
-	predicates         []predicate.Role
+	oldValue           func(context.Context) (*XadminRole, error)
+	predicates         []predicate.XadminRole
 }
 
-var _ ent.Mutation = (*RoleMutation)(nil)
+var _ ent.Mutation = (*XadminRoleMutation)(nil)
 
-// roleOption allows management of the mutation configuration using functional options.
-type roleOption func(*RoleMutation)
+// xadminroleOption allows management of the mutation configuration using functional options.
+type xadminroleOption func(*XadminRoleMutation)
 
-// newRoleMutation creates new mutation for the Role entity.
-func newRoleMutation(c config, op Op, opts ...roleOption) *RoleMutation {
-	m := &RoleMutation{
+// newXadminRoleMutation creates new mutation for the XadminRole entity.
+func newXadminRoleMutation(c config, op Op, opts ...xadminroleOption) *XadminRoleMutation {
+	m := &XadminRoleMutation{
 		config:        c,
 		op:            op,
-		typ:           TypeRole,
+		typ:           TypeXadminRole,
 		clearedFields: make(map[string]struct{}),
 	}
 	for _, opt := range opts {
@@ -1254,20 +1254,20 @@ func newRoleMutation(c config, op Op, opts ...roleOption) *RoleMutation {
 	return m
 }
 
-// withRoleID sets the ID field of the mutation.
-func withRoleID(id int) roleOption {
-	return func(m *RoleMutation) {
+// withXadminRoleID sets the ID field of the mutation.
+func withXadminRoleID(id int) xadminroleOption {
+	return func(m *XadminRoleMutation) {
 		var (
 			err   error
 			once  sync.Once
-			value *Role
+			value *XadminRole
 		)
-		m.oldValue = func(ctx context.Context) (*Role, error) {
+		m.oldValue = func(ctx context.Context) (*XadminRole, error) {
 			once.Do(func() {
 				if m.done {
 					err = errors.New("querying old values post mutation is not allowed")
 				} else {
-					value, err = m.Client().Role.Get(ctx, id)
+					value, err = m.Client().XadminRole.Get(ctx, id)
 				}
 			})
 			return value, err
@@ -1276,10 +1276,10 @@ func withRoleID(id int) roleOption {
 	}
 }
 
-// withRole sets the old Role of the mutation.
-func withRole(node *Role) roleOption {
-	return func(m *RoleMutation) {
-		m.oldValue = func(context.Context) (*Role, error) {
+// withXadminRole sets the old XadminRole of the mutation.
+func withXadminRole(node *XadminRole) xadminroleOption {
+	return func(m *XadminRoleMutation) {
+		m.oldValue = func(context.Context) (*XadminRole, error) {
 			return node, nil
 		}
 		m.id = &node.ID
@@ -1288,7 +1288,7 @@ func withRole(node *Role) roleOption {
 
 // Client returns a new `ent.Client` from the mutation. If the mutation was
 // executed in a transaction (ent.Tx), a transactional client is returned.
-func (m RoleMutation) Client() *Client {
+func (m XadminRoleMutation) Client() *Client {
 	client := &Client{config: m.config}
 	client.init()
 	return client
@@ -1296,7 +1296,7 @@ func (m RoleMutation) Client() *Client {
 
 // Tx returns an `ent.Tx` for mutations that were executed in transactions;
 // it returns an error otherwise.
-func (m RoleMutation) Tx() (*Tx, error) {
+func (m XadminRoleMutation) Tx() (*Tx, error) {
 	if _, ok := m.driver.(*txDriver); !ok {
 		return nil, errors.New("ent: mutation is not running in a transaction")
 	}
@@ -1307,7 +1307,7 @@ func (m RoleMutation) Tx() (*Tx, error) {
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *RoleMutation) ID() (id int, exists bool) {
+func (m *XadminRoleMutation) ID() (id int, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -1318,7 +1318,7 @@ func (m *RoleMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *RoleMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *XadminRoleMutation) IDs(ctx context.Context) ([]int, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
@@ -1327,19 +1327,19 @@ func (m *RoleMutation) IDs(ctx context.Context) ([]int, error) {
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().Role.Query().Where(m.predicates...).IDs(ctx)
+		return m.Client().XadminRole.Query().Where(m.predicates...).IDs(ctx)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
 }
 
 // SetName sets the "name" field.
-func (m *RoleMutation) SetName(s string) {
+func (m *XadminRoleMutation) SetName(s string) {
 	m.name = &s
 }
 
 // Name returns the value of the "name" field in the mutation.
-func (m *RoleMutation) Name() (r string, exists bool) {
+func (m *XadminRoleMutation) Name() (r string, exists bool) {
 	v := m.name
 	if v == nil {
 		return
@@ -1347,10 +1347,10 @@ func (m *RoleMutation) Name() (r string, exists bool) {
 	return *v, true
 }
 
-// OldName returns the old "name" field's value of the Role entity.
-// If the Role object wasn't provided to the builder, the object is fetched from the database.
+// OldName returns the old "name" field's value of the XadminRole entity.
+// If the XadminRole object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RoleMutation) OldName(ctx context.Context) (v string, err error) {
+func (m *XadminRoleMutation) OldName(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldName is only allowed on UpdateOne operations")
 	}
@@ -1365,17 +1365,17 @@ func (m *RoleMutation) OldName(ctx context.Context) (v string, err error) {
 }
 
 // ResetName resets all changes to the "name" field.
-func (m *RoleMutation) ResetName() {
+func (m *XadminRoleMutation) ResetName() {
 	m.name = nil
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (m *RoleMutation) SetCreatedAt(t time.Time) {
+func (m *XadminRoleMutation) SetCreatedAt(t time.Time) {
 	m.created_at = &t
 }
 
 // CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *RoleMutation) CreatedAt() (r time.Time, exists bool) {
+func (m *XadminRoleMutation) CreatedAt() (r time.Time, exists bool) {
 	v := m.created_at
 	if v == nil {
 		return
@@ -1383,10 +1383,10 @@ func (m *RoleMutation) CreatedAt() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldCreatedAt returns the old "created_at" field's value of the Role entity.
-// If the Role object wasn't provided to the builder, the object is fetched from the database.
+// OldCreatedAt returns the old "created_at" field's value of the XadminRole entity.
+// If the XadminRole object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RoleMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+func (m *XadminRoleMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
 	}
@@ -1401,17 +1401,17 @@ func (m *RoleMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error
 }
 
 // ResetCreatedAt resets all changes to the "created_at" field.
-func (m *RoleMutation) ResetCreatedAt() {
+func (m *XadminRoleMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (m *RoleMutation) SetUpdatedAt(t time.Time) {
+func (m *XadminRoleMutation) SetUpdatedAt(t time.Time) {
 	m.updated_at = &t
 }
 
 // UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *RoleMutation) UpdatedAt() (r time.Time, exists bool) {
+func (m *XadminRoleMutation) UpdatedAt() (r time.Time, exists bool) {
 	v := m.updated_at
 	if v == nil {
 		return
@@ -1419,10 +1419,10 @@ func (m *RoleMutation) UpdatedAt() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldUpdatedAt returns the old "updated_at" field's value of the Role entity.
-// If the Role object wasn't provided to the builder, the object is fetched from the database.
+// OldUpdatedAt returns the old "updated_at" field's value of the XadminRole entity.
+// If the XadminRole object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RoleMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+func (m *XadminRoleMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
 	}
@@ -1437,12 +1437,12 @@ func (m *RoleMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error
 }
 
 // ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *RoleMutation) ResetUpdatedAt() {
+func (m *XadminRoleMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
-// AddUserIDs adds the "users" edge to the User entity by ids.
-func (m *RoleMutation) AddUserIDs(ids ...int) {
+// AddUserIDs adds the "users" edge to the XadminUser entity by ids.
+func (m *XadminRoleMutation) AddUserIDs(ids ...int) {
 	if m.users == nil {
 		m.users = make(map[int]struct{})
 	}
@@ -1451,18 +1451,18 @@ func (m *RoleMutation) AddUserIDs(ids ...int) {
 	}
 }
 
-// ClearUsers clears the "users" edge to the User entity.
-func (m *RoleMutation) ClearUsers() {
+// ClearUsers clears the "users" edge to the XadminUser entity.
+func (m *XadminRoleMutation) ClearUsers() {
 	m.clearedusers = true
 }
 
-// UsersCleared reports if the "users" edge to the User entity was cleared.
-func (m *RoleMutation) UsersCleared() bool {
+// UsersCleared reports if the "users" edge to the XadminUser entity was cleared.
+func (m *XadminRoleMutation) UsersCleared() bool {
 	return m.clearedusers
 }
 
-// RemoveUserIDs removes the "users" edge to the User entity by IDs.
-func (m *RoleMutation) RemoveUserIDs(ids ...int) {
+// RemoveUserIDs removes the "users" edge to the XadminUser entity by IDs.
+func (m *XadminRoleMutation) RemoveUserIDs(ids ...int) {
 	if m.removedusers == nil {
 		m.removedusers = make(map[int]struct{})
 	}
@@ -1472,8 +1472,8 @@ func (m *RoleMutation) RemoveUserIDs(ids ...int) {
 	}
 }
 
-// RemovedUsers returns the removed IDs of the "users" edge to the User entity.
-func (m *RoleMutation) RemovedUsersIDs() (ids []int) {
+// RemovedUsers returns the removed IDs of the "users" edge to the XadminUser entity.
+func (m *XadminRoleMutation) RemovedUsersIDs() (ids []int) {
 	for id := range m.removedusers {
 		ids = append(ids, id)
 	}
@@ -1481,7 +1481,7 @@ func (m *RoleMutation) RemovedUsersIDs() (ids []int) {
 }
 
 // UsersIDs returns the "users" edge IDs in the mutation.
-func (m *RoleMutation) UsersIDs() (ids []int) {
+func (m *XadminRoleMutation) UsersIDs() (ids []int) {
 	for id := range m.users {
 		ids = append(ids, id)
 	}
@@ -1489,14 +1489,14 @@ func (m *RoleMutation) UsersIDs() (ids []int) {
 }
 
 // ResetUsers resets all changes to the "users" edge.
-func (m *RoleMutation) ResetUsers() {
+func (m *XadminRoleMutation) ResetUsers() {
 	m.users = nil
 	m.clearedusers = false
 	m.removedusers = nil
 }
 
-// AddPermissionIDs adds the "permissions" edge to the Permission entity by ids.
-func (m *RoleMutation) AddPermissionIDs(ids ...int) {
+// AddPermissionIDs adds the "permissions" edge to the XadminPermission entity by ids.
+func (m *XadminRoleMutation) AddPermissionIDs(ids ...int) {
 	if m.permissions == nil {
 		m.permissions = make(map[int]struct{})
 	}
@@ -1505,18 +1505,18 @@ func (m *RoleMutation) AddPermissionIDs(ids ...int) {
 	}
 }
 
-// ClearPermissions clears the "permissions" edge to the Permission entity.
-func (m *RoleMutation) ClearPermissions() {
+// ClearPermissions clears the "permissions" edge to the XadminPermission entity.
+func (m *XadminRoleMutation) ClearPermissions() {
 	m.clearedpermissions = true
 }
 
-// PermissionsCleared reports if the "permissions" edge to the Permission entity was cleared.
-func (m *RoleMutation) PermissionsCleared() bool {
+// PermissionsCleared reports if the "permissions" edge to the XadminPermission entity was cleared.
+func (m *XadminRoleMutation) PermissionsCleared() bool {
 	return m.clearedpermissions
 }
 
-// RemovePermissionIDs removes the "permissions" edge to the Permission entity by IDs.
-func (m *RoleMutation) RemovePermissionIDs(ids ...int) {
+// RemovePermissionIDs removes the "permissions" edge to the XadminPermission entity by IDs.
+func (m *XadminRoleMutation) RemovePermissionIDs(ids ...int) {
 	if m.removedpermissions == nil {
 		m.removedpermissions = make(map[int]struct{})
 	}
@@ -1526,8 +1526,8 @@ func (m *RoleMutation) RemovePermissionIDs(ids ...int) {
 	}
 }
 
-// RemovedPermissions returns the removed IDs of the "permissions" edge to the Permission entity.
-func (m *RoleMutation) RemovedPermissionsIDs() (ids []int) {
+// RemovedPermissions returns the removed IDs of the "permissions" edge to the XadminPermission entity.
+func (m *XadminRoleMutation) RemovedPermissionsIDs() (ids []int) {
 	for id := range m.removedpermissions {
 		ids = append(ids, id)
 	}
@@ -1535,7 +1535,7 @@ func (m *RoleMutation) RemovedPermissionsIDs() (ids []int) {
 }
 
 // PermissionsIDs returns the "permissions" edge IDs in the mutation.
-func (m *RoleMutation) PermissionsIDs() (ids []int) {
+func (m *XadminRoleMutation) PermissionsIDs() (ids []int) {
 	for id := range m.permissions {
 		ids = append(ids, id)
 	}
@@ -1543,40 +1543,40 @@ func (m *RoleMutation) PermissionsIDs() (ids []int) {
 }
 
 // ResetPermissions resets all changes to the "permissions" edge.
-func (m *RoleMutation) ResetPermissions() {
+func (m *XadminRoleMutation) ResetPermissions() {
 	m.permissions = nil
 	m.clearedpermissions = false
 	m.removedpermissions = nil
 }
 
-// Where appends a list predicates to the RoleMutation builder.
-func (m *RoleMutation) Where(ps ...predicate.Role) {
+// Where appends a list predicates to the XadminRoleMutation builder.
+func (m *XadminRoleMutation) Where(ps ...predicate.XadminRole) {
 	m.predicates = append(m.predicates, ps...)
 }
 
 // Op returns the operation name.
-func (m *RoleMutation) Op() Op {
+func (m *XadminRoleMutation) Op() Op {
 	return m.op
 }
 
-// Type returns the node type of this mutation (Role).
-func (m *RoleMutation) Type() string {
+// Type returns the node type of this mutation (XadminRole).
+func (m *XadminRoleMutation) Type() string {
 	return m.typ
 }
 
 // Fields returns all fields that were changed during this mutation. Note that in
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
-func (m *RoleMutation) Fields() []string {
+func (m *XadminRoleMutation) Fields() []string {
 	fields := make([]string, 0, 3)
 	if m.name != nil {
-		fields = append(fields, role.FieldName)
+		fields = append(fields, xadminrole.FieldName)
 	}
 	if m.created_at != nil {
-		fields = append(fields, role.FieldCreatedAt)
+		fields = append(fields, xadminrole.FieldCreatedAt)
 	}
 	if m.updated_at != nil {
-		fields = append(fields, role.FieldUpdatedAt)
+		fields = append(fields, xadminrole.FieldUpdatedAt)
 	}
 	return fields
 }
@@ -1584,13 +1584,13 @@ func (m *RoleMutation) Fields() []string {
 // Field returns the value of a field with the given name. The second boolean
 // return value indicates that this field was not set, or was not defined in the
 // schema.
-func (m *RoleMutation) Field(name string) (ent.Value, bool) {
+func (m *XadminRoleMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case role.FieldName:
+	case xadminrole.FieldName:
 		return m.Name()
-	case role.FieldCreatedAt:
+	case xadminrole.FieldCreatedAt:
 		return m.CreatedAt()
-	case role.FieldUpdatedAt:
+	case xadminrole.FieldUpdatedAt:
 		return m.UpdatedAt()
 	}
 	return nil, false
@@ -1599,38 +1599,38 @@ func (m *RoleMutation) Field(name string) (ent.Value, bool) {
 // OldField returns the old value of the field from the database. An error is
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
-func (m *RoleMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+func (m *XadminRoleMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case role.FieldName:
+	case xadminrole.FieldName:
 		return m.OldName(ctx)
-	case role.FieldCreatedAt:
+	case xadminrole.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
-	case role.FieldUpdatedAt:
+	case xadminrole.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
 	}
-	return nil, fmt.Errorf("unknown Role field %s", name)
+	return nil, fmt.Errorf("unknown XadminRole field %s", name)
 }
 
 // SetField sets the value of a field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *RoleMutation) SetField(name string, value ent.Value) error {
+func (m *XadminRoleMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case role.FieldName:
+	case xadminrole.FieldName:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetName(v)
 		return nil
-	case role.FieldCreatedAt:
+	case xadminrole.FieldCreatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCreatedAt(v)
 		return nil
-	case role.FieldUpdatedAt:
+	case xadminrole.FieldUpdatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -1638,90 +1638,90 @@ func (m *RoleMutation) SetField(name string, value ent.Value) error {
 		m.SetUpdatedAt(v)
 		return nil
 	}
-	return fmt.Errorf("unknown Role field %s", name)
+	return fmt.Errorf("unknown XadminRole field %s", name)
 }
 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
-func (m *RoleMutation) AddedFields() []string {
+func (m *XadminRoleMutation) AddedFields() []string {
 	return nil
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
-func (m *RoleMutation) AddedField(name string) (ent.Value, bool) {
+func (m *XadminRoleMutation) AddedField(name string) (ent.Value, bool) {
 	return nil, false
 }
 
 // AddField adds the value to the field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *RoleMutation) AddField(name string, value ent.Value) error {
+func (m *XadminRoleMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	}
-	return fmt.Errorf("unknown Role numeric field %s", name)
+	return fmt.Errorf("unknown XadminRole numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
-func (m *RoleMutation) ClearedFields() []string {
+func (m *XadminRoleMutation) ClearedFields() []string {
 	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
-func (m *RoleMutation) FieldCleared(name string) bool {
+func (m *XadminRoleMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
-func (m *RoleMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown Role nullable field %s", name)
+func (m *XadminRoleMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown XadminRole nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
-func (m *RoleMutation) ResetField(name string) error {
+func (m *XadminRoleMutation) ResetField(name string) error {
 	switch name {
-	case role.FieldName:
+	case xadminrole.FieldName:
 		m.ResetName()
 		return nil
-	case role.FieldCreatedAt:
+	case xadminrole.FieldCreatedAt:
 		m.ResetCreatedAt()
 		return nil
-	case role.FieldUpdatedAt:
+	case xadminrole.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
 	}
-	return fmt.Errorf("unknown Role field %s", name)
+	return fmt.Errorf("unknown XadminRole field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
-func (m *RoleMutation) AddedEdges() []string {
+func (m *XadminRoleMutation) AddedEdges() []string {
 	edges := make([]string, 0, 2)
 	if m.users != nil {
-		edges = append(edges, role.EdgeUsers)
+		edges = append(edges, xadminrole.EdgeUsers)
 	}
 	if m.permissions != nil {
-		edges = append(edges, role.EdgePermissions)
+		edges = append(edges, xadminrole.EdgePermissions)
 	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
-func (m *RoleMutation) AddedIDs(name string) []ent.Value {
+func (m *XadminRoleMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case role.EdgeUsers:
+	case xadminrole.EdgeUsers:
 		ids := make([]ent.Value, 0, len(m.users))
 		for id := range m.users {
 			ids = append(ids, id)
 		}
 		return ids
-	case role.EdgePermissions:
+	case xadminrole.EdgePermissions:
 		ids := make([]ent.Value, 0, len(m.permissions))
 		for id := range m.permissions {
 			ids = append(ids, id)
@@ -1732,28 +1732,28 @@ func (m *RoleMutation) AddedIDs(name string) []ent.Value {
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
-func (m *RoleMutation) RemovedEdges() []string {
+func (m *XadminRoleMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 2)
 	if m.removedusers != nil {
-		edges = append(edges, role.EdgeUsers)
+		edges = append(edges, xadminrole.EdgeUsers)
 	}
 	if m.removedpermissions != nil {
-		edges = append(edges, role.EdgePermissions)
+		edges = append(edges, xadminrole.EdgePermissions)
 	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
-func (m *RoleMutation) RemovedIDs(name string) []ent.Value {
+func (m *XadminRoleMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case role.EdgeUsers:
+	case xadminrole.EdgeUsers:
 		ids := make([]ent.Value, 0, len(m.removedusers))
 		for id := range m.removedusers {
 			ids = append(ids, id)
 		}
 		return ids
-	case role.EdgePermissions:
+	case xadminrole.EdgePermissions:
 		ids := make([]ent.Value, 0, len(m.removedpermissions))
 		for id := range m.removedpermissions {
 			ids = append(ids, id)
@@ -1764,24 +1764,24 @@ func (m *RoleMutation) RemovedIDs(name string) []ent.Value {
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *RoleMutation) ClearedEdges() []string {
+func (m *XadminRoleMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 2)
 	if m.clearedusers {
-		edges = append(edges, role.EdgeUsers)
+		edges = append(edges, xadminrole.EdgeUsers)
 	}
 	if m.clearedpermissions {
-		edges = append(edges, role.EdgePermissions)
+		edges = append(edges, xadminrole.EdgePermissions)
 	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
-func (m *RoleMutation) EdgeCleared(name string) bool {
+func (m *XadminRoleMutation) EdgeCleared(name string) bool {
 	switch name {
-	case role.EdgeUsers:
+	case xadminrole.EdgeUsers:
 		return m.clearedusers
-	case role.EdgePermissions:
+	case xadminrole.EdgePermissions:
 		return m.clearedpermissions
 	}
 	return false
@@ -1789,28 +1789,28 @@ func (m *RoleMutation) EdgeCleared(name string) bool {
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
-func (m *RoleMutation) ClearEdge(name string) error {
+func (m *XadminRoleMutation) ClearEdge(name string) error {
 	switch name {
 	}
-	return fmt.Errorf("unknown Role unique edge %s", name)
+	return fmt.Errorf("unknown XadminRole unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
-func (m *RoleMutation) ResetEdge(name string) error {
+func (m *XadminRoleMutation) ResetEdge(name string) error {
 	switch name {
-	case role.EdgeUsers:
+	case xadminrole.EdgeUsers:
 		m.ResetUsers()
 		return nil
-	case role.EdgePermissions:
+	case xadminrole.EdgePermissions:
 		m.ResetPermissions()
 		return nil
 	}
-	return fmt.Errorf("unknown Role edge %s", name)
+	return fmt.Errorf("unknown XadminRole edge %s", name)
 }
 
-// UserMutation represents an operation that mutates the User nodes in the graph.
-type UserMutation struct {
+// XadminUserMutation represents an operation that mutates the XadminUser nodes in the graph.
+type XadminUserMutation struct {
 	config
 	op                 Op
 	typ                string
@@ -1830,21 +1830,21 @@ type UserMutation struct {
 	removedpermissions map[int]struct{}
 	clearedpermissions bool
 	done               bool
-	oldValue           func(context.Context) (*User, error)
-	predicates         []predicate.User
+	oldValue           func(context.Context) (*XadminUser, error)
+	predicates         []predicate.XadminUser
 }
 
-var _ ent.Mutation = (*UserMutation)(nil)
+var _ ent.Mutation = (*XadminUserMutation)(nil)
 
-// userOption allows management of the mutation configuration using functional options.
-type userOption func(*UserMutation)
+// xadminuserOption allows management of the mutation configuration using functional options.
+type xadminuserOption func(*XadminUserMutation)
 
-// newUserMutation creates new mutation for the User entity.
-func newUserMutation(c config, op Op, opts ...userOption) *UserMutation {
-	m := &UserMutation{
+// newXadminUserMutation creates new mutation for the XadminUser entity.
+func newXadminUserMutation(c config, op Op, opts ...xadminuserOption) *XadminUserMutation {
+	m := &XadminUserMutation{
 		config:        c,
 		op:            op,
-		typ:           TypeUser,
+		typ:           TypeXadminUser,
 		clearedFields: make(map[string]struct{}),
 	}
 	for _, opt := range opts {
@@ -1853,20 +1853,20 @@ func newUserMutation(c config, op Op, opts ...userOption) *UserMutation {
 	return m
 }
 
-// withUserID sets the ID field of the mutation.
-func withUserID(id int) userOption {
-	return func(m *UserMutation) {
+// withXadminUserID sets the ID field of the mutation.
+func withXadminUserID(id int) xadminuserOption {
+	return func(m *XadminUserMutation) {
 		var (
 			err   error
 			once  sync.Once
-			value *User
+			value *XadminUser
 		)
-		m.oldValue = func(ctx context.Context) (*User, error) {
+		m.oldValue = func(ctx context.Context) (*XadminUser, error) {
 			once.Do(func() {
 				if m.done {
 					err = errors.New("querying old values post mutation is not allowed")
 				} else {
-					value, err = m.Client().User.Get(ctx, id)
+					value, err = m.Client().XadminUser.Get(ctx, id)
 				}
 			})
 			return value, err
@@ -1875,10 +1875,10 @@ func withUserID(id int) userOption {
 	}
 }
 
-// withUser sets the old User of the mutation.
-func withUser(node *User) userOption {
-	return func(m *UserMutation) {
-		m.oldValue = func(context.Context) (*User, error) {
+// withXadminUser sets the old XadminUser of the mutation.
+func withXadminUser(node *XadminUser) xadminuserOption {
+	return func(m *XadminUserMutation) {
+		m.oldValue = func(context.Context) (*XadminUser, error) {
 			return node, nil
 		}
 		m.id = &node.ID
@@ -1887,7 +1887,7 @@ func withUser(node *User) userOption {
 
 // Client returns a new `ent.Client` from the mutation. If the mutation was
 // executed in a transaction (ent.Tx), a transactional client is returned.
-func (m UserMutation) Client() *Client {
+func (m XadminUserMutation) Client() *Client {
 	client := &Client{config: m.config}
 	client.init()
 	return client
@@ -1895,7 +1895,7 @@ func (m UserMutation) Client() *Client {
 
 // Tx returns an `ent.Tx` for mutations that were executed in transactions;
 // it returns an error otherwise.
-func (m UserMutation) Tx() (*Tx, error) {
+func (m XadminUserMutation) Tx() (*Tx, error) {
 	if _, ok := m.driver.(*txDriver); !ok {
 		return nil, errors.New("ent: mutation is not running in a transaction")
 	}
@@ -1906,7 +1906,7 @@ func (m UserMutation) Tx() (*Tx, error) {
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *UserMutation) ID() (id int, exists bool) {
+func (m *XadminUserMutation) ID() (id int, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -1917,7 +1917,7 @@ func (m *UserMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *UserMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *XadminUserMutation) IDs(ctx context.Context) ([]int, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
@@ -1926,19 +1926,19 @@ func (m *UserMutation) IDs(ctx context.Context) ([]int, error) {
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().User.Query().Where(m.predicates...).IDs(ctx)
+		return m.Client().XadminUser.Query().Where(m.predicates...).IDs(ctx)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
 }
 
 // SetUsername sets the "username" field.
-func (m *UserMutation) SetUsername(s string) {
+func (m *XadminUserMutation) SetUsername(s string) {
 	m.username = &s
 }
 
 // Username returns the value of the "username" field in the mutation.
-func (m *UserMutation) Username() (r string, exists bool) {
+func (m *XadminUserMutation) Username() (r string, exists bool) {
 	v := m.username
 	if v == nil {
 		return
@@ -1946,10 +1946,10 @@ func (m *UserMutation) Username() (r string, exists bool) {
 	return *v, true
 }
 
-// OldUsername returns the old "username" field's value of the User entity.
-// If the User object wasn't provided to the builder, the object is fetched from the database.
+// OldUsername returns the old "username" field's value of the XadminUser entity.
+// If the XadminUser object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserMutation) OldUsername(ctx context.Context) (v string, err error) {
+func (m *XadminUserMutation) OldUsername(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUsername is only allowed on UpdateOne operations")
 	}
@@ -1964,17 +1964,17 @@ func (m *UserMutation) OldUsername(ctx context.Context) (v string, err error) {
 }
 
 // ResetUsername resets all changes to the "username" field.
-func (m *UserMutation) ResetUsername() {
+func (m *XadminUserMutation) ResetUsername() {
 	m.username = nil
 }
 
 // SetPassword sets the "password" field.
-func (m *UserMutation) SetPassword(s string) {
+func (m *XadminUserMutation) SetPassword(s string) {
 	m.password = &s
 }
 
 // Password returns the value of the "password" field in the mutation.
-func (m *UserMutation) Password() (r string, exists bool) {
+func (m *XadminUserMutation) Password() (r string, exists bool) {
 	v := m.password
 	if v == nil {
 		return
@@ -1982,10 +1982,10 @@ func (m *UserMutation) Password() (r string, exists bool) {
 	return *v, true
 }
 
-// OldPassword returns the old "password" field's value of the User entity.
-// If the User object wasn't provided to the builder, the object is fetched from the database.
+// OldPassword returns the old "password" field's value of the XadminUser entity.
+// If the XadminUser object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserMutation) OldPassword(ctx context.Context) (v string, err error) {
+func (m *XadminUserMutation) OldPassword(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldPassword is only allowed on UpdateOne operations")
 	}
@@ -2000,17 +2000,17 @@ func (m *UserMutation) OldPassword(ctx context.Context) (v string, err error) {
 }
 
 // ResetPassword resets all changes to the "password" field.
-func (m *UserMutation) ResetPassword() {
+func (m *XadminUserMutation) ResetPassword() {
 	m.password = nil
 }
 
 // SetSalt sets the "salt" field.
-func (m *UserMutation) SetSalt(s string) {
+func (m *XadminUserMutation) SetSalt(s string) {
 	m.salt = &s
 }
 
 // Salt returns the value of the "salt" field in the mutation.
-func (m *UserMutation) Salt() (r string, exists bool) {
+func (m *XadminUserMutation) Salt() (r string, exists bool) {
 	v := m.salt
 	if v == nil {
 		return
@@ -2018,10 +2018,10 @@ func (m *UserMutation) Salt() (r string, exists bool) {
 	return *v, true
 }
 
-// OldSalt returns the old "salt" field's value of the User entity.
-// If the User object wasn't provided to the builder, the object is fetched from the database.
+// OldSalt returns the old "salt" field's value of the XadminUser entity.
+// If the XadminUser object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserMutation) OldSalt(ctx context.Context) (v string, err error) {
+func (m *XadminUserMutation) OldSalt(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldSalt is only allowed on UpdateOne operations")
 	}
@@ -2036,17 +2036,17 @@ func (m *UserMutation) OldSalt(ctx context.Context) (v string, err error) {
 }
 
 // ResetSalt resets all changes to the "salt" field.
-func (m *UserMutation) ResetSalt() {
+func (m *XadminUserMutation) ResetSalt() {
 	m.salt = nil
 }
 
 // SetIsSuper sets the "is_super" field.
-func (m *UserMutation) SetIsSuper(b bool) {
+func (m *XadminUserMutation) SetIsSuper(b bool) {
 	m.is_super = &b
 }
 
 // IsSuper returns the value of the "is_super" field in the mutation.
-func (m *UserMutation) IsSuper() (r bool, exists bool) {
+func (m *XadminUserMutation) IsSuper() (r bool, exists bool) {
 	v := m.is_super
 	if v == nil {
 		return
@@ -2054,10 +2054,10 @@ func (m *UserMutation) IsSuper() (r bool, exists bool) {
 	return *v, true
 }
 
-// OldIsSuper returns the old "is_super" field's value of the User entity.
-// If the User object wasn't provided to the builder, the object is fetched from the database.
+// OldIsSuper returns the old "is_super" field's value of the XadminUser entity.
+// If the XadminUser object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserMutation) OldIsSuper(ctx context.Context) (v bool, err error) {
+func (m *XadminUserMutation) OldIsSuper(ctx context.Context) (v bool, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldIsSuper is only allowed on UpdateOne operations")
 	}
@@ -2072,17 +2072,17 @@ func (m *UserMutation) OldIsSuper(ctx context.Context) (v bool, err error) {
 }
 
 // ResetIsSuper resets all changes to the "is_super" field.
-func (m *UserMutation) ResetIsSuper() {
+func (m *XadminUserMutation) ResetIsSuper() {
 	m.is_super = nil
 }
 
 // SetLastLoginAt sets the "last_login_at" field.
-func (m *UserMutation) SetLastLoginAt(t time.Time) {
+func (m *XadminUserMutation) SetLastLoginAt(t time.Time) {
 	m.last_login_at = &t
 }
 
 // LastLoginAt returns the value of the "last_login_at" field in the mutation.
-func (m *UserMutation) LastLoginAt() (r time.Time, exists bool) {
+func (m *XadminUserMutation) LastLoginAt() (r time.Time, exists bool) {
 	v := m.last_login_at
 	if v == nil {
 		return
@@ -2090,10 +2090,10 @@ func (m *UserMutation) LastLoginAt() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldLastLoginAt returns the old "last_login_at" field's value of the User entity.
-// If the User object wasn't provided to the builder, the object is fetched from the database.
+// OldLastLoginAt returns the old "last_login_at" field's value of the XadminUser entity.
+// If the XadminUser object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserMutation) OldLastLoginAt(ctx context.Context) (v time.Time, err error) {
+func (m *XadminUserMutation) OldLastLoginAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldLastLoginAt is only allowed on UpdateOne operations")
 	}
@@ -2108,17 +2108,17 @@ func (m *UserMutation) OldLastLoginAt(ctx context.Context) (v time.Time, err err
 }
 
 // ResetLastLoginAt resets all changes to the "last_login_at" field.
-func (m *UserMutation) ResetLastLoginAt() {
+func (m *XadminUserMutation) ResetLastLoginAt() {
 	m.last_login_at = nil
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (m *UserMutation) SetCreatedAt(t time.Time) {
+func (m *XadminUserMutation) SetCreatedAt(t time.Time) {
 	m.created_at = &t
 }
 
 // CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *UserMutation) CreatedAt() (r time.Time, exists bool) {
+func (m *XadminUserMutation) CreatedAt() (r time.Time, exists bool) {
 	v := m.created_at
 	if v == nil {
 		return
@@ -2126,10 +2126,10 @@ func (m *UserMutation) CreatedAt() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldCreatedAt returns the old "created_at" field's value of the User entity.
-// If the User object wasn't provided to the builder, the object is fetched from the database.
+// OldCreatedAt returns the old "created_at" field's value of the XadminUser entity.
+// If the XadminUser object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+func (m *XadminUserMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
 	}
@@ -2144,17 +2144,17 @@ func (m *UserMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error
 }
 
 // ResetCreatedAt resets all changes to the "created_at" field.
-func (m *UserMutation) ResetCreatedAt() {
+func (m *XadminUserMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (m *UserMutation) SetUpdatedAt(t time.Time) {
+func (m *XadminUserMutation) SetUpdatedAt(t time.Time) {
 	m.updated_at = &t
 }
 
 // UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *UserMutation) UpdatedAt() (r time.Time, exists bool) {
+func (m *XadminUserMutation) UpdatedAt() (r time.Time, exists bool) {
 	v := m.updated_at
 	if v == nil {
 		return
@@ -2162,10 +2162,10 @@ func (m *UserMutation) UpdatedAt() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldUpdatedAt returns the old "updated_at" field's value of the User entity.
-// If the User object wasn't provided to the builder, the object is fetched from the database.
+// OldUpdatedAt returns the old "updated_at" field's value of the XadminUser entity.
+// If the XadminUser object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+func (m *XadminUserMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
 	}
@@ -2180,12 +2180,12 @@ func (m *UserMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error
 }
 
 // ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *UserMutation) ResetUpdatedAt() {
+func (m *XadminUserMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
-// AddRoleIDs adds the "roles" edge to the Role entity by ids.
-func (m *UserMutation) AddRoleIDs(ids ...int) {
+// AddRoleIDs adds the "roles" edge to the XadminRole entity by ids.
+func (m *XadminUserMutation) AddRoleIDs(ids ...int) {
 	if m.roles == nil {
 		m.roles = make(map[int]struct{})
 	}
@@ -2194,18 +2194,18 @@ func (m *UserMutation) AddRoleIDs(ids ...int) {
 	}
 }
 
-// ClearRoles clears the "roles" edge to the Role entity.
-func (m *UserMutation) ClearRoles() {
+// ClearRoles clears the "roles" edge to the XadminRole entity.
+func (m *XadminUserMutation) ClearRoles() {
 	m.clearedroles = true
 }
 
-// RolesCleared reports if the "roles" edge to the Role entity was cleared.
-func (m *UserMutation) RolesCleared() bool {
+// RolesCleared reports if the "roles" edge to the XadminRole entity was cleared.
+func (m *XadminUserMutation) RolesCleared() bool {
 	return m.clearedroles
 }
 
-// RemoveRoleIDs removes the "roles" edge to the Role entity by IDs.
-func (m *UserMutation) RemoveRoleIDs(ids ...int) {
+// RemoveRoleIDs removes the "roles" edge to the XadminRole entity by IDs.
+func (m *XadminUserMutation) RemoveRoleIDs(ids ...int) {
 	if m.removedroles == nil {
 		m.removedroles = make(map[int]struct{})
 	}
@@ -2215,8 +2215,8 @@ func (m *UserMutation) RemoveRoleIDs(ids ...int) {
 	}
 }
 
-// RemovedRoles returns the removed IDs of the "roles" edge to the Role entity.
-func (m *UserMutation) RemovedRolesIDs() (ids []int) {
+// RemovedRoles returns the removed IDs of the "roles" edge to the XadminRole entity.
+func (m *XadminUserMutation) RemovedRolesIDs() (ids []int) {
 	for id := range m.removedroles {
 		ids = append(ids, id)
 	}
@@ -2224,7 +2224,7 @@ func (m *UserMutation) RemovedRolesIDs() (ids []int) {
 }
 
 // RolesIDs returns the "roles" edge IDs in the mutation.
-func (m *UserMutation) RolesIDs() (ids []int) {
+func (m *XadminUserMutation) RolesIDs() (ids []int) {
 	for id := range m.roles {
 		ids = append(ids, id)
 	}
@@ -2232,14 +2232,14 @@ func (m *UserMutation) RolesIDs() (ids []int) {
 }
 
 // ResetRoles resets all changes to the "roles" edge.
-func (m *UserMutation) ResetRoles() {
+func (m *XadminUserMutation) ResetRoles() {
 	m.roles = nil
 	m.clearedroles = false
 	m.removedroles = nil
 }
 
-// AddPermissionIDs adds the "permissions" edge to the Permission entity by ids.
-func (m *UserMutation) AddPermissionIDs(ids ...int) {
+// AddPermissionIDs adds the "permissions" edge to the XadminPermission entity by ids.
+func (m *XadminUserMutation) AddPermissionIDs(ids ...int) {
 	if m.permissions == nil {
 		m.permissions = make(map[int]struct{})
 	}
@@ -2248,18 +2248,18 @@ func (m *UserMutation) AddPermissionIDs(ids ...int) {
 	}
 }
 
-// ClearPermissions clears the "permissions" edge to the Permission entity.
-func (m *UserMutation) ClearPermissions() {
+// ClearPermissions clears the "permissions" edge to the XadminPermission entity.
+func (m *XadminUserMutation) ClearPermissions() {
 	m.clearedpermissions = true
 }
 
-// PermissionsCleared reports if the "permissions" edge to the Permission entity was cleared.
-func (m *UserMutation) PermissionsCleared() bool {
+// PermissionsCleared reports if the "permissions" edge to the XadminPermission entity was cleared.
+func (m *XadminUserMutation) PermissionsCleared() bool {
 	return m.clearedpermissions
 }
 
-// RemovePermissionIDs removes the "permissions" edge to the Permission entity by IDs.
-func (m *UserMutation) RemovePermissionIDs(ids ...int) {
+// RemovePermissionIDs removes the "permissions" edge to the XadminPermission entity by IDs.
+func (m *XadminUserMutation) RemovePermissionIDs(ids ...int) {
 	if m.removedpermissions == nil {
 		m.removedpermissions = make(map[int]struct{})
 	}
@@ -2269,8 +2269,8 @@ func (m *UserMutation) RemovePermissionIDs(ids ...int) {
 	}
 }
 
-// RemovedPermissions returns the removed IDs of the "permissions" edge to the Permission entity.
-func (m *UserMutation) RemovedPermissionsIDs() (ids []int) {
+// RemovedPermissions returns the removed IDs of the "permissions" edge to the XadminPermission entity.
+func (m *XadminUserMutation) RemovedPermissionsIDs() (ids []int) {
 	for id := range m.removedpermissions {
 		ids = append(ids, id)
 	}
@@ -2278,7 +2278,7 @@ func (m *UserMutation) RemovedPermissionsIDs() (ids []int) {
 }
 
 // PermissionsIDs returns the "permissions" edge IDs in the mutation.
-func (m *UserMutation) PermissionsIDs() (ids []int) {
+func (m *XadminUserMutation) PermissionsIDs() (ids []int) {
 	for id := range m.permissions {
 		ids = append(ids, id)
 	}
@@ -2286,52 +2286,52 @@ func (m *UserMutation) PermissionsIDs() (ids []int) {
 }
 
 // ResetPermissions resets all changes to the "permissions" edge.
-func (m *UserMutation) ResetPermissions() {
+func (m *XadminUserMutation) ResetPermissions() {
 	m.permissions = nil
 	m.clearedpermissions = false
 	m.removedpermissions = nil
 }
 
-// Where appends a list predicates to the UserMutation builder.
-func (m *UserMutation) Where(ps ...predicate.User) {
+// Where appends a list predicates to the XadminUserMutation builder.
+func (m *XadminUserMutation) Where(ps ...predicate.XadminUser) {
 	m.predicates = append(m.predicates, ps...)
 }
 
 // Op returns the operation name.
-func (m *UserMutation) Op() Op {
+func (m *XadminUserMutation) Op() Op {
 	return m.op
 }
 
-// Type returns the node type of this mutation (User).
-func (m *UserMutation) Type() string {
+// Type returns the node type of this mutation (XadminUser).
+func (m *XadminUserMutation) Type() string {
 	return m.typ
 }
 
 // Fields returns all fields that were changed during this mutation. Note that in
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
-func (m *UserMutation) Fields() []string {
+func (m *XadminUserMutation) Fields() []string {
 	fields := make([]string, 0, 7)
 	if m.username != nil {
-		fields = append(fields, user.FieldUsername)
+		fields = append(fields, xadminuser.FieldUsername)
 	}
 	if m.password != nil {
-		fields = append(fields, user.FieldPassword)
+		fields = append(fields, xadminuser.FieldPassword)
 	}
 	if m.salt != nil {
-		fields = append(fields, user.FieldSalt)
+		fields = append(fields, xadminuser.FieldSalt)
 	}
 	if m.is_super != nil {
-		fields = append(fields, user.FieldIsSuper)
+		fields = append(fields, xadminuser.FieldIsSuper)
 	}
 	if m.last_login_at != nil {
-		fields = append(fields, user.FieldLastLoginAt)
+		fields = append(fields, xadminuser.FieldLastLoginAt)
 	}
 	if m.created_at != nil {
-		fields = append(fields, user.FieldCreatedAt)
+		fields = append(fields, xadminuser.FieldCreatedAt)
 	}
 	if m.updated_at != nil {
-		fields = append(fields, user.FieldUpdatedAt)
+		fields = append(fields, xadminuser.FieldUpdatedAt)
 	}
 	return fields
 }
@@ -2339,21 +2339,21 @@ func (m *UserMutation) Fields() []string {
 // Field returns the value of a field with the given name. The second boolean
 // return value indicates that this field was not set, or was not defined in the
 // schema.
-func (m *UserMutation) Field(name string) (ent.Value, bool) {
+func (m *XadminUserMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case user.FieldUsername:
+	case xadminuser.FieldUsername:
 		return m.Username()
-	case user.FieldPassword:
+	case xadminuser.FieldPassword:
 		return m.Password()
-	case user.FieldSalt:
+	case xadminuser.FieldSalt:
 		return m.Salt()
-	case user.FieldIsSuper:
+	case xadminuser.FieldIsSuper:
 		return m.IsSuper()
-	case user.FieldLastLoginAt:
+	case xadminuser.FieldLastLoginAt:
 		return m.LastLoginAt()
-	case user.FieldCreatedAt:
+	case xadminuser.FieldCreatedAt:
 		return m.CreatedAt()
-	case user.FieldUpdatedAt:
+	case xadminuser.FieldUpdatedAt:
 		return m.UpdatedAt()
 	}
 	return nil, false
@@ -2362,74 +2362,74 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 // OldField returns the old value of the field from the database. An error is
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
-func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+func (m *XadminUserMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case user.FieldUsername:
+	case xadminuser.FieldUsername:
 		return m.OldUsername(ctx)
-	case user.FieldPassword:
+	case xadminuser.FieldPassword:
 		return m.OldPassword(ctx)
-	case user.FieldSalt:
+	case xadminuser.FieldSalt:
 		return m.OldSalt(ctx)
-	case user.FieldIsSuper:
+	case xadminuser.FieldIsSuper:
 		return m.OldIsSuper(ctx)
-	case user.FieldLastLoginAt:
+	case xadminuser.FieldLastLoginAt:
 		return m.OldLastLoginAt(ctx)
-	case user.FieldCreatedAt:
+	case xadminuser.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
-	case user.FieldUpdatedAt:
+	case xadminuser.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
 	}
-	return nil, fmt.Errorf("unknown User field %s", name)
+	return nil, fmt.Errorf("unknown XadminUser field %s", name)
 }
 
 // SetField sets the value of a field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *UserMutation) SetField(name string, value ent.Value) error {
+func (m *XadminUserMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case user.FieldUsername:
+	case xadminuser.FieldUsername:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUsername(v)
 		return nil
-	case user.FieldPassword:
+	case xadminuser.FieldPassword:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPassword(v)
 		return nil
-	case user.FieldSalt:
+	case xadminuser.FieldSalt:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetSalt(v)
 		return nil
-	case user.FieldIsSuper:
+	case xadminuser.FieldIsSuper:
 		v, ok := value.(bool)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetIsSuper(v)
 		return nil
-	case user.FieldLastLoginAt:
+	case xadminuser.FieldLastLoginAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetLastLoginAt(v)
 		return nil
-	case user.FieldCreatedAt:
+	case xadminuser.FieldCreatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCreatedAt(v)
 		return nil
-	case user.FieldUpdatedAt:
+	case xadminuser.FieldUpdatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -2437,102 +2437,102 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 		m.SetUpdatedAt(v)
 		return nil
 	}
-	return fmt.Errorf("unknown User field %s", name)
+	return fmt.Errorf("unknown XadminUser field %s", name)
 }
 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
-func (m *UserMutation) AddedFields() []string {
+func (m *XadminUserMutation) AddedFields() []string {
 	return nil
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
-func (m *UserMutation) AddedField(name string) (ent.Value, bool) {
+func (m *XadminUserMutation) AddedField(name string) (ent.Value, bool) {
 	return nil, false
 }
 
 // AddField adds the value to the field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *UserMutation) AddField(name string, value ent.Value) error {
+func (m *XadminUserMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	}
-	return fmt.Errorf("unknown User numeric field %s", name)
+	return fmt.Errorf("unknown XadminUser numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
-func (m *UserMutation) ClearedFields() []string {
+func (m *XadminUserMutation) ClearedFields() []string {
 	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
-func (m *UserMutation) FieldCleared(name string) bool {
+func (m *XadminUserMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
-func (m *UserMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown User nullable field %s", name)
+func (m *XadminUserMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown XadminUser nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
-func (m *UserMutation) ResetField(name string) error {
+func (m *XadminUserMutation) ResetField(name string) error {
 	switch name {
-	case user.FieldUsername:
+	case xadminuser.FieldUsername:
 		m.ResetUsername()
 		return nil
-	case user.FieldPassword:
+	case xadminuser.FieldPassword:
 		m.ResetPassword()
 		return nil
-	case user.FieldSalt:
+	case xadminuser.FieldSalt:
 		m.ResetSalt()
 		return nil
-	case user.FieldIsSuper:
+	case xadminuser.FieldIsSuper:
 		m.ResetIsSuper()
 		return nil
-	case user.FieldLastLoginAt:
+	case xadminuser.FieldLastLoginAt:
 		m.ResetLastLoginAt()
 		return nil
-	case user.FieldCreatedAt:
+	case xadminuser.FieldCreatedAt:
 		m.ResetCreatedAt()
 		return nil
-	case user.FieldUpdatedAt:
+	case xadminuser.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
 	}
-	return fmt.Errorf("unknown User field %s", name)
+	return fmt.Errorf("unknown XadminUser field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
-func (m *UserMutation) AddedEdges() []string {
+func (m *XadminUserMutation) AddedEdges() []string {
 	edges := make([]string, 0, 2)
 	if m.roles != nil {
-		edges = append(edges, user.EdgeRoles)
+		edges = append(edges, xadminuser.EdgeRoles)
 	}
 	if m.permissions != nil {
-		edges = append(edges, user.EdgePermissions)
+		edges = append(edges, xadminuser.EdgePermissions)
 	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
-func (m *UserMutation) AddedIDs(name string) []ent.Value {
+func (m *XadminUserMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case user.EdgeRoles:
+	case xadminuser.EdgeRoles:
 		ids := make([]ent.Value, 0, len(m.roles))
 		for id := range m.roles {
 			ids = append(ids, id)
 		}
 		return ids
-	case user.EdgePermissions:
+	case xadminuser.EdgePermissions:
 		ids := make([]ent.Value, 0, len(m.permissions))
 		for id := range m.permissions {
 			ids = append(ids, id)
@@ -2543,28 +2543,28 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
-func (m *UserMutation) RemovedEdges() []string {
+func (m *XadminUserMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 2)
 	if m.removedroles != nil {
-		edges = append(edges, user.EdgeRoles)
+		edges = append(edges, xadminuser.EdgeRoles)
 	}
 	if m.removedpermissions != nil {
-		edges = append(edges, user.EdgePermissions)
+		edges = append(edges, xadminuser.EdgePermissions)
 	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
-func (m *UserMutation) RemovedIDs(name string) []ent.Value {
+func (m *XadminUserMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case user.EdgeRoles:
+	case xadminuser.EdgeRoles:
 		ids := make([]ent.Value, 0, len(m.removedroles))
 		for id := range m.removedroles {
 			ids = append(ids, id)
 		}
 		return ids
-	case user.EdgePermissions:
+	case xadminuser.EdgePermissions:
 		ids := make([]ent.Value, 0, len(m.removedpermissions))
 		for id := range m.removedpermissions {
 			ids = append(ids, id)
@@ -2575,24 +2575,24 @@ func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *UserMutation) ClearedEdges() []string {
+func (m *XadminUserMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 2)
 	if m.clearedroles {
-		edges = append(edges, user.EdgeRoles)
+		edges = append(edges, xadminuser.EdgeRoles)
 	}
 	if m.clearedpermissions {
-		edges = append(edges, user.EdgePermissions)
+		edges = append(edges, xadminuser.EdgePermissions)
 	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
-func (m *UserMutation) EdgeCleared(name string) bool {
+func (m *XadminUserMutation) EdgeCleared(name string) bool {
 	switch name {
-	case user.EdgeRoles:
+	case xadminuser.EdgeRoles:
 		return m.clearedroles
-	case user.EdgePermissions:
+	case xadminuser.EdgePermissions:
 		return m.clearedpermissions
 	}
 	return false
@@ -2600,22 +2600,22 @@ func (m *UserMutation) EdgeCleared(name string) bool {
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
-func (m *UserMutation) ClearEdge(name string) error {
+func (m *XadminUserMutation) ClearEdge(name string) error {
 	switch name {
 	}
-	return fmt.Errorf("unknown User unique edge %s", name)
+	return fmt.Errorf("unknown XadminUser unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
-func (m *UserMutation) ResetEdge(name string) error {
+func (m *XadminUserMutation) ResetEdge(name string) error {
 	switch name {
-	case user.EdgeRoles:
+	case xadminuser.EdgeRoles:
 		m.ResetRoles()
 		return nil
-	case user.EdgePermissions:
+	case xadminuser.EdgePermissions:
 		m.ResetPermissions()
 		return nil
 	}
-	return fmt.Errorf("unknown User edge %s", name)
+	return fmt.Errorf("unknown XadminUser edge %s", name)
 }

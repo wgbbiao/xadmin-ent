@@ -61,7 +61,7 @@ type FooClaims struct {
 	Uid int `json:"uid"`
 }
 
-func GetToken(u *ent.User) (tokenString string) {
+func GetToken(u *ent.XadminUser) (tokenString string) {
 	signer := getSigner()
 
 	foo := FooClaims{

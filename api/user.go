@@ -9,13 +9,13 @@ import (
 	"github.com/kataras/iris/v12/middleware/jwt"
 	"github.com/wgbbiao/xadminent/database"
 	"github.com/wgbbiao/xadminent/ent"
-	"github.com/wgbbiao/xadminent/ent/user"
+	"github.com/wgbbiao/xadminent/ent/xadminuser"
 	"github.com/wgbbiao/xadminent/j"
 )
 
 //RefreshJwt 刷新jwt
 func RefreshJwt(c iris.Context) {
-	u := c.Values().Get("u").(*ent.User)
+	u := c.Values().Get("u").(*ent.XadminUser)
 	tokenString := j.GetToken(u)
 	c.JSON(iris.Map{
 		"status": 0,
@@ -58,9 +58,9 @@ func Login(ctx iris.Context) {
 		ctx.JSON(result)
 		return
 	}
-	u, err := database.GetDb().User.
+	u, err := database.GetDb().XadminUser.
 		Query().
-		Where(user.Username(form.Username)).
+		Where(xadminuser.Username(form.Username)).
 		First(ctx.Request().Context())
 	if err != nil {
 		result.Status = 1
@@ -125,16 +125,16 @@ func UserList(ctx iris.Context) {
 		ctx.JSON(result)
 		return
 	}
-	q := database.GetDb().User.
+	q := database.GetDb().XadminUser.
 		Query().
 		Offset((query.Page - 1) * query.Limit).
 		Limit(query.Limit)
 
 	if query.Username != "" {
-		q = q.Where(user.UsernameContains(query.Username))
+		q = q.Where(xadminuser.UsernameContains(query.Username))
 	}
 	if query.IsSuper != nil {
-		q = q.Where(user.IsSuper(true))
+		q = q.Where(xadminuser.IsSuper(true))
 	}
 
 	users, err := q.All(ctx.Request().Context())
@@ -150,10 +150,10 @@ func UserList(ctx iris.Context) {
 	ctx.JSON(result)
 }
 
-func getUserFromJwt(ctx iris.Context) (*ent.User, error) {
+func getUserFromJwt(ctx iris.Context) (*ent.XadminUser, error) {
 	claims := jwt.Get(ctx).(*j.FooClaims)
 	return database.GetDb().
-		User.Query().
-		Where(user.ID(claims.Uid)).
+		XadminUser.Query().
+		Where(xadminuser.ID(claims.Uid)).
 		First(ctx.Request().Context())
 }

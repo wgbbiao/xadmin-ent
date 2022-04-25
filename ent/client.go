@@ -9,10 +9,10 @@ import (
 
 	"github.com/wgbbiao/xadminent/ent/migrate"
 
-	"github.com/wgbbiao/xadminent/ent/contenttype"
-	"github.com/wgbbiao/xadminent/ent/permission"
-	"github.com/wgbbiao/xadminent/ent/role"
-	"github.com/wgbbiao/xadminent/ent/user"
+	"github.com/wgbbiao/xadminent/ent/xadmincontenttype"
+	"github.com/wgbbiao/xadminent/ent/xadminpermission"
+	"github.com/wgbbiao/xadminent/ent/xadminrole"
+	"github.com/wgbbiao/xadminent/ent/xadminuser"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
@@ -24,14 +24,14 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
-	// ContentType is the client for interacting with the ContentType builders.
-	ContentType *ContentTypeClient
-	// Permission is the client for interacting with the Permission builders.
-	Permission *PermissionClient
-	// Role is the client for interacting with the Role builders.
-	Role *RoleClient
-	// User is the client for interacting with the User builders.
-	User *UserClient
+	// XadminContenttype is the client for interacting with the XadminContenttype builders.
+	XadminContenttype *XadminContenttypeClient
+	// XadminPermission is the client for interacting with the XadminPermission builders.
+	XadminPermission *XadminPermissionClient
+	// XadminRole is the client for interacting with the XadminRole builders.
+	XadminRole *XadminRoleClient
+	// XadminUser is the client for interacting with the XadminUser builders.
+	XadminUser *XadminUserClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -45,10 +45,10 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
-	c.ContentType = NewContentTypeClient(c.config)
-	c.Permission = NewPermissionClient(c.config)
-	c.Role = NewRoleClient(c.config)
-	c.User = NewUserClient(c.config)
+	c.XadminContenttype = NewXadminContenttypeClient(c.config)
+	c.XadminPermission = NewXadminPermissionClient(c.config)
+	c.XadminRole = NewXadminRoleClient(c.config)
+	c.XadminUser = NewXadminUserClient(c.config)
 }
 
 // Open opens a database/sql.DB specified by the driver name and
@@ -80,12 +80,12 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:         ctx,
-		config:      cfg,
-		ContentType: NewContentTypeClient(cfg),
-		Permission:  NewPermissionClient(cfg),
-		Role:        NewRoleClient(cfg),
-		User:        NewUserClient(cfg),
+		ctx:               ctx,
+		config:            cfg,
+		XadminContenttype: NewXadminContenttypeClient(cfg),
+		XadminPermission:  NewXadminPermissionClient(cfg),
+		XadminRole:        NewXadminRoleClient(cfg),
+		XadminUser:        NewXadminUserClient(cfg),
 	}, nil
 }
 
@@ -103,19 +103,19 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:         ctx,
-		config:      cfg,
-		ContentType: NewContentTypeClient(cfg),
-		Permission:  NewPermissionClient(cfg),
-		Role:        NewRoleClient(cfg),
-		User:        NewUserClient(cfg),
+		ctx:               ctx,
+		config:            cfg,
+		XadminContenttype: NewXadminContenttypeClient(cfg),
+		XadminPermission:  NewXadminPermissionClient(cfg),
+		XadminRole:        NewXadminRoleClient(cfg),
+		XadminUser:        NewXadminUserClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		ContentType.
+//		XadminContenttype.
 //		Query().
 //		Count(ctx)
 //
@@ -138,90 +138,90 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
-	c.ContentType.Use(hooks...)
-	c.Permission.Use(hooks...)
-	c.Role.Use(hooks...)
-	c.User.Use(hooks...)
+	c.XadminContenttype.Use(hooks...)
+	c.XadminPermission.Use(hooks...)
+	c.XadminRole.Use(hooks...)
+	c.XadminUser.Use(hooks...)
 }
 
-// ContentTypeClient is a client for the ContentType schema.
-type ContentTypeClient struct {
+// XadminContenttypeClient is a client for the XadminContenttype schema.
+type XadminContenttypeClient struct {
 	config
 }
 
-// NewContentTypeClient returns a client for the ContentType from the given config.
-func NewContentTypeClient(c config) *ContentTypeClient {
-	return &ContentTypeClient{config: c}
+// NewXadminContenttypeClient returns a client for the XadminContenttype from the given config.
+func NewXadminContenttypeClient(c config) *XadminContenttypeClient {
+	return &XadminContenttypeClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `contenttype.Hooks(f(g(h())))`.
-func (c *ContentTypeClient) Use(hooks ...Hook) {
-	c.hooks.ContentType = append(c.hooks.ContentType, hooks...)
+// A call to `Use(f, g, h)` equals to `xadmincontenttype.Hooks(f(g(h())))`.
+func (c *XadminContenttypeClient) Use(hooks ...Hook) {
+	c.hooks.XadminContenttype = append(c.hooks.XadminContenttype, hooks...)
 }
 
-// Create returns a create builder for ContentType.
-func (c *ContentTypeClient) Create() *ContentTypeCreate {
-	mutation := newContentTypeMutation(c.config, OpCreate)
-	return &ContentTypeCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a create builder for XadminContenttype.
+func (c *XadminContenttypeClient) Create() *XadminContenttypeCreate {
+	mutation := newXadminContenttypeMutation(c.config, OpCreate)
+	return &XadminContenttypeCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of ContentType entities.
-func (c *ContentTypeClient) CreateBulk(builders ...*ContentTypeCreate) *ContentTypeCreateBulk {
-	return &ContentTypeCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of XadminContenttype entities.
+func (c *XadminContenttypeClient) CreateBulk(builders ...*XadminContenttypeCreate) *XadminContenttypeCreateBulk {
+	return &XadminContenttypeCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for ContentType.
-func (c *ContentTypeClient) Update() *ContentTypeUpdate {
-	mutation := newContentTypeMutation(c.config, OpUpdate)
-	return &ContentTypeUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for XadminContenttype.
+func (c *XadminContenttypeClient) Update() *XadminContenttypeUpdate {
+	mutation := newXadminContenttypeMutation(c.config, OpUpdate)
+	return &XadminContenttypeUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *ContentTypeClient) UpdateOne(ct *ContentType) *ContentTypeUpdateOne {
-	mutation := newContentTypeMutation(c.config, OpUpdateOne, withContentType(ct))
-	return &ContentTypeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *XadminContenttypeClient) UpdateOne(xc *XadminContenttype) *XadminContenttypeUpdateOne {
+	mutation := newXadminContenttypeMutation(c.config, OpUpdateOne, withXadminContenttype(xc))
+	return &XadminContenttypeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *ContentTypeClient) UpdateOneID(id int) *ContentTypeUpdateOne {
-	mutation := newContentTypeMutation(c.config, OpUpdateOne, withContentTypeID(id))
-	return &ContentTypeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *XadminContenttypeClient) UpdateOneID(id int) *XadminContenttypeUpdateOne {
+	mutation := newXadminContenttypeMutation(c.config, OpUpdateOne, withXadminContenttypeID(id))
+	return &XadminContenttypeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for ContentType.
-func (c *ContentTypeClient) Delete() *ContentTypeDelete {
-	mutation := newContentTypeMutation(c.config, OpDelete)
-	return &ContentTypeDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for XadminContenttype.
+func (c *XadminContenttypeClient) Delete() *XadminContenttypeDelete {
+	mutation := newXadminContenttypeMutation(c.config, OpDelete)
+	return &XadminContenttypeDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a delete builder for the given entity.
-func (c *ContentTypeClient) DeleteOne(ct *ContentType) *ContentTypeDeleteOne {
-	return c.DeleteOneID(ct.ID)
+func (c *XadminContenttypeClient) DeleteOne(xc *XadminContenttype) *XadminContenttypeDeleteOne {
+	return c.DeleteOneID(xc.ID)
 }
 
 // DeleteOneID returns a delete builder for the given id.
-func (c *ContentTypeClient) DeleteOneID(id int) *ContentTypeDeleteOne {
-	builder := c.Delete().Where(contenttype.ID(id))
+func (c *XadminContenttypeClient) DeleteOneID(id int) *XadminContenttypeDeleteOne {
+	builder := c.Delete().Where(xadmincontenttype.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &ContentTypeDeleteOne{builder}
+	return &XadminContenttypeDeleteOne{builder}
 }
 
-// Query returns a query builder for ContentType.
-func (c *ContentTypeClient) Query() *ContentTypeQuery {
-	return &ContentTypeQuery{
+// Query returns a query builder for XadminContenttype.
+func (c *XadminContenttypeClient) Query() *XadminContenttypeQuery {
+	return &XadminContenttypeQuery{
 		config: c.config,
 	}
 }
 
-// Get returns a ContentType entity by its id.
-func (c *ContentTypeClient) Get(ctx context.Context, id int) (*ContentType, error) {
-	return c.Query().Where(contenttype.ID(id)).Only(ctx)
+// Get returns a XadminContenttype entity by its id.
+func (c *XadminContenttypeClient) Get(ctx context.Context, id int) (*XadminContenttype, error) {
+	return c.Query().Where(xadmincontenttype.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *ContentTypeClient) GetX(ctx context.Context, id int) *ContentType {
+func (c *XadminContenttypeClient) GetX(ctx context.Context, id int) *XadminContenttype {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -230,88 +230,88 @@ func (c *ContentTypeClient) GetX(ctx context.Context, id int) *ContentType {
 }
 
 // Hooks returns the client hooks.
-func (c *ContentTypeClient) Hooks() []Hook {
-	return c.hooks.ContentType
+func (c *XadminContenttypeClient) Hooks() []Hook {
+	return c.hooks.XadminContenttype
 }
 
-// PermissionClient is a client for the Permission schema.
-type PermissionClient struct {
+// XadminPermissionClient is a client for the XadminPermission schema.
+type XadminPermissionClient struct {
 	config
 }
 
-// NewPermissionClient returns a client for the Permission from the given config.
-func NewPermissionClient(c config) *PermissionClient {
-	return &PermissionClient{config: c}
+// NewXadminPermissionClient returns a client for the XadminPermission from the given config.
+func NewXadminPermissionClient(c config) *XadminPermissionClient {
+	return &XadminPermissionClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `permission.Hooks(f(g(h())))`.
-func (c *PermissionClient) Use(hooks ...Hook) {
-	c.hooks.Permission = append(c.hooks.Permission, hooks...)
+// A call to `Use(f, g, h)` equals to `xadminpermission.Hooks(f(g(h())))`.
+func (c *XadminPermissionClient) Use(hooks ...Hook) {
+	c.hooks.XadminPermission = append(c.hooks.XadminPermission, hooks...)
 }
 
-// Create returns a create builder for Permission.
-func (c *PermissionClient) Create() *PermissionCreate {
-	mutation := newPermissionMutation(c.config, OpCreate)
-	return &PermissionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a create builder for XadminPermission.
+func (c *XadminPermissionClient) Create() *XadminPermissionCreate {
+	mutation := newXadminPermissionMutation(c.config, OpCreate)
+	return &XadminPermissionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of Permission entities.
-func (c *PermissionClient) CreateBulk(builders ...*PermissionCreate) *PermissionCreateBulk {
-	return &PermissionCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of XadminPermission entities.
+func (c *XadminPermissionClient) CreateBulk(builders ...*XadminPermissionCreate) *XadminPermissionCreateBulk {
+	return &XadminPermissionCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for Permission.
-func (c *PermissionClient) Update() *PermissionUpdate {
-	mutation := newPermissionMutation(c.config, OpUpdate)
-	return &PermissionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for XadminPermission.
+func (c *XadminPermissionClient) Update() *XadminPermissionUpdate {
+	mutation := newXadminPermissionMutation(c.config, OpUpdate)
+	return &XadminPermissionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *PermissionClient) UpdateOne(pe *Permission) *PermissionUpdateOne {
-	mutation := newPermissionMutation(c.config, OpUpdateOne, withPermission(pe))
-	return &PermissionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *XadminPermissionClient) UpdateOne(xp *XadminPermission) *XadminPermissionUpdateOne {
+	mutation := newXadminPermissionMutation(c.config, OpUpdateOne, withXadminPermission(xp))
+	return &XadminPermissionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *PermissionClient) UpdateOneID(id int) *PermissionUpdateOne {
-	mutation := newPermissionMutation(c.config, OpUpdateOne, withPermissionID(id))
-	return &PermissionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *XadminPermissionClient) UpdateOneID(id int) *XadminPermissionUpdateOne {
+	mutation := newXadminPermissionMutation(c.config, OpUpdateOne, withXadminPermissionID(id))
+	return &XadminPermissionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for Permission.
-func (c *PermissionClient) Delete() *PermissionDelete {
-	mutation := newPermissionMutation(c.config, OpDelete)
-	return &PermissionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for XadminPermission.
+func (c *XadminPermissionClient) Delete() *XadminPermissionDelete {
+	mutation := newXadminPermissionMutation(c.config, OpDelete)
+	return &XadminPermissionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a delete builder for the given entity.
-func (c *PermissionClient) DeleteOne(pe *Permission) *PermissionDeleteOne {
-	return c.DeleteOneID(pe.ID)
+func (c *XadminPermissionClient) DeleteOne(xp *XadminPermission) *XadminPermissionDeleteOne {
+	return c.DeleteOneID(xp.ID)
 }
 
 // DeleteOneID returns a delete builder for the given id.
-func (c *PermissionClient) DeleteOneID(id int) *PermissionDeleteOne {
-	builder := c.Delete().Where(permission.ID(id))
+func (c *XadminPermissionClient) DeleteOneID(id int) *XadminPermissionDeleteOne {
+	builder := c.Delete().Where(xadminpermission.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &PermissionDeleteOne{builder}
+	return &XadminPermissionDeleteOne{builder}
 }
 
-// Query returns a query builder for Permission.
-func (c *PermissionClient) Query() *PermissionQuery {
-	return &PermissionQuery{
+// Query returns a query builder for XadminPermission.
+func (c *XadminPermissionClient) Query() *XadminPermissionQuery {
+	return &XadminPermissionQuery{
 		config: c.config,
 	}
 }
 
-// Get returns a Permission entity by its id.
-func (c *PermissionClient) Get(ctx context.Context, id int) (*Permission, error) {
-	return c.Query().Where(permission.ID(id)).Only(ctx)
+// Get returns a XadminPermission entity by its id.
+func (c *XadminPermissionClient) Get(ctx context.Context, id int) (*XadminPermission, error) {
+	return c.Query().Where(xadminpermission.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *PermissionClient) GetX(ctx context.Context, id int) *Permission {
+func (c *XadminPermissionClient) GetX(ctx context.Context, id int) *XadminPermission {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -319,137 +319,137 @@ func (c *PermissionClient) GetX(ctx context.Context, id int) *Permission {
 	return obj
 }
 
-// QueryContentType queries the ContentType edge of a Permission.
-func (c *PermissionClient) QueryContentType(pe *Permission) *ContentTypeQuery {
-	query := &ContentTypeQuery{config: c.config}
+// QueryContentType queries the ContentType edge of a XadminPermission.
+func (c *XadminPermissionClient) QueryContentType(xp *XadminPermission) *XadminContenttypeQuery {
+	query := &XadminContenttypeQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := pe.ID
+		id := xp.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(permission.Table, permission.FieldID, id),
-			sqlgraph.To(contenttype.Table, contenttype.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, permission.ContentTypeTable, permission.ContentTypeColumn),
+			sqlgraph.From(xadminpermission.Table, xadminpermission.FieldID, id),
+			sqlgraph.To(xadmincontenttype.Table, xadmincontenttype.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, xadminpermission.ContentTypeTable, xadminpermission.ContentTypeColumn),
 		)
-		fromV = sqlgraph.Neighbors(pe.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(xp.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
 }
 
-// QueryUsers queries the users edge of a Permission.
-func (c *PermissionClient) QueryUsers(pe *Permission) *UserQuery {
-	query := &UserQuery{config: c.config}
+// QueryUsers queries the users edge of a XadminPermission.
+func (c *XadminPermissionClient) QueryUsers(xp *XadminPermission) *XadminUserQuery {
+	query := &XadminUserQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := pe.ID
+		id := xp.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(permission.Table, permission.FieldID, id),
-			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, permission.UsersTable, permission.UsersPrimaryKey...),
+			sqlgraph.From(xadminpermission.Table, xadminpermission.FieldID, id),
+			sqlgraph.To(xadminuser.Table, xadminuser.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, xadminpermission.UsersTable, xadminpermission.UsersPrimaryKey...),
 		)
-		fromV = sqlgraph.Neighbors(pe.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(xp.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
 }
 
-// QueryRoles queries the roles edge of a Permission.
-func (c *PermissionClient) QueryRoles(pe *Permission) *RoleQuery {
-	query := &RoleQuery{config: c.config}
+// QueryRoles queries the roles edge of a XadminPermission.
+func (c *XadminPermissionClient) QueryRoles(xp *XadminPermission) *XadminRoleQuery {
+	query := &XadminRoleQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := pe.ID
+		id := xp.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(permission.Table, permission.FieldID, id),
-			sqlgraph.To(role.Table, role.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, permission.RolesTable, permission.RolesPrimaryKey...),
+			sqlgraph.From(xadminpermission.Table, xadminpermission.FieldID, id),
+			sqlgraph.To(xadminrole.Table, xadminrole.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, xadminpermission.RolesTable, xadminpermission.RolesPrimaryKey...),
 		)
-		fromV = sqlgraph.Neighbors(pe.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(xp.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
 }
 
 // Hooks returns the client hooks.
-func (c *PermissionClient) Hooks() []Hook {
-	return c.hooks.Permission
+func (c *XadminPermissionClient) Hooks() []Hook {
+	return c.hooks.XadminPermission
 }
 
-// RoleClient is a client for the Role schema.
-type RoleClient struct {
+// XadminRoleClient is a client for the XadminRole schema.
+type XadminRoleClient struct {
 	config
 }
 
-// NewRoleClient returns a client for the Role from the given config.
-func NewRoleClient(c config) *RoleClient {
-	return &RoleClient{config: c}
+// NewXadminRoleClient returns a client for the XadminRole from the given config.
+func NewXadminRoleClient(c config) *XadminRoleClient {
+	return &XadminRoleClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `role.Hooks(f(g(h())))`.
-func (c *RoleClient) Use(hooks ...Hook) {
-	c.hooks.Role = append(c.hooks.Role, hooks...)
+// A call to `Use(f, g, h)` equals to `xadminrole.Hooks(f(g(h())))`.
+func (c *XadminRoleClient) Use(hooks ...Hook) {
+	c.hooks.XadminRole = append(c.hooks.XadminRole, hooks...)
 }
 
-// Create returns a create builder for Role.
-func (c *RoleClient) Create() *RoleCreate {
-	mutation := newRoleMutation(c.config, OpCreate)
-	return &RoleCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a create builder for XadminRole.
+func (c *XadminRoleClient) Create() *XadminRoleCreate {
+	mutation := newXadminRoleMutation(c.config, OpCreate)
+	return &XadminRoleCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of Role entities.
-func (c *RoleClient) CreateBulk(builders ...*RoleCreate) *RoleCreateBulk {
-	return &RoleCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of XadminRole entities.
+func (c *XadminRoleClient) CreateBulk(builders ...*XadminRoleCreate) *XadminRoleCreateBulk {
+	return &XadminRoleCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for Role.
-func (c *RoleClient) Update() *RoleUpdate {
-	mutation := newRoleMutation(c.config, OpUpdate)
-	return &RoleUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for XadminRole.
+func (c *XadminRoleClient) Update() *XadminRoleUpdate {
+	mutation := newXadminRoleMutation(c.config, OpUpdate)
+	return &XadminRoleUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *RoleClient) UpdateOne(r *Role) *RoleUpdateOne {
-	mutation := newRoleMutation(c.config, OpUpdateOne, withRole(r))
-	return &RoleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *XadminRoleClient) UpdateOne(xr *XadminRole) *XadminRoleUpdateOne {
+	mutation := newXadminRoleMutation(c.config, OpUpdateOne, withXadminRole(xr))
+	return &XadminRoleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *RoleClient) UpdateOneID(id int) *RoleUpdateOne {
-	mutation := newRoleMutation(c.config, OpUpdateOne, withRoleID(id))
-	return &RoleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *XadminRoleClient) UpdateOneID(id int) *XadminRoleUpdateOne {
+	mutation := newXadminRoleMutation(c.config, OpUpdateOne, withXadminRoleID(id))
+	return &XadminRoleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for Role.
-func (c *RoleClient) Delete() *RoleDelete {
-	mutation := newRoleMutation(c.config, OpDelete)
-	return &RoleDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for XadminRole.
+func (c *XadminRoleClient) Delete() *XadminRoleDelete {
+	mutation := newXadminRoleMutation(c.config, OpDelete)
+	return &XadminRoleDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a delete builder for the given entity.
-func (c *RoleClient) DeleteOne(r *Role) *RoleDeleteOne {
-	return c.DeleteOneID(r.ID)
+func (c *XadminRoleClient) DeleteOne(xr *XadminRole) *XadminRoleDeleteOne {
+	return c.DeleteOneID(xr.ID)
 }
 
 // DeleteOneID returns a delete builder for the given id.
-func (c *RoleClient) DeleteOneID(id int) *RoleDeleteOne {
-	builder := c.Delete().Where(role.ID(id))
+func (c *XadminRoleClient) DeleteOneID(id int) *XadminRoleDeleteOne {
+	builder := c.Delete().Where(xadminrole.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &RoleDeleteOne{builder}
+	return &XadminRoleDeleteOne{builder}
 }
 
-// Query returns a query builder for Role.
-func (c *RoleClient) Query() *RoleQuery {
-	return &RoleQuery{
+// Query returns a query builder for XadminRole.
+func (c *XadminRoleClient) Query() *XadminRoleQuery {
+	return &XadminRoleQuery{
 		config: c.config,
 	}
 }
 
-// Get returns a Role entity by its id.
-func (c *RoleClient) Get(ctx context.Context, id int) (*Role, error) {
-	return c.Query().Where(role.ID(id)).Only(ctx)
+// Get returns a XadminRole entity by its id.
+func (c *XadminRoleClient) Get(ctx context.Context, id int) (*XadminRole, error) {
+	return c.Query().Where(xadminrole.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *RoleClient) GetX(ctx context.Context, id int) *Role {
+func (c *XadminRoleClient) GetX(ctx context.Context, id int) *XadminRole {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -457,121 +457,121 @@ func (c *RoleClient) GetX(ctx context.Context, id int) *Role {
 	return obj
 }
 
-// QueryUsers queries the users edge of a Role.
-func (c *RoleClient) QueryUsers(r *Role) *UserQuery {
-	query := &UserQuery{config: c.config}
+// QueryUsers queries the users edge of a XadminRole.
+func (c *XadminRoleClient) QueryUsers(xr *XadminRole) *XadminUserQuery {
+	query := &XadminUserQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := r.ID
+		id := xr.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(role.Table, role.FieldID, id),
-			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, role.UsersTable, role.UsersPrimaryKey...),
+			sqlgraph.From(xadminrole.Table, xadminrole.FieldID, id),
+			sqlgraph.To(xadminuser.Table, xadminuser.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, xadminrole.UsersTable, xadminrole.UsersPrimaryKey...),
 		)
-		fromV = sqlgraph.Neighbors(r.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(xr.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
 }
 
-// QueryPermissions queries the permissions edge of a Role.
-func (c *RoleClient) QueryPermissions(r *Role) *PermissionQuery {
-	query := &PermissionQuery{config: c.config}
+// QueryPermissions queries the permissions edge of a XadminRole.
+func (c *XadminRoleClient) QueryPermissions(xr *XadminRole) *XadminPermissionQuery {
+	query := &XadminPermissionQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := r.ID
+		id := xr.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(role.Table, role.FieldID, id),
-			sqlgraph.To(permission.Table, permission.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, role.PermissionsTable, role.PermissionsPrimaryKey...),
+			sqlgraph.From(xadminrole.Table, xadminrole.FieldID, id),
+			sqlgraph.To(xadminpermission.Table, xadminpermission.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, xadminrole.PermissionsTable, xadminrole.PermissionsPrimaryKey...),
 		)
-		fromV = sqlgraph.Neighbors(r.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(xr.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
 }
 
 // Hooks returns the client hooks.
-func (c *RoleClient) Hooks() []Hook {
-	return c.hooks.Role
+func (c *XadminRoleClient) Hooks() []Hook {
+	return c.hooks.XadminRole
 }
 
-// UserClient is a client for the User schema.
-type UserClient struct {
+// XadminUserClient is a client for the XadminUser schema.
+type XadminUserClient struct {
 	config
 }
 
-// NewUserClient returns a client for the User from the given config.
-func NewUserClient(c config) *UserClient {
-	return &UserClient{config: c}
+// NewXadminUserClient returns a client for the XadminUser from the given config.
+func NewXadminUserClient(c config) *XadminUserClient {
+	return &XadminUserClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `user.Hooks(f(g(h())))`.
-func (c *UserClient) Use(hooks ...Hook) {
-	c.hooks.User = append(c.hooks.User, hooks...)
+// A call to `Use(f, g, h)` equals to `xadminuser.Hooks(f(g(h())))`.
+func (c *XadminUserClient) Use(hooks ...Hook) {
+	c.hooks.XadminUser = append(c.hooks.XadminUser, hooks...)
 }
 
-// Create returns a create builder for User.
-func (c *UserClient) Create() *UserCreate {
-	mutation := newUserMutation(c.config, OpCreate)
-	return &UserCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a create builder for XadminUser.
+func (c *XadminUserClient) Create() *XadminUserCreate {
+	mutation := newXadminUserMutation(c.config, OpCreate)
+	return &XadminUserCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of User entities.
-func (c *UserClient) CreateBulk(builders ...*UserCreate) *UserCreateBulk {
-	return &UserCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of XadminUser entities.
+func (c *XadminUserClient) CreateBulk(builders ...*XadminUserCreate) *XadminUserCreateBulk {
+	return &XadminUserCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for User.
-func (c *UserClient) Update() *UserUpdate {
-	mutation := newUserMutation(c.config, OpUpdate)
-	return &UserUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for XadminUser.
+func (c *XadminUserClient) Update() *XadminUserUpdate {
+	mutation := newXadminUserMutation(c.config, OpUpdate)
+	return &XadminUserUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *UserClient) UpdateOne(u *User) *UserUpdateOne {
-	mutation := newUserMutation(c.config, OpUpdateOne, withUser(u))
-	return &UserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *XadminUserClient) UpdateOne(xu *XadminUser) *XadminUserUpdateOne {
+	mutation := newXadminUserMutation(c.config, OpUpdateOne, withXadminUser(xu))
+	return &XadminUserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *UserClient) UpdateOneID(id int) *UserUpdateOne {
-	mutation := newUserMutation(c.config, OpUpdateOne, withUserID(id))
-	return &UserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *XadminUserClient) UpdateOneID(id int) *XadminUserUpdateOne {
+	mutation := newXadminUserMutation(c.config, OpUpdateOne, withXadminUserID(id))
+	return &XadminUserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for User.
-func (c *UserClient) Delete() *UserDelete {
-	mutation := newUserMutation(c.config, OpDelete)
-	return &UserDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for XadminUser.
+func (c *XadminUserClient) Delete() *XadminUserDelete {
+	mutation := newXadminUserMutation(c.config, OpDelete)
+	return &XadminUserDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a delete builder for the given entity.
-func (c *UserClient) DeleteOne(u *User) *UserDeleteOne {
-	return c.DeleteOneID(u.ID)
+func (c *XadminUserClient) DeleteOne(xu *XadminUser) *XadminUserDeleteOne {
+	return c.DeleteOneID(xu.ID)
 }
 
 // DeleteOneID returns a delete builder for the given id.
-func (c *UserClient) DeleteOneID(id int) *UserDeleteOne {
-	builder := c.Delete().Where(user.ID(id))
+func (c *XadminUserClient) DeleteOneID(id int) *XadminUserDeleteOne {
+	builder := c.Delete().Where(xadminuser.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &UserDeleteOne{builder}
+	return &XadminUserDeleteOne{builder}
 }
 
-// Query returns a query builder for User.
-func (c *UserClient) Query() *UserQuery {
-	return &UserQuery{
+// Query returns a query builder for XadminUser.
+func (c *XadminUserClient) Query() *XadminUserQuery {
+	return &XadminUserQuery{
 		config: c.config,
 	}
 }
 
-// Get returns a User entity by its id.
-func (c *UserClient) Get(ctx context.Context, id int) (*User, error) {
-	return c.Query().Where(user.ID(id)).Only(ctx)
+// Get returns a XadminUser entity by its id.
+func (c *XadminUserClient) Get(ctx context.Context, id int) (*XadminUser, error) {
+	return c.Query().Where(xadminuser.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *UserClient) GetX(ctx context.Context, id int) *User {
+func (c *XadminUserClient) GetX(ctx context.Context, id int) *XadminUser {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -579,39 +579,39 @@ func (c *UserClient) GetX(ctx context.Context, id int) *User {
 	return obj
 }
 
-// QueryRoles queries the roles edge of a User.
-func (c *UserClient) QueryRoles(u *User) *RoleQuery {
-	query := &RoleQuery{config: c.config}
+// QueryRoles queries the roles edge of a XadminUser.
+func (c *XadminUserClient) QueryRoles(xu *XadminUser) *XadminRoleQuery {
+	query := &XadminRoleQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := u.ID
+		id := xu.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(user.Table, user.FieldID, id),
-			sqlgraph.To(role.Table, role.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, user.RolesTable, user.RolesPrimaryKey...),
+			sqlgraph.From(xadminuser.Table, xadminuser.FieldID, id),
+			sqlgraph.To(xadminrole.Table, xadminrole.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, xadminuser.RolesTable, xadminuser.RolesPrimaryKey...),
 		)
-		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(xu.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
 }
 
-// QueryPermissions queries the permissions edge of a User.
-func (c *UserClient) QueryPermissions(u *User) *PermissionQuery {
-	query := &PermissionQuery{config: c.config}
+// QueryPermissions queries the permissions edge of a XadminUser.
+func (c *XadminUserClient) QueryPermissions(xu *XadminUser) *XadminPermissionQuery {
+	query := &XadminPermissionQuery{config: c.config}
 	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
-		id := u.ID
+		id := xu.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(user.Table, user.FieldID, id),
-			sqlgraph.To(permission.Table, permission.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, user.PermissionsTable, user.PermissionsPrimaryKey...),
+			sqlgraph.From(xadminuser.Table, xadminuser.FieldID, id),
+			sqlgraph.To(xadminpermission.Table, xadminpermission.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, xadminuser.PermissionsTable, xadminuser.PermissionsPrimaryKey...),
 		)
-		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(xu.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
 }
 
 // Hooks returns the client hooks.
-func (c *UserClient) Hooks() []Hook {
-	return c.hooks.User
+func (c *XadminUserClient) Hooks() []Hook {
+	return c.hooks.XadminUser
 }

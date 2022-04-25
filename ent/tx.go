@@ -12,14 +12,14 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
-	// ContentType is the client for interacting with the ContentType builders.
-	ContentType *ContentTypeClient
-	// Permission is the client for interacting with the Permission builders.
-	Permission *PermissionClient
-	// Role is the client for interacting with the Role builders.
-	Role *RoleClient
-	// User is the client for interacting with the User builders.
-	User *UserClient
+	// XadminContenttype is the client for interacting with the XadminContenttype builders.
+	XadminContenttype *XadminContenttypeClient
+	// XadminPermission is the client for interacting with the XadminPermission builders.
+	XadminPermission *XadminPermissionClient
+	// XadminRole is the client for interacting with the XadminRole builders.
+	XadminRole *XadminRoleClient
+	// XadminUser is the client for interacting with the XadminUser builders.
+	XadminUser *XadminUserClient
 
 	// lazily loaded.
 	client     *Client
@@ -155,10 +155,10 @@ func (tx *Tx) Client() *Client {
 }
 
 func (tx *Tx) init() {
-	tx.ContentType = NewContentTypeClient(tx.config)
-	tx.Permission = NewPermissionClient(tx.config)
-	tx.Role = NewRoleClient(tx.config)
-	tx.User = NewUserClient(tx.config)
+	tx.XadminContenttype = NewXadminContenttypeClient(tx.config)
+	tx.XadminPermission = NewXadminPermissionClient(tx.config)
+	tx.XadminRole = NewXadminRoleClient(tx.config)
+	tx.XadminUser = NewXadminUserClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.
@@ -168,7 +168,7 @@ func (tx *Tx) init() {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: ContentType.QueryXXX(), the query will be executed
+// applies a query, for example: XadminContenttype.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.

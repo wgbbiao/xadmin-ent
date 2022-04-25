@@ -9,54 +9,54 @@ import (
 	"github.com/wgbbiao/xadminent/ent"
 )
 
-// The ContentTypeFunc type is an adapter to allow the use of ordinary
-// function as ContentType mutator.
-type ContentTypeFunc func(context.Context, *ent.ContentTypeMutation) (ent.Value, error)
+// The XadminContenttypeFunc type is an adapter to allow the use of ordinary
+// function as XadminContenttype mutator.
+type XadminContenttypeFunc func(context.Context, *ent.XadminContenttypeMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f ContentTypeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.ContentTypeMutation)
+func (f XadminContenttypeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.XadminContenttypeMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ContentTypeMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.XadminContenttypeMutation", m)
 	}
 	return f(ctx, mv)
 }
 
-// The PermissionFunc type is an adapter to allow the use of ordinary
-// function as Permission mutator.
-type PermissionFunc func(context.Context, *ent.PermissionMutation) (ent.Value, error)
+// The XadminPermissionFunc type is an adapter to allow the use of ordinary
+// function as XadminPermission mutator.
+type XadminPermissionFunc func(context.Context, *ent.XadminPermissionMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f PermissionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.PermissionMutation)
+func (f XadminPermissionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.XadminPermissionMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PermissionMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.XadminPermissionMutation", m)
 	}
 	return f(ctx, mv)
 }
 
-// The RoleFunc type is an adapter to allow the use of ordinary
-// function as Role mutator.
-type RoleFunc func(context.Context, *ent.RoleMutation) (ent.Value, error)
+// The XadminRoleFunc type is an adapter to allow the use of ordinary
+// function as XadminRole mutator.
+type XadminRoleFunc func(context.Context, *ent.XadminRoleMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f RoleFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.RoleMutation)
+func (f XadminRoleFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.XadminRoleMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.RoleMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.XadminRoleMutation", m)
 	}
 	return f(ctx, mv)
 }
 
-// The UserFunc type is an adapter to allow the use of ordinary
-// function as User mutator.
-type UserFunc func(context.Context, *ent.UserMutation) (ent.Value, error)
+// The XadminUserFunc type is an adapter to allow the use of ordinary
+// function as XadminUser mutator.
+type XadminUserFunc func(context.Context, *ent.XadminUserMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f UserFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.UserMutation)
+func (f XadminUserFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.XadminUserMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UserMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.XadminUserMutation", m)
 	}
 	return f(ctx, mv)
 }

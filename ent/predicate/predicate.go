@@ -6,14 +6,14 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// ContentType is the predicate function for contenttype builders.
-type ContentType func(*sql.Selector)
+// XadminContenttype is the predicate function for xadmincontenttype builders.
+type XadminContenttype func(*sql.Selector)
 
-// Permission is the predicate function for permission builders.
-type Permission func(*sql.Selector)
+// XadminPermission is the predicate function for xadminpermission builders.
+type XadminPermission func(*sql.Selector)
 
-// Role is the predicate function for role builders.
-type Role func(*sql.Selector)
+// XadminRole is the predicate function for xadminrole builders.
+type XadminRole func(*sql.Selector)
 
-// User is the predicate function for user builders.
-type User func(*sql.Selector)
+// XadminUser is the predicate function for xadminuser builders.
+type XadminUser func(*sql.Selector)

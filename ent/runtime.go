@@ -5,83 +5,83 @@ package ent
 import (
 	"time"
 
-	"github.com/wgbbiao/xadminent/ent/contenttype"
-	"github.com/wgbbiao/xadminent/ent/permission"
-	"github.com/wgbbiao/xadminent/ent/role"
 	"github.com/wgbbiao/xadminent/ent/schema"
-	"github.com/wgbbiao/xadminent/ent/user"
+	"github.com/wgbbiao/xadminent/ent/xadmincontenttype"
+	"github.com/wgbbiao/xadminent/ent/xadminpermission"
+	"github.com/wgbbiao/xadminent/ent/xadminrole"
+	"github.com/wgbbiao/xadminent/ent/xadminuser"
 )
 
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	contenttypeFields := schema.ContentType{}.Fields()
-	_ = contenttypeFields
-	// contenttypeDescAppLabel is the schema descriptor for app_label field.
-	contenttypeDescAppLabel := contenttypeFields[0].Descriptor()
-	// contenttype.AppLabelValidator is a validator for the "app_label" field. It is called by the builders before save.
-	contenttype.AppLabelValidator = contenttypeDescAppLabel.Validators[0].(func(string) error)
-	// contenttypeDescModel is the schema descriptor for model field.
-	contenttypeDescModel := contenttypeFields[1].Descriptor()
-	// contenttype.ModelValidator is a validator for the "model" field. It is called by the builders before save.
-	contenttype.ModelValidator = contenttypeDescModel.Validators[0].(func(string) error)
-	// contenttypeDescCreatedAt is the schema descriptor for created_at field.
-	contenttypeDescCreatedAt := contenttypeFields[2].Descriptor()
-	// contenttype.DefaultCreatedAt holds the default value on creation for the created_at field.
-	contenttype.DefaultCreatedAt = contenttypeDescCreatedAt.Default.(func() time.Time)
-	// contenttypeDescUpdatedAt is the schema descriptor for updated_at field.
-	contenttypeDescUpdatedAt := contenttypeFields[3].Descriptor()
-	// contenttype.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	contenttype.DefaultUpdatedAt = contenttypeDescUpdatedAt.Default.(func() time.Time)
-	// contenttype.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	contenttype.UpdateDefaultUpdatedAt = contenttypeDescUpdatedAt.UpdateDefault.(func() time.Time)
-	permissionFields := schema.Permission{}.Fields()
-	_ = permissionFields
-	// permissionDescName is the schema descriptor for name field.
-	permissionDescName := permissionFields[0].Descriptor()
-	// permission.NameValidator is a validator for the "name" field. It is called by the builders before save.
-	permission.NameValidator = permissionDescName.Validators[0].(func(string) error)
-	// permissionDescCode is the schema descriptor for code field.
-	permissionDescCode := permissionFields[1].Descriptor()
-	// permission.CodeValidator is a validator for the "code" field. It is called by the builders before save.
-	permission.CodeValidator = permissionDescCode.Validators[0].(func(string) error)
-	// permissionDescCreatedAt is the schema descriptor for created_at field.
-	permissionDescCreatedAt := permissionFields[2].Descriptor()
-	// permission.DefaultCreatedAt holds the default value on creation for the created_at field.
-	permission.DefaultCreatedAt = permissionDescCreatedAt.Default.(func() time.Time)
-	// permissionDescUpdatedAt is the schema descriptor for updated_at field.
-	permissionDescUpdatedAt := permissionFields[3].Descriptor()
-	// permission.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	permission.DefaultUpdatedAt = permissionDescUpdatedAt.Default.(func() time.Time)
-	// permission.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	permission.UpdateDefaultUpdatedAt = permissionDescUpdatedAt.UpdateDefault.(func() time.Time)
-	roleFields := schema.Role{}.Fields()
-	_ = roleFields
-	// roleDescName is the schema descriptor for name field.
-	roleDescName := roleFields[0].Descriptor()
-	// role.NameValidator is a validator for the "name" field. It is called by the builders before save.
-	role.NameValidator = roleDescName.Validators[0].(func(string) error)
-	// roleDescCreatedAt is the schema descriptor for created_at field.
-	roleDescCreatedAt := roleFields[1].Descriptor()
-	// role.DefaultCreatedAt holds the default value on creation for the created_at field.
-	role.DefaultCreatedAt = roleDescCreatedAt.Default.(func() time.Time)
-	// roleDescUpdatedAt is the schema descriptor for updated_at field.
-	roleDescUpdatedAt := roleFields[2].Descriptor()
-	// role.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	role.DefaultUpdatedAt = roleDescUpdatedAt.Default.(func() time.Time)
-	// role.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	role.UpdateDefaultUpdatedAt = roleDescUpdatedAt.UpdateDefault.(func() time.Time)
-	userFields := schema.User{}.Fields()
-	_ = userFields
-	// userDescCreatedAt is the schema descriptor for created_at field.
-	userDescCreatedAt := userFields[5].Descriptor()
-	// user.DefaultCreatedAt holds the default value on creation for the created_at field.
-	user.DefaultCreatedAt = userDescCreatedAt.Default.(func() time.Time)
-	// userDescUpdatedAt is the schema descriptor for updated_at field.
-	userDescUpdatedAt := userFields[6].Descriptor()
-	// user.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	user.DefaultUpdatedAt = userDescUpdatedAt.Default.(func() time.Time)
-	// user.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	user.UpdateDefaultUpdatedAt = userDescUpdatedAt.UpdateDefault.(func() time.Time)
+	xadmincontenttypeFields := schema.XadminContenttype{}.Fields()
+	_ = xadmincontenttypeFields
+	// xadmincontenttypeDescAppLabel is the schema descriptor for app_label field.
+	xadmincontenttypeDescAppLabel := xadmincontenttypeFields[0].Descriptor()
+	// xadmincontenttype.AppLabelValidator is a validator for the "app_label" field. It is called by the builders before save.
+	xadmincontenttype.AppLabelValidator = xadmincontenttypeDescAppLabel.Validators[0].(func(string) error)
+	// xadmincontenttypeDescModel is the schema descriptor for model field.
+	xadmincontenttypeDescModel := xadmincontenttypeFields[1].Descriptor()
+	// xadmincontenttype.ModelValidator is a validator for the "model" field. It is called by the builders before save.
+	xadmincontenttype.ModelValidator = xadmincontenttypeDescModel.Validators[0].(func(string) error)
+	// xadmincontenttypeDescCreatedAt is the schema descriptor for created_at field.
+	xadmincontenttypeDescCreatedAt := xadmincontenttypeFields[2].Descriptor()
+	// xadmincontenttype.DefaultCreatedAt holds the default value on creation for the created_at field.
+	xadmincontenttype.DefaultCreatedAt = xadmincontenttypeDescCreatedAt.Default.(func() time.Time)
+	// xadmincontenttypeDescUpdatedAt is the schema descriptor for updated_at field.
+	xadmincontenttypeDescUpdatedAt := xadmincontenttypeFields[3].Descriptor()
+	// xadmincontenttype.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	xadmincontenttype.DefaultUpdatedAt = xadmincontenttypeDescUpdatedAt.Default.(func() time.Time)
+	// xadmincontenttype.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	xadmincontenttype.UpdateDefaultUpdatedAt = xadmincontenttypeDescUpdatedAt.UpdateDefault.(func() time.Time)
+	xadminpermissionFields := schema.XadminPermission{}.Fields()
+	_ = xadminpermissionFields
+	// xadminpermissionDescName is the schema descriptor for name field.
+	xadminpermissionDescName := xadminpermissionFields[0].Descriptor()
+	// xadminpermission.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	xadminpermission.NameValidator = xadminpermissionDescName.Validators[0].(func(string) error)
+	// xadminpermissionDescCode is the schema descriptor for code field.
+	xadminpermissionDescCode := xadminpermissionFields[1].Descriptor()
+	// xadminpermission.CodeValidator is a validator for the "code" field. It is called by the builders before save.
+	xadminpermission.CodeValidator = xadminpermissionDescCode.Validators[0].(func(string) error)
+	// xadminpermissionDescCreatedAt is the schema descriptor for created_at field.
+	xadminpermissionDescCreatedAt := xadminpermissionFields[2].Descriptor()
+	// xadminpermission.DefaultCreatedAt holds the default value on creation for the created_at field.
+	xadminpermission.DefaultCreatedAt = xadminpermissionDescCreatedAt.Default.(func() time.Time)
+	// xadminpermissionDescUpdatedAt is the schema descriptor for updated_at field.
+	xadminpermissionDescUpdatedAt := xadminpermissionFields[3].Descriptor()
+	// xadminpermission.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	xadminpermission.DefaultUpdatedAt = xadminpermissionDescUpdatedAt.Default.(func() time.Time)
+	// xadminpermission.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	xadminpermission.UpdateDefaultUpdatedAt = xadminpermissionDescUpdatedAt.UpdateDefault.(func() time.Time)
+	xadminroleFields := schema.XadminRole{}.Fields()
+	_ = xadminroleFields
+	// xadminroleDescName is the schema descriptor for name field.
+	xadminroleDescName := xadminroleFields[0].Descriptor()
+	// xadminrole.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	xadminrole.NameValidator = xadminroleDescName.Validators[0].(func(string) error)
+	// xadminroleDescCreatedAt is the schema descriptor for created_at field.
+	xadminroleDescCreatedAt := xadminroleFields[1].Descriptor()
+	// xadminrole.DefaultCreatedAt holds the default value on creation for the created_at field.
+	xadminrole.DefaultCreatedAt = xadminroleDescCreatedAt.Default.(func() time.Time)
+	// xadminroleDescUpdatedAt is the schema descriptor for updated_at field.
+	xadminroleDescUpdatedAt := xadminroleFields[2].Descriptor()
+	// xadminrole.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	xadminrole.DefaultUpdatedAt = xadminroleDescUpdatedAt.Default.(func() time.Time)
+	// xadminrole.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	xadminrole.UpdateDefaultUpdatedAt = xadminroleDescUpdatedAt.UpdateDefault.(func() time.Time)
+	xadminuserFields := schema.XadminUser{}.Fields()
+	_ = xadminuserFields
+	// xadminuserDescCreatedAt is the schema descriptor for created_at field.
+	xadminuserDescCreatedAt := xadminuserFields[5].Descriptor()
+	// xadminuser.DefaultCreatedAt holds the default value on creation for the created_at field.
+	xadminuser.DefaultCreatedAt = xadminuserDescCreatedAt.Default.(func() time.Time)
+	// xadminuserDescUpdatedAt is the schema descriptor for updated_at field.
+	xadminuserDescUpdatedAt := xadminuserFields[6].Descriptor()
+	// xadminuser.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	xadminuser.DefaultUpdatedAt = xadminuserDescUpdatedAt.Default.(func() time.Time)
+	// xadminuser.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	xadminuser.UpdateDefaultUpdatedAt = xadminuserDescUpdatedAt.UpdateDefault.(func() time.Time)
 }
