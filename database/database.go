@@ -35,7 +35,7 @@ var clientSync sync.Once
 func GetDb() *ent.Client {
 	clientSync.Do(func() {
 		drv, err := sql.Open("mysql",
-			fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
+			fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=true",
 				database.User,
 				database.Password,
 				database.Host,

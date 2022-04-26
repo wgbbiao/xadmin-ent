@@ -2071,9 +2071,22 @@ func (m *XadminUserMutation) OldIsSuper(ctx context.Context) (v bool, err error)
 	return oldValue.IsSuper, nil
 }
 
+// ClearIsSuper clears the value of the "is_super" field.
+func (m *XadminUserMutation) ClearIsSuper() {
+	m.is_super = nil
+	m.clearedFields[xadminuser.FieldIsSuper] = struct{}{}
+}
+
+// IsSuperCleared returns if the "is_super" field was cleared in this mutation.
+func (m *XadminUserMutation) IsSuperCleared() bool {
+	_, ok := m.clearedFields[xadminuser.FieldIsSuper]
+	return ok
+}
+
 // ResetIsSuper resets all changes to the "is_super" field.
 func (m *XadminUserMutation) ResetIsSuper() {
 	m.is_super = nil
+	delete(m.clearedFields, xadminuser.FieldIsSuper)
 }
 
 // SetLastLoginAt sets the "last_login_at" field.
@@ -2479,6 +2492,9 @@ func (m *XadminUserMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *XadminUserMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(xadminuser.FieldIsSuper) {
+		fields = append(fields, xadminuser.FieldIsSuper)
+	}
 	if m.FieldCleared(xadminuser.FieldLastLoginAt) {
 		fields = append(fields, xadminuser.FieldLastLoginAt)
 	}
@@ -2496,6 +2512,9 @@ func (m *XadminUserMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *XadminUserMutation) ClearField(name string) error {
 	switch name {
+	case xadminuser.FieldIsSuper:
+		m.ClearIsSuper()
+		return nil
 	case xadminuser.FieldLastLoginAt:
 		m.ClearLastLoginAt()
 		return nil

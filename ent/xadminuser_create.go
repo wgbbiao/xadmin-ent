@@ -46,6 +46,14 @@ func (xuc *XadminUserCreate) SetIsSuper(b bool) *XadminUserCreate {
 	return xuc
 }
 
+// SetNillableIsSuper sets the "is_super" field if the given value is not nil.
+func (xuc *XadminUserCreate) SetNillableIsSuper(b *bool) *XadminUserCreate {
+	if b != nil {
+		xuc.SetIsSuper(*b)
+	}
+	return xuc
+}
+
 // SetLastLoginAt sets the "last_login_at" field.
 func (xuc *XadminUserCreate) SetLastLoginAt(t time.Time) *XadminUserCreate {
 	xuc.mutation.SetLastLoginAt(t)
@@ -189,6 +197,10 @@ func (xuc *XadminUserCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (xuc *XadminUserCreate) defaults() {
+	if _, ok := xuc.mutation.IsSuper(); !ok {
+		v := xadminuser.DefaultIsSuper
+		xuc.mutation.SetIsSuper(v)
+	}
 	if _, ok := xuc.mutation.CreatedAt(); !ok {
 		v := xadminuser.DefaultCreatedAt()
 		xuc.mutation.SetCreatedAt(v)
@@ -209,9 +221,6 @@ func (xuc *XadminUserCreate) check() error {
 	}
 	if _, ok := xuc.mutation.Salt(); !ok {
 		return &ValidationError{Name: "salt", err: errors.New(`ent: missing required field "XadminUser.salt"`)}
-	}
-	if _, ok := xuc.mutation.IsSuper(); !ok {
-		return &ValidationError{Name: "is_super", err: errors.New(`ent: missing required field "XadminUser.is_super"`)}
 	}
 	if _, ok := xuc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "XadminUser.created_at"`)}

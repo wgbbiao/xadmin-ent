@@ -19,11 +19,11 @@ type XadminUser struct {
 	// Username holds the value of the "username" field.
 	Username string `json:"username,omitempty"`
 	// Password holds the value of the "password" field.
-	Password string `json:"password,omitempty"`
+	Password string `json:"-"`
 	// Salt holds the value of the "salt" field.
-	Salt string `json:"salt,omitempty"`
+	Salt string `json:"-"`
 	// IsSuper holds the value of the "is_super" field.
-	IsSuper bool `json:"is_super,omitempty"`
+	IsSuper bool `json:"is_super"`
 	// LastLoginAt holds the value of the "last_login_at" field.
 	LastLoginAt *time.Time `json:"last_login_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -181,10 +181,8 @@ func (xu *XadminUser) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v", xu.ID))
 	builder.WriteString(", username=")
 	builder.WriteString(xu.Username)
-	builder.WriteString(", password=")
-	builder.WriteString(xu.Password)
-	builder.WriteString(", salt=")
-	builder.WriteString(xu.Salt)
+	builder.WriteString(", password=<sensitive>")
+	builder.WriteString(", salt=<sensitive>")
 	builder.WriteString(", is_super=")
 	builder.WriteString(fmt.Sprintf("%v", xu.IsSuper))
 	if v := xu.LastLoginAt; v != nil {

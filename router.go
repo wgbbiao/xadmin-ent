@@ -8,6 +8,9 @@ import (
 
 func AddRoute(r iris.Party) {
 	r.Post("/login", api.Login)
-	user := r.Party("/user", j.VerifyMiddleware())
-	user.Get("info", api.UserInfo)
+	{
+		user := r.Party("/user", j.VerifyMiddleware())
+		user.Get("/info", api.UserInfo)
+		user.Get("/list", api.UserList)
+	}
 }

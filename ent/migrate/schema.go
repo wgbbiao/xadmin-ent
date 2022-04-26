@@ -95,7 +95,7 @@ var (
 		{Name: "username", Type: field.TypeString, Unique: true},
 		{Name: "password", Type: field.TypeString},
 		{Name: "salt", Type: field.TypeString},
-		{Name: "is_super", Type: field.TypeBool},
+		{Name: "is_super", Type: field.TypeBool, Nullable: true, Default: false},
 		{Name: "last_login_at", Type: field.TypeTime, Nullable: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},

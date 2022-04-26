@@ -54,6 +54,20 @@ func (xuu *XadminUserUpdate) SetIsSuper(b bool) *XadminUserUpdate {
 	return xuu
 }
 
+// SetNillableIsSuper sets the "is_super" field if the given value is not nil.
+func (xuu *XadminUserUpdate) SetNillableIsSuper(b *bool) *XadminUserUpdate {
+	if b != nil {
+		xuu.SetIsSuper(*b)
+	}
+	return xuu
+}
+
+// ClearIsSuper clears the value of the "is_super" field.
+func (xuu *XadminUserUpdate) ClearIsSuper() *XadminUserUpdate {
+	xuu.mutation.ClearIsSuper()
+	return xuu
+}
+
 // SetLastLoginAt sets the "last_login_at" field.
 func (xuu *XadminUserUpdate) SetLastLoginAt(t time.Time) *XadminUserUpdate {
 	xuu.mutation.SetLastLoginAt(t)
@@ -71,20 +85,6 @@ func (xuu *XadminUserUpdate) SetNillableLastLoginAt(t *time.Time) *XadminUserUpd
 // ClearLastLoginAt clears the value of the "last_login_at" field.
 func (xuu *XadminUserUpdate) ClearLastLoginAt() *XadminUserUpdate {
 	xuu.mutation.ClearLastLoginAt()
-	return xuu
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (xuu *XadminUserUpdate) SetCreatedAt(t time.Time) *XadminUserUpdate {
-	xuu.mutation.SetCreatedAt(t)
-	return xuu
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (xuu *XadminUserUpdate) SetNillableCreatedAt(t *time.Time) *XadminUserUpdate {
-	if t != nil {
-		xuu.SetCreatedAt(*t)
-	}
 	return xuu
 }
 
@@ -280,6 +280,12 @@ func (xuu *XadminUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: xadminuser.FieldIsSuper,
 		})
 	}
+	if xuu.mutation.IsSuperCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Column: xadminuser.FieldIsSuper,
+		})
+	}
 	if value, ok := xuu.mutation.LastLoginAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -291,13 +297,6 @@ func (xuu *XadminUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Column: xadminuser.FieldLastLoginAt,
-		})
-	}
-	if value, ok := xuu.mutation.CreatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: xadminuser.FieldCreatedAt,
 		})
 	}
 	if value, ok := xuu.mutation.UpdatedAt(); ok {
@@ -458,6 +457,20 @@ func (xuuo *XadminUserUpdateOne) SetIsSuper(b bool) *XadminUserUpdateOne {
 	return xuuo
 }
 
+// SetNillableIsSuper sets the "is_super" field if the given value is not nil.
+func (xuuo *XadminUserUpdateOne) SetNillableIsSuper(b *bool) *XadminUserUpdateOne {
+	if b != nil {
+		xuuo.SetIsSuper(*b)
+	}
+	return xuuo
+}
+
+// ClearIsSuper clears the value of the "is_super" field.
+func (xuuo *XadminUserUpdateOne) ClearIsSuper() *XadminUserUpdateOne {
+	xuuo.mutation.ClearIsSuper()
+	return xuuo
+}
+
 // SetLastLoginAt sets the "last_login_at" field.
 func (xuuo *XadminUserUpdateOne) SetLastLoginAt(t time.Time) *XadminUserUpdateOne {
 	xuuo.mutation.SetLastLoginAt(t)
@@ -475,20 +488,6 @@ func (xuuo *XadminUserUpdateOne) SetNillableLastLoginAt(t *time.Time) *XadminUse
 // ClearLastLoginAt clears the value of the "last_login_at" field.
 func (xuuo *XadminUserUpdateOne) ClearLastLoginAt() *XadminUserUpdateOne {
 	xuuo.mutation.ClearLastLoginAt()
-	return xuuo
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (xuuo *XadminUserUpdateOne) SetCreatedAt(t time.Time) *XadminUserUpdateOne {
-	xuuo.mutation.SetCreatedAt(t)
-	return xuuo
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (xuuo *XadminUserUpdateOne) SetNillableCreatedAt(t *time.Time) *XadminUserUpdateOne {
-	if t != nil {
-		xuuo.SetCreatedAt(*t)
-	}
 	return xuuo
 }
 
@@ -708,6 +707,12 @@ func (xuuo *XadminUserUpdateOne) sqlSave(ctx context.Context) (_node *XadminUser
 			Column: xadminuser.FieldIsSuper,
 		})
 	}
+	if xuuo.mutation.IsSuperCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Column: xadminuser.FieldIsSuper,
+		})
+	}
 	if value, ok := xuuo.mutation.LastLoginAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -719,13 +724,6 @@ func (xuuo *XadminUserUpdateOne) sqlSave(ctx context.Context) (_node *XadminUser
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Column: xadminuser.FieldLastLoginAt,
-		})
-	}
-	if value, ok := xuuo.mutation.CreatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: xadminuser.FieldCreatedAt,
 		})
 	}
 	if value, ok := xuuo.mutation.UpdatedAt(); ok {

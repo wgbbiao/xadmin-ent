@@ -74,6 +74,10 @@ func init() {
 	xadminrole.UpdateDefaultUpdatedAt = xadminroleDescUpdatedAt.UpdateDefault.(func() time.Time)
 	xadminuserFields := schema.XadminUser{}.Fields()
 	_ = xadminuserFields
+	// xadminuserDescIsSuper is the schema descriptor for is_super field.
+	xadminuserDescIsSuper := xadminuserFields[3].Descriptor()
+	// xadminuser.DefaultIsSuper holds the default value on creation for the is_super field.
+	xadminuser.DefaultIsSuper = xadminuserDescIsSuper.Default.(bool)
 	// xadminuserDescCreatedAt is the schema descriptor for created_at field.
 	xadminuserDescCreatedAt := xadminuserFields[5].Descriptor()
 	// xadminuser.DefaultCreatedAt holds the default value on creation for the created_at field.

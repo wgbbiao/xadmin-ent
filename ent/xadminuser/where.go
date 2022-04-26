@@ -489,6 +489,20 @@ func IsSuperNEQ(v bool) predicate.XadminUser {
 	})
 }
 
+// IsSuperIsNil applies the IsNil predicate on the "is_super" field.
+func IsSuperIsNil() predicate.XadminUser {
+	return predicate.XadminUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldIsSuper)))
+	})
+}
+
+// IsSuperNotNil applies the NotNil predicate on the "is_super" field.
+func IsSuperNotNil() predicate.XadminUser {
+	return predicate.XadminUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldIsSuper)))
+	})
+}
+
 // LastLoginAtEQ applies the EQ predicate on the "last_login_at" field.
 func LastLoginAtEQ(v time.Time) predicate.XadminUser {
 	return predicate.XadminUser(func(s *sql.Selector) {

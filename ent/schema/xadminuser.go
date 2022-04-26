@@ -18,12 +18,13 @@ type XadminUser struct {
 func (XadminUser) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("username").Unique(),
-		field.String("password"),
-		field.String("salt"),
-		field.Bool("is_super"),
+		field.String("password").Sensitive(),
+		field.String("salt").Sensitive(),
+		field.Bool("is_super").Optional().
+			Default(false).StructTag(`json:"is_super"`),
 		field.Time("last_login_at").Optional().Nillable(),
 		field.Time("created_at").
-			Default(time.Now),
+			Default(time.Now).Immutable(),
 		field.Time("updated_at").
 			Default(time.Now).
 			UpdateDefault(time.Now),
