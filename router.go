@@ -12,5 +12,6 @@ func AddRoute(r iris.Party) {
 		user := r.Party("/user", j.VerifyMiddleware())
 		user.Get("/info", api.UserInfo)
 		user.Get("/list", api.UserList)
+		user.Post("/add", api.UserAdd)
 	}
 }

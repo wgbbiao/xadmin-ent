@@ -7,6 +7,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/middleware/jwt"
+	"github.com/unknwon/com"
 	"github.com/wgbbiao/xadminent/database"
 	"github.com/wgbbiao/xadminent/ent"
 	"github.com/wgbbiao/xadminent/ent/xadminuser"
@@ -156,4 +157,63 @@ func getUserFromJwt(ctx iris.Context) (*ent.XadminUser, error) {
 		XadminUser.Query().
 		Where(xadminuser.ID(claims.Uid)).
 		First(ctx.Request().Context())
+}
+
+// 添加用户
+func UserAdd(ctx iris.Context) {
+	var form struct {
+		Username string `json:"username" validate:"required"`
+		Password string `json:"password" validate:"required"`
+		IsSuper  bool   `json:"is_super"`
+	}
+	result := AmisResult{}
+	if err := ctx.ReadJSON(&form); err != nil {
+		result.Status = 1
+		if errs, ok := err.(validator.ValidationErrors); ok {
+			result.Msg = "表单验证错误"
+			validationErrors := wrapValidationErrors(errs)
+
+			result.Data = iris.NewProblem().
+				Title("Validation error").
+				Detail("One or more fields failed to be validated").
+				Type("/user/validation-errors").
+				Key("errors", validationErrors)
+		} else {
+			result.Msg = "表单读取错误"
+		}
+		ctx.JSON(result)
+		return
+	}
+	{
+		u, err := database.GetDb().XadminUser.
+			Query().
+			Where(xadminuser.Username(form.Username)).
+			First(ctx.Request().Context())
+		if err == nil && u.ID != 0 {
+			result.Status = 300
+			result.Msg = "用户已存在"
+			result.Data = u
+			// ctx.StatusCode(iris.StatusBadGateway)
+			ctx.JSON(result)
+			return
+		}
+	}
+	salt := com.RandomCreateBytes(16)
+	u, err := database.GetDb().XadminUser.
+		Create().
+		SetUsername(form.Username).
+		SetSalt(string(salt)).
+		SetPassword(MD5(form.Password + string(salt))).
+		SetIsSuper(form.IsSuper).
+		Save(ctx.Request().Context())
+	if err != nil {
+		result.Status = 1
+		result.Msg = "添加用户失败"
+		ctx.JSON(result)
+		return
+	}
+	result.Status = 0
+	result.Msg = "添加用户成功"
+	result.Data = u
+	ctx.JSON(result)
 }
