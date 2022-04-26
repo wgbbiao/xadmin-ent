@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/go-playground/validator/v10"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/middleware/jwt"
@@ -215,5 +216,91 @@ func UserAdd(ctx iris.Context) {
 	result.Status = 0
 	result.Msg = "添加用户成功"
 	result.Data = u
+	ctx.JSON(result)
+}
+
+// 用户详情
+func UserDetail(ctx iris.Context) {
+	id := ctx.Params().GetIntDefault("id", 0)
+	result := AmisResult{}
+	if id == 0 {
+		result.Status = 1
+		result.Msg = "用户不存在"
+	} else {
+		u, err := database.GetDb().XadminUser.
+			Query().
+			Where(xadminuser.ID(id)).
+			First(ctx.Request().Context())
+		if err != nil {
+			result.Status = 1
+			result.Msg = "用户不存在"
+		} else {
+			result.Status = 0
+			result.Msg = "用户详情"
+			result.Data = u
+		}
+	}
+	ctx.JSON(result)
+}
+
+// 用户编辑
+func UserEdit(ctx iris.Context) {
+	var form struct {
+		ID       int    `json:"id" validate:"required"`
+		Username string `json:"username" validate:"required"`
+		IsSuper  bool   `json:"is_super"`
+	}
+	result := AmisResult{}
+	if err := ctx.ReadJSON(&form); err != nil {
+		result.Status = 1
+		if errs, ok := err.(validator.ValidationErrors); ok {
+			result.Msg = "表单验证错误"
+			validationErrors := wrapValidationErrors(errs)
+
+			result.Data = iris.NewProblem().
+				Title("Validation error").
+				Detail("One or more fields failed to be validated").
+				Type("/user/validation-errors").
+				Key("errors", validationErrors)
+		} else {
+			result.Msg = "表单读取错误"
+		}
+		ctx.JSON(result)
+		return
+	}
+	u, err := database.GetDb().XadminUser.
+		Query().
+		Where(xadminuser.ID(form.ID)).
+		First(ctx.Request().Context())
+	if err != nil {
+		result.Status = 1
+		result.Msg = "用户不存在"
+		ctx.JSON(result)
+		return
+	}
+
+	q := database.GetDb().XadminUser.Update()
+	if form.Username != "" {
+		q.SetUsername(form.Username)
+	}
+	if form.IsSuper != u.IsSuper {
+		q.SetIsSuper(form.IsSuper)
+	}
+	_, err = q.Where(xadminuser.ID(form.ID)).Save(ctx.Request().Context())
+	if err != nil {
+		if sqlgraph.IsUniqueConstraintError(err) {
+			result.Status = 300
+			result.Msg = "用户已存在"
+			result.Data = u
+			ctx.JSON(result)
+			return
+		}
+		result.Status = 1
+		result.Msg = "编辑用户失败"
+		ctx.JSON(result)
+		return
+	}
+	result.Status = 0
+	result.Msg = "用户编辑成功"
 	ctx.JSON(result)
 }
