@@ -140,6 +140,7 @@ func UserList(ctx iris.Context) {
 	}
 
 	users, err := q.All(ctx.Request().Context())
+	cnt, _ := q.Count(ctx.Request().Context())
 	if err != nil {
 		result.Status = 1
 		result.Msg = "用户不存在"
@@ -148,7 +149,10 @@ func UserList(ctx iris.Context) {
 	}
 	result.Status = 0
 	result.Msg = "用户列表"
-	result.Data = users
+	result.Data = iris.Map{
+		"items": users,
+		"total": cnt,
+	}
 	ctx.JSON(result)
 }
 
@@ -364,5 +368,53 @@ func UserPassword(ctx iris.Context) {
 	result.Data = u
 	result.Status = 0
 	result.Msg = "修改密码成功"
+	ctx.JSON(result)
+}
+
+// 删除用户
+func UserDelete(ctx iris.Context) {
+	var form struct {
+		ID int `json:"id" validate:"required"`
+	}
+	result := AmisResult{}
+	if err := ctx.ReadJSON(&form); err != nil {
+		result.Status = 1
+		if errs, ok := err.(validator.ValidationErrors); ok {
+			result.Msg = "表单验证错误"
+			validationErrors := wrapValidationErrors(errs)
+
+			result.Data = iris.NewProblem().
+				Title("Validation error").
+				Detail("One or more fields failed to be validated").
+				Type("/user/validation-errors").
+				Key("errors", validationErrors)
+		} else {
+			result.Msg = "表单读取错误"
+		}
+		ctx.JSON(result)
+		return
+	}
+	_, err := database.GetDb().XadminUser.
+		Query().
+		Where(xadminuser.ID(form.ID)).
+		First(ctx.Request().Context())
+	if err != nil {
+		result.Status = 1
+		result.Msg = "用户不存在"
+		ctx.JSON(result)
+		return
+	}
+
+	err = database.GetDb().XadminUser.
+		DeleteOneID(form.ID).Exec(ctx.Request().Context())
+	if err != nil {
+		result.Status = 1
+		result.Msg = "删除用户失败"
+		ctx.JSON(result)
+		return
+	}
+	// result.Data = u
+	result.Status = 0
+	result.Msg = "删除用户成功"
 	ctx.JSON(result)
 }
