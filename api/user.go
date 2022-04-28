@@ -304,3 +304,65 @@ func UserEdit(ctx iris.Context) {
 	result.Msg = "用户编辑成功"
 	ctx.JSON(result)
 }
+
+// 修改密码
+func UserPassword(ctx iris.Context) {
+	var form struct {
+		ID                   int    `json:"id" validate:"required"`
+		Password             string `json:"password" validate:"required"`
+		PasswordConfirmation string `json:"password_confirmation" validate:"required"`
+	}
+	result := AmisResult{}
+	if err := ctx.ReadJSON(&form); err != nil {
+		fmt.Println(err)
+		result.Status = 1
+		if errs, ok := err.(validator.ValidationErrors); ok {
+			result.Msg = "表单验证错误"
+			validationErrors := wrapValidationErrors(errs)
+
+			result.Data = iris.NewProblem().
+				Title("Validation error").
+				Detail("One or more fields failed to be validated").
+				Type("/user/validation-errors").
+				Key("errors", validationErrors)
+		} else {
+			result.Msg = "表单读取错误"
+		}
+		ctx.JSON(result)
+		return
+	}
+	if form.Password != form.PasswordConfirmation {
+		result.Status = 1
+		result.Msg = "两次密码不一致"
+		ctx.JSON(result)
+		return
+	}
+	u, err := database.GetDb().XadminUser.
+		Query().
+		Where(xadminuser.ID(form.ID)).
+		First(ctx.Request().Context())
+	if err != nil {
+		result.Status = 1
+		result.Msg = "用户不存在"
+		ctx.JSON(result)
+		return
+	}
+
+	salt := com.RandomCreateBytes(16)
+	_, err = database.GetDb().XadminUser.
+		Update().
+		SetPassword(MD5(form.Password + string(salt))).
+		SetSalt(string(salt)).
+		Where(xadminuser.ID(form.ID)).
+		Save(ctx.Request().Context())
+	if err != nil {
+		result.Status = 1
+		result.Msg = "修改密码失败"
+		ctx.JSON(result)
+		return
+	}
+	result.Data = u
+	result.Status = 0
+	result.Msg = "修改密码成功"
+	ctx.JSON(result)
+}

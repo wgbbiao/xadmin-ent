@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/go-playground/validator/v10"
 	"github.com/iris-contrib/middleware/cors"
 	"github.com/kataras/iris/v12"
 	"github.com/spf13/cobra"
@@ -13,6 +14,7 @@ var webCmd = &cobra.Command{
 	Long:  `开启web服务，默认端口为7070`,
 	Run: func(cmd *cobra.Command, args []string) {
 		app := iris.New()
+		app.Validator = validator.New()
 		app.UseRouter(cors.AllowAll())
 		app.Options("{root:path}", func(context iris.Context) {
 			context.Header("Access-Control-Allow-Credentials", "true")

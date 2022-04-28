@@ -15,5 +15,6 @@ func AddRoute(r iris.Party) {
 		user.Post("/add", api.UserAdd)
 		user.Post("/edit", api.UserEdit)
 		user.Get("/{id:int}", api.UserDetail)
+		user.Post("/modify_password", api.UserPassword)
 	}
 }
