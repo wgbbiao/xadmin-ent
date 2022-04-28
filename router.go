@@ -30,5 +30,8 @@ func AddRoute(r iris.Party) {
 	{
 		contenttype := r.Party("/contenttype", j.VerifyMiddleware())
 		contenttype.Get("/list", api.ContentTypeList)
+		contenttype.Get("/{id:int}", api.ContentTypeDetail)
+		contenttype.Put("/{id:int}", api.ContentTypeEdit)
+		contenttype.Delete("/{id:int}", api.ContentTypeDelete)
 	}
 }
