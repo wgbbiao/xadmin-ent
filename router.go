@@ -18,4 +18,8 @@ func AddRoute(r iris.Party) {
 		user.Post("/modify_password", api.UserPassword)
 		user.Post("/delete", api.UserDelete)
 	}
+	{
+		role := r.Party("/role", j.VerifyMiddleware())
+		role.Get("/list", api.RoleList)
+	}
 }
