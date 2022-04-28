@@ -12,7 +12,7 @@ func RoleList(ctx iris.Context) {
 	var form struct {
 		Name string `json:"name"`
 	}
-	if err := ctx.ReadJSON(&form); err != nil {
+	if err := ctx.ReadQuery(&form); err != nil {
 		ctx.JSON(iris.Map{
 			"status": 1,
 			"msg":    "表单读取错误",
