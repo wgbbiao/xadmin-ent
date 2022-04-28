@@ -121,6 +121,13 @@ func UpdatedAt(v time.Time) predicate.XadminPermission {
 	})
 }
 
+// XadminPermissionContentType applies equality check predicate on the "xadmin_permission_content_type" field. It's identical to XadminPermissionContentTypeEQ.
+func XadminPermissionContentType(v int) predicate.XadminPermission {
+	return predicate.XadminPermission(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldXadminPermissionContentType), v))
+	})
+}
+
 // NameEQ applies the EQ predicate on the "name" field.
 func NameEQ(v string) predicate.XadminPermission {
 	return predicate.XadminPermission(func(s *sql.Selector) {
@@ -492,6 +499,68 @@ func UpdatedAtLT(v time.Time) predicate.XadminPermission {
 func UpdatedAtLTE(v time.Time) predicate.XadminPermission {
 	return predicate.XadminPermission(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldUpdatedAt), v))
+	})
+}
+
+// XadminPermissionContentTypeEQ applies the EQ predicate on the "xadmin_permission_content_type" field.
+func XadminPermissionContentTypeEQ(v int) predicate.XadminPermission {
+	return predicate.XadminPermission(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldXadminPermissionContentType), v))
+	})
+}
+
+// XadminPermissionContentTypeNEQ applies the NEQ predicate on the "xadmin_permission_content_type" field.
+func XadminPermissionContentTypeNEQ(v int) predicate.XadminPermission {
+	return predicate.XadminPermission(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldXadminPermissionContentType), v))
+	})
+}
+
+// XadminPermissionContentTypeIn applies the In predicate on the "xadmin_permission_content_type" field.
+func XadminPermissionContentTypeIn(vs ...int) predicate.XadminPermission {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.XadminPermission(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldXadminPermissionContentType), v...))
+	})
+}
+
+// XadminPermissionContentTypeNotIn applies the NotIn predicate on the "xadmin_permission_content_type" field.
+func XadminPermissionContentTypeNotIn(vs ...int) predicate.XadminPermission {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.XadminPermission(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldXadminPermissionContentType), v...))
+	})
+}
+
+// XadminPermissionContentTypeIsNil applies the IsNil predicate on the "xadmin_permission_content_type" field.
+func XadminPermissionContentTypeIsNil() predicate.XadminPermission {
+	return predicate.XadminPermission(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldXadminPermissionContentType)))
+	})
+}
+
+// XadminPermissionContentTypeNotNil applies the NotNil predicate on the "xadmin_permission_content_type" field.
+func XadminPermissionContentTypeNotNil() predicate.XadminPermission {
+	return predicate.XadminPermission(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldXadminPermissionContentType)))
 	})
 }
 

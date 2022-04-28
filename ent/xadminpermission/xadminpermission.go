@@ -19,6 +19,8 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
+	// FieldXadminPermissionContentType holds the string denoting the xadmin_permission_content_type field in the database.
+	FieldXadminPermissionContentType = "xadmin_permission_content_type"
 	// EdgeContentType holds the string denoting the contenttype edge name in mutations.
 	EdgeContentType = "ContentType"
 	// EdgeUsers holds the string denoting the users edge name in mutations.
@@ -53,12 +55,7 @@ var Columns = []string{
 	FieldCode,
 	FieldCreatedAt,
 	FieldUpdatedAt,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "xadmin_permissions"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"xadmin_permission_content_type",
+	FieldXadminPermissionContentType,
 }
 
 var (
@@ -74,11 +71,6 @@ var (
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}

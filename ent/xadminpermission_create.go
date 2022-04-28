@@ -63,6 +63,20 @@ func (xpc *XadminPermissionCreate) SetNillableUpdatedAt(t *time.Time) *XadminPer
 	return xpc
 }
 
+// SetXadminPermissionContentType sets the "xadmin_permission_content_type" field.
+func (xpc *XadminPermissionCreate) SetXadminPermissionContentType(i int) *XadminPermissionCreate {
+	xpc.mutation.SetXadminPermissionContentType(i)
+	return xpc
+}
+
+// SetNillableXadminPermissionContentType sets the "xadmin_permission_content_type" field if the given value is not nil.
+func (xpc *XadminPermissionCreate) SetNillableXadminPermissionContentType(i *int) *XadminPermissionCreate {
+	if i != nil {
+		xpc.SetXadminPermissionContentType(*i)
+	}
+	return xpc
+}
+
 // SetContentTypeID sets the "ContentType" edge to the XadminContenttype entity by ID.
 func (xpc *XadminPermissionCreate) SetContentTypeID(id int) *XadminPermissionCreate {
 	xpc.mutation.SetContentTypeID(id)
@@ -293,7 +307,7 @@ func (xpc *XadminPermissionCreate) createSpec() (*XadminPermission, *sqlgraph.Cr
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.xadmin_permission_content_type = &nodes[0]
+		_node.XadminPermissionContentType = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := xpc.mutation.UsersIDs(); len(nodes) > 0 {

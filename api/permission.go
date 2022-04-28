@@ -4,8 +4,6 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/kataras/iris/v12"
 	"github.com/wgbbiao/xadminent/database"
-	"github.com/wgbbiao/xadminent/ent"
-	"github.com/wgbbiao/xadminent/ent/xadmincontenttype"
 	"github.com/wgbbiao/xadminent/ent/xadminpermission"
 )
 
@@ -138,9 +136,6 @@ func PermissionDetail(ctx iris.Context) {
 	var result AmisResult = AmisResult{}
 	p, err := database.GetDb().XadminPermission.Query().
 		Where(xadminpermission.ID(id)).
-		WithContentType(func(xcq *ent.XadminContenttypeQuery) {
-			xcq.Select(xadmincontenttype.FieldID, xadmincontenttype.FieldAppLabel, xadmincontenttype.FieldModel)
-		}).
 		First(ctx.Request().Context())
 
 	if err != nil {

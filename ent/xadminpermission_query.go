@@ -32,7 +32,6 @@ type XadminPermissionQuery struct {
 	withContentType *XadminContenttypeQuery
 	withUsers       *XadminUserQuery
 	withRoles       *XadminRoleQuery
-	withFKs         bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -423,7 +422,6 @@ func (xpq *XadminPermissionQuery) prepareQuery(ctx context.Context) error {
 func (xpq *XadminPermissionQuery) sqlAll(ctx context.Context) ([]*XadminPermission, error) {
 	var (
 		nodes       = []*XadminPermission{}
-		withFKs     = xpq.withFKs
 		_spec       = xpq.querySpec()
 		loadedTypes = [3]bool{
 			xpq.withContentType != nil,
@@ -431,12 +429,6 @@ func (xpq *XadminPermissionQuery) sqlAll(ctx context.Context) ([]*XadminPermissi
 			xpq.withRoles != nil,
 		}
 	)
-	if xpq.withContentType != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, xadminpermission.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
 		node := &XadminPermission{config: xpq.config}
 		nodes = append(nodes, node)
@@ -461,10 +453,7 @@ func (xpq *XadminPermissionQuery) sqlAll(ctx context.Context) ([]*XadminPermissi
 		ids := make([]int, 0, len(nodes))
 		nodeids := make(map[int][]*XadminPermission)
 		for i := range nodes {
-			if nodes[i].xadmin_permission_content_type == nil {
-				continue
-			}
-			fk := *nodes[i].xadmin_permission_content_type
+			fk := nodes[i].XadminPermissionContentType
 			if _, ok := nodeids[fk]; !ok {
 				ids = append(ids, fk)
 			}

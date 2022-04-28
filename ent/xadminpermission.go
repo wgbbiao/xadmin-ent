@@ -25,10 +25,11 @@ type XadminPermission struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// XadminPermissionContentType holds the value of the "xadmin_permission_content_type" field.
+	XadminPermissionContentType int `json:"xadmin_permission_content_type,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the XadminPermissionQuery when eager-loading is set.
-	Edges                          XadminPermissionEdges `json:"edges"`
-	xadmin_permission_content_type *int
+	Edges XadminPermissionEdges `json:"edges"`
 }
 
 // XadminPermissionEdges holds the relations/edges for other nodes in the graph.
@@ -81,14 +82,12 @@ func (*XadminPermission) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case xadminpermission.FieldID:
+		case xadminpermission.FieldID, xadminpermission.FieldXadminPermissionContentType:
 			values[i] = new(sql.NullInt64)
 		case xadminpermission.FieldName, xadminpermission.FieldCode:
 			values[i] = new(sql.NullString)
 		case xadminpermission.FieldCreatedAt, xadminpermission.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
-		case xadminpermission.ForeignKeys[0]: // xadmin_permission_content_type
-			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type XadminPermission", columns[i])
 		}
@@ -134,12 +133,11 @@ func (xp *XadminPermission) assignValues(columns []string, values []interface{})
 			} else if value.Valid {
 				xp.UpdatedAt = value.Time
 			}
-		case xadminpermission.ForeignKeys[0]:
+		case xadminpermission.FieldXadminPermissionContentType:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field xadmin_permission_content_type", value)
+				return fmt.Errorf("unexpected type %T for field xadmin_permission_content_type", values[i])
 			} else if value.Valid {
-				xp.xadmin_permission_content_type = new(int)
-				*xp.xadmin_permission_content_type = int(value.Int64)
+				xp.XadminPermissionContentType = int(value.Int64)
 			}
 		}
 	}
@@ -192,6 +190,8 @@ func (xp *XadminPermission) String() string {
 	builder.WriteString(xp.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", updated_at=")
 	builder.WriteString(xp.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", xadmin_permission_content_type=")
+	builder.WriteString(fmt.Sprintf("%v", xp.XadminPermissionContentType))
 	builder.WriteByte(')')
 	return builder.String()
 }

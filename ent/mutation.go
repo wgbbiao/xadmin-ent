@@ -772,6 +772,55 @@ func (m *XadminPermissionMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
+// SetXadminPermissionContentType sets the "xadmin_permission_content_type" field.
+func (m *XadminPermissionMutation) SetXadminPermissionContentType(i int) {
+	m._ContentType = &i
+}
+
+// XadminPermissionContentType returns the value of the "xadmin_permission_content_type" field in the mutation.
+func (m *XadminPermissionMutation) XadminPermissionContentType() (r int, exists bool) {
+	v := m._ContentType
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldXadminPermissionContentType returns the old "xadmin_permission_content_type" field's value of the XadminPermission entity.
+// If the XadminPermission object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *XadminPermissionMutation) OldXadminPermissionContentType(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldXadminPermissionContentType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldXadminPermissionContentType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldXadminPermissionContentType: %w", err)
+	}
+	return oldValue.XadminPermissionContentType, nil
+}
+
+// ClearXadminPermissionContentType clears the value of the "xadmin_permission_content_type" field.
+func (m *XadminPermissionMutation) ClearXadminPermissionContentType() {
+	m._ContentType = nil
+	m.clearedFields[xadminpermission.FieldXadminPermissionContentType] = struct{}{}
+}
+
+// XadminPermissionContentTypeCleared returns if the "xadmin_permission_content_type" field was cleared in this mutation.
+func (m *XadminPermissionMutation) XadminPermissionContentTypeCleared() bool {
+	_, ok := m.clearedFields[xadminpermission.FieldXadminPermissionContentType]
+	return ok
+}
+
+// ResetXadminPermissionContentType resets all changes to the "xadmin_permission_content_type" field.
+func (m *XadminPermissionMutation) ResetXadminPermissionContentType() {
+	m._ContentType = nil
+	delete(m.clearedFields, xadminpermission.FieldXadminPermissionContentType)
+}
+
 // SetContentTypeID sets the "ContentType" edge to the XadminContenttype entity by id.
 func (m *XadminPermissionMutation) SetContentTypeID(id int) {
 	m._ContentType = &id
@@ -784,7 +833,7 @@ func (m *XadminPermissionMutation) ClearContentType() {
 
 // ContentTypeCleared reports if the "ContentType" edge to the XadminContenttype entity was cleared.
 func (m *XadminPermissionMutation) ContentTypeCleared() bool {
-	return m.cleared_ContentType
+	return m.XadminPermissionContentTypeCleared() || m.cleared_ContentType
 }
 
 // ContentTypeID returns the "ContentType" edge ID in the mutation.
@@ -938,7 +987,7 @@ func (m *XadminPermissionMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *XadminPermissionMutation) Fields() []string {
-	fields := make([]string, 0, 4)
+	fields := make([]string, 0, 5)
 	if m.name != nil {
 		fields = append(fields, xadminpermission.FieldName)
 	}
@@ -950,6 +999,9 @@ func (m *XadminPermissionMutation) Fields() []string {
 	}
 	if m.updated_at != nil {
 		fields = append(fields, xadminpermission.FieldUpdatedAt)
+	}
+	if m._ContentType != nil {
+		fields = append(fields, xadminpermission.FieldXadminPermissionContentType)
 	}
 	return fields
 }
@@ -967,6 +1019,8 @@ func (m *XadminPermissionMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case xadminpermission.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case xadminpermission.FieldXadminPermissionContentType:
+		return m.XadminPermissionContentType()
 	}
 	return nil, false
 }
@@ -984,6 +1038,8 @@ func (m *XadminPermissionMutation) OldField(ctx context.Context, name string) (e
 		return m.OldCreatedAt(ctx)
 	case xadminpermission.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case xadminpermission.FieldXadminPermissionContentType:
+		return m.OldXadminPermissionContentType(ctx)
 	}
 	return nil, fmt.Errorf("unknown XadminPermission field %s", name)
 }
@@ -1021,6 +1077,13 @@ func (m *XadminPermissionMutation) SetField(name string, value ent.Value) error 
 		}
 		m.SetUpdatedAt(v)
 		return nil
+	case xadminpermission.FieldXadminPermissionContentType:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetXadminPermissionContentType(v)
+		return nil
 	}
 	return fmt.Errorf("unknown XadminPermission field %s", name)
 }
@@ -1028,13 +1091,16 @@ func (m *XadminPermissionMutation) SetField(name string, value ent.Value) error 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *XadminPermissionMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *XadminPermissionMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	}
 	return nil, false
 }
 
@@ -1050,7 +1116,11 @@ func (m *XadminPermissionMutation) AddField(name string, value ent.Value) error 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *XadminPermissionMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(xadminpermission.FieldXadminPermissionContentType) {
+		fields = append(fields, xadminpermission.FieldXadminPermissionContentType)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -1063,6 +1133,11 @@ func (m *XadminPermissionMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *XadminPermissionMutation) ClearField(name string) error {
+	switch name {
+	case xadminpermission.FieldXadminPermissionContentType:
+		m.ClearXadminPermissionContentType()
+		return nil
+	}
 	return fmt.Errorf("unknown XadminPermission nullable field %s", name)
 }
 
@@ -1081,6 +1156,9 @@ func (m *XadminPermissionMutation) ResetField(name string) error {
 		return nil
 	case xadminpermission.FieldUpdatedAt:
 		m.ResetUpdatedAt()
+		return nil
+	case xadminpermission.FieldXadminPermissionContentType:
+		m.ResetXadminPermissionContentType()
 		return nil
 	}
 	return fmt.Errorf("unknown XadminPermission field %s", name)

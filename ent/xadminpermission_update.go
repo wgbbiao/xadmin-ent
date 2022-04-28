@@ -63,6 +63,26 @@ func (xpu *XadminPermissionUpdate) SetUpdatedAt(t time.Time) *XadminPermissionUp
 	return xpu
 }
 
+// SetXadminPermissionContentType sets the "xadmin_permission_content_type" field.
+func (xpu *XadminPermissionUpdate) SetXadminPermissionContentType(i int) *XadminPermissionUpdate {
+	xpu.mutation.SetXadminPermissionContentType(i)
+	return xpu
+}
+
+// SetNillableXadminPermissionContentType sets the "xadmin_permission_content_type" field if the given value is not nil.
+func (xpu *XadminPermissionUpdate) SetNillableXadminPermissionContentType(i *int) *XadminPermissionUpdate {
+	if i != nil {
+		xpu.SetXadminPermissionContentType(*i)
+	}
+	return xpu
+}
+
+// ClearXadminPermissionContentType clears the value of the "xadmin_permission_content_type" field.
+func (xpu *XadminPermissionUpdate) ClearXadminPermissionContentType() *XadminPermissionUpdate {
+	xpu.mutation.ClearXadminPermissionContentType()
+	return xpu
+}
+
 // SetContentTypeID sets the "ContentType" edge to the XadminContenttype entity by ID.
 func (xpu *XadminPermissionUpdate) SetContentTypeID(id int) *XadminPermissionUpdate {
 	xpu.mutation.SetContentTypeID(id)
@@ -486,6 +506,26 @@ func (xpuo *XadminPermissionUpdateOne) SetNillableCreatedAt(t *time.Time) *Xadmi
 // SetUpdatedAt sets the "updated_at" field.
 func (xpuo *XadminPermissionUpdateOne) SetUpdatedAt(t time.Time) *XadminPermissionUpdateOne {
 	xpuo.mutation.SetUpdatedAt(t)
+	return xpuo
+}
+
+// SetXadminPermissionContentType sets the "xadmin_permission_content_type" field.
+func (xpuo *XadminPermissionUpdateOne) SetXadminPermissionContentType(i int) *XadminPermissionUpdateOne {
+	xpuo.mutation.SetXadminPermissionContentType(i)
+	return xpuo
+}
+
+// SetNillableXadminPermissionContentType sets the "xadmin_permission_content_type" field if the given value is not nil.
+func (xpuo *XadminPermissionUpdateOne) SetNillableXadminPermissionContentType(i *int) *XadminPermissionUpdateOne {
+	if i != nil {
+		xpuo.SetXadminPermissionContentType(*i)
+	}
+	return xpuo
+}
+
+// ClearXadminPermissionContentType clears the value of the "xadmin_permission_content_type" field.
+func (xpuo *XadminPermissionUpdateOne) ClearXadminPermissionContentType() *XadminPermissionUpdateOne {
+	xpuo.mutation.ClearXadminPermissionContentType()
 	return xpuo
 }
 

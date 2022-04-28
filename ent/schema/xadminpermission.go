@@ -24,6 +24,7 @@ func (XadminPermission) Fields() []ent.Field {
 		field.Time("updated_at").
 			Default(time.Now).
 			UpdateDefault(time.Now),
+		field.Int("xadmin_permission_content_type").Optional(),
 	}
 }
 
@@ -31,7 +32,8 @@ func (XadminPermission) Fields() []ent.Field {
 func (XadminPermission) Edges() []ent.Edge {
 
 	return []ent.Edge{
-		edge.To("ContentType", XadminContenttype.Type).Unique(),
+		edge.To("ContentType", XadminContenttype.Type).
+			Field("xadmin_permission_content_type").Unique(),
 		edge.To("users", XadminUser.Type),
 		edge.To("roles", XadminRole.Type),
 	}
