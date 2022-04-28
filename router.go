@@ -25,7 +25,11 @@ func AddRoute(r iris.Party) {
 	{
 		permission := r.Party("/permission", j.VerifyMiddleware())
 		permission.Get("/list", api.PermissionList)
-		permission.Post("/add", api.PermissionAdd)
+		permission.Post("/", api.PermissionAdd)
+		permission.Get("/{id:int}", api.PermissionDetail)
+		permission.Post("/{id:int}", api.PermissionEdit)
+		permission.Delete("/{id:int}", api.PermissionDelete)
+
 	}
 	{
 		contenttype := r.Party("/contenttype", j.VerifyMiddleware())
