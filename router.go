@@ -27,7 +27,7 @@ func AddRoute(r iris.Party) {
 		permission.Get("/list", api.PermissionList)
 		permission.Post("/", api.PermissionAdd)
 		permission.Get("/{id:int}", api.PermissionDetail)
-		permission.Post("/{id:int}", api.PermissionEdit)
+		permission.Put("/{id:int}", api.PermissionEdit)
 		permission.Delete("/{id:int}", api.PermissionDelete)
 
 	}

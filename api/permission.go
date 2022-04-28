@@ -1,11 +1,11 @@
 package api
 
 import (
-	"fmt"
-
 	"github.com/go-playground/validator/v10"
 	"github.com/kataras/iris/v12"
 	"github.com/wgbbiao/xadminent/database"
+	"github.com/wgbbiao/xadminent/ent"
+	"github.com/wgbbiao/xadminent/ent/xadmincontenttype"
 	"github.com/wgbbiao/xadminent/ent/xadminpermission"
 )
 
@@ -72,7 +72,7 @@ func PermissionAdd(ctx iris.Context) {
 			SetCode(form.Code).
 			SetContentTypeID(form.ContentTypeID).
 			Save(ctx.Request().Context())
-		fmt.Println(err)
+
 		if err != nil {
 			result.Status = 1
 			result.Msg = "权限创建失败"
@@ -105,7 +105,6 @@ func PermissionEdit(ctx iris.Context) {
 		SetCode(form.Code).
 		SetContentTypeID(form.ContentTypeID).
 		Save(ctx.Request().Context())
-	fmt.Println(err)
 	if err != nil {
 		result.Status = 1
 		result.Msg = "权限修改失败"
@@ -137,7 +136,13 @@ func PermissionDelete(ctx iris.Context) {
 func PermissionDetail(ctx iris.Context) {
 	id := ctx.Params().GetIntDefault("id", 0)
 	var result AmisResult = AmisResult{}
-	p, err := database.GetDb().XadminPermission.Get(ctx.Request().Context(), id)
+	p, err := database.GetDb().XadminPermission.Query().
+		Where(xadminpermission.ID(id)).
+		WithContentType(func(xcq *ent.XadminContenttypeQuery) {
+			xcq.Select(xadmincontenttype.FieldID, xadmincontenttype.FieldAppLabel, xadmincontenttype.FieldModel)
+		}).
+		First(ctx.Request().Context())
+
 	if err != nil {
 		result.Status = 1
 		result.Msg = "权限详情获取失败"
