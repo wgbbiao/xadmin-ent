@@ -12,6 +12,14 @@ import (
 // 角色管理
 
 func RoleList(ctx iris.Context) {
+	u, _ := getUserFromJwt(ctx)
+	result := AmisResult{}
+	if !CheckPermission(u, ent.XadminRole{}, CanView) {
+		result.Status = 1
+		result.Msg = "没有权限"
+		ctx.JSON(result)
+		return
+	}
 	var form struct {
 		Name string `json:"name"`
 	}
@@ -22,7 +30,7 @@ func RoleList(ctx iris.Context) {
 		})
 		return
 	}
-	result := AmisResult{}
+
 	result.Status = 0
 	result.Msg = "角色列表"
 	q := database.GetDb().XadminRole.Query()
@@ -45,11 +53,19 @@ func RoleList(ctx iris.Context) {
 
 // 创建角色
 func RoleAdd(ctx iris.Context) {
+	u, _ := getUserFromJwt(ctx)
+	result := AmisResult{}
+	if !CheckPermission(u, ent.XadminRole{}, CanAdd) {
+		result.Status = 1
+		result.Msg = "没有权限"
+		ctx.JSON(result)
+		return
+	}
 	var form struct {
 		Name          string `json:"name" validate:"required"`
 		PermissionIDs []int  `json:"permission_ids" validate:"required"`
 	}
-	var result AmisResult = AmisResult{}
+
 	if err := ctx.ReadJSON(&form); err != nil {
 		result.Status = 1
 		if errs, ok := err.(validator.ValidationErrors); ok {
@@ -77,7 +93,15 @@ func RoleAdd(ctx iris.Context) {
 
 // 角色详情
 func RoleDetail(ctx iris.Context) {
-	var result AmisResult = AmisResult{}
+	u, _ := getUserFromJwt(ctx)
+	result := AmisResult{}
+	if !CheckPermission(u, ent.XadminRole{}, CanView) {
+		result.Status = 1
+		result.Msg = "没有权限"
+		ctx.JSON(result)
+		return
+	}
+
 	id, _ := ctx.Params().GetInt("id")
 	role, err := database.GetDb().XadminRole.Query().
 		Where(xadminrole.ID(id)).
@@ -97,12 +121,20 @@ func RoleDetail(ctx iris.Context) {
 
 // 更新角色
 func RoleUpdate(ctx iris.Context) {
+	u, _ := getUserFromJwt(ctx)
+	result := AmisResult{}
+	if !CheckPermission(u, ent.XadminRole{}, CanEdit) {
+		result.Status = 1
+		result.Msg = "没有权限"
+		ctx.JSON(result)
+		return
+	}
 	var form struct {
 		Name          string `json:"name" validate:"required"`
 		PermissionIDs []int  `json:"permission_ids" validate:"required"`
 	}
 	id, _ := ctx.Params().GetInt("id")
-	var result AmisResult = AmisResult{}
+
 	if err := ctx.ReadJSON(&form); err != nil {
 		result.Status = 1
 		if errs, ok := err.(validator.ValidationErrors); ok {
@@ -131,7 +163,15 @@ func RoleUpdate(ctx iris.Context) {
 
 // 删除角色
 func RoleDelete(ctx iris.Context) {
-	var result AmisResult = AmisResult{}
+	u, _ := getUserFromJwt(ctx)
+	result := AmisResult{}
+	if !CheckPermission(u, ent.XadminRole{}, CanDel) {
+		result.Status = 1
+		result.Msg = "没有权限"
+		ctx.JSON(result)
+		return
+	}
+
 	id, _ := ctx.Params().GetInt("id")
 	if err := database.GetDb().XadminRole.DeleteOneID(id).Exec(ctx.Request().Context()); err != nil {
 		result.Status = 1

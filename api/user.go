@@ -87,7 +87,6 @@ func Login(ctx iris.Context) {
 // 用户信息
 func UserInfo(ctx iris.Context) {
 	u, err := getUserFromJwt(ctx)
-
 	if err != nil {
 		ctx.JSON(iris.Map{
 			"status": 1,
@@ -103,13 +102,20 @@ func UserInfo(ctx iris.Context) {
 
 // 用户列表
 func UserList(ctx iris.Context) {
+	u, _ := getUserFromJwt(ctx)
+	result := AmisResult{}
+	if !CheckPermission(u, ent.XadminUser{}, CanView) {
+		result.Status = 1
+		result.Msg = "没有权限"
+		ctx.JSON(result)
+		return
+	}
 	var query struct {
 		Page     int    `url:"page"`
 		Limit    int    `url:"limit"`
 		Username string `url:"username"`
 		IsSuper  *bool  `url:"is_super"`
 	}
-	result := AmisResult{}
 	if err := ctx.ReadQuery(&query); err != nil {
 		result.Status = 1
 		if errs, ok := err.(validator.ValidationErrors); ok {
@@ -166,6 +172,15 @@ func getUserFromJwt(ctx iris.Context) (*ent.XadminUser, error) {
 
 // 添加用户
 func UserAdd(ctx iris.Context) {
+	u, _ := getUserFromJwt(ctx)
+	result := AmisResult{}
+	if !CheckPermission(u, ent.XadminUser{}, CanAdd) {
+		result.Status = 1
+		result.Msg = "没有权限"
+		ctx.JSON(result)
+		return
+	}
+
 	var form struct {
 		Username      string `json:"username" validate:"required"`
 		Password      string `json:"password" validate:"required"`
@@ -173,7 +188,7 @@ func UserAdd(ctx iris.Context) {
 		RoleIDs       []int  `json:"role_ids"`
 		PermissionIDs []int  `json:"permission_ids"`
 	}
-	result := AmisResult{}
+
 	if err := ctx.ReadJSON(&form); err != nil {
 		result.Status = 1
 		if errs, ok := err.(validator.ValidationErrors); ok {
@@ -229,8 +244,16 @@ func UserAdd(ctx iris.Context) {
 
 // 用户详情
 func UserDetail(ctx iris.Context) {
-	id := ctx.Params().GetIntDefault("id", 0)
+	u, _ := getUserFromJwt(ctx)
 	result := AmisResult{}
+	if !CheckPermission(u, ent.XadminUser{}, CanView) {
+		result.Status = 1
+		result.Msg = "没有权限"
+		ctx.JSON(result)
+		return
+	}
+
+	id := ctx.Params().GetIntDefault("id", 0)
 	if id == 0 {
 		result.Status = 1
 		result.Msg = "用户不存在"
@@ -255,6 +278,15 @@ func UserDetail(ctx iris.Context) {
 
 // 用户编辑
 func UserEdit(ctx iris.Context) {
+	u, _ := getUserFromJwt(ctx)
+	result := AmisResult{}
+	if !CheckPermission(u, ent.XadminUser{}, CanEdit) {
+		result.Status = 1
+		result.Msg = "没有权限"
+		ctx.JSON(result)
+		return
+	}
+
 	var form struct {
 		Username      string `json:"username" validate:"required"`
 		IsSuper       bool   `json:"is_super"`
@@ -262,7 +294,7 @@ func UserEdit(ctx iris.Context) {
 		PermissionIDs []int  `json:"permission_ids"`
 	}
 	id, _ := ctx.Params().GetInt("id")
-	result := AmisResult{}
+
 	if err := ctx.ReadJSON(&form); err != nil {
 		result.Status = 1
 		if errs, ok := err.(validator.ValidationErrors); ok {
@@ -323,12 +355,20 @@ func UserEdit(ctx iris.Context) {
 
 // 修改密码
 func UserPassword(ctx iris.Context) {
+	u, _ := getUserFromJwt(ctx)
+	result := AmisResult{}
+	if !CheckPermission(u, ent.XadminUser{}, CanEdit) {
+		result.Status = 1
+		result.Msg = "没有权限"
+		ctx.JSON(result)
+		return
+	}
 	var form struct {
 		ID                   int    `json:"id" validate:"required"`
 		Password             string `json:"password" validate:"required"`
 		PasswordConfirmation string `json:"password_confirmation" validate:"required"`
 	}
-	result := AmisResult{}
+
 	if err := ctx.ReadJSON(&form); err != nil {
 		fmt.Println(err)
 		result.Status = 1
@@ -385,10 +425,18 @@ func UserPassword(ctx iris.Context) {
 
 // 删除用户
 func UserDelete(ctx iris.Context) {
+	u, _ := getUserFromJwt(ctx)
+	result := AmisResult{}
+	if !CheckPermission(u, ent.XadminUser{}, CanDel) {
+		result.Status = 1
+		result.Msg = "没有权限"
+		ctx.JSON(result)
+		return
+	}
 	var form struct {
 		ID int `json:"id" validate:"required"`
 	}
-	result := AmisResult{}
+
 	if err := ctx.ReadJSON(&form); err != nil {
 		result.Status = 1
 		if errs, ok := err.(validator.ValidationErrors); ok {

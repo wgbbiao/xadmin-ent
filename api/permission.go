@@ -4,6 +4,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/kataras/iris/v12"
 	"github.com/wgbbiao/xadminent/database"
+	"github.com/wgbbiao/xadminent/ent"
 	"github.com/wgbbiao/xadminent/ent/xadminpermission"
 )
 
@@ -11,17 +12,23 @@ import (
 
 // 获取权限列表
 func PermissionList(ctx iris.Context) {
+	u, _ := getUserFromJwt(ctx)
+	result := AmisResult{}
+	if !CheckPermission(u, ent.XadminPermission{}, CanView) {
+		result.Status = 1
+		result.Msg = "没有权限"
+		ctx.JSON(result)
+		return
+	}
 	var form struct {
 		Name string `json:"name"`
 	}
 	if err := ctx.ReadQuery(&form); err != nil {
-		ctx.JSON(iris.Map{
-			"status": 1,
-			"msg":    "表单读取错误",
-		})
+		result.Status = 1
+		result.Msg = "表单读取错误"
 		return
 	}
-	result := AmisResult{}
+
 	result.Status = 0
 	result.Msg = "权限列表"
 	q := database.GetDb().XadminPermission.Query()
@@ -44,12 +51,20 @@ func PermissionList(ctx iris.Context) {
 
 // 创建权限
 func PermissionAdd(ctx iris.Context) {
+	u, _ := getUserFromJwt(ctx)
+	result := AmisResult{}
+	if !CheckPermission(u, ent.XadminPermission{}, CanAdd) {
+		result.Status = 1
+		result.Msg = "没有权限"
+		ctx.JSON(result)
+		return
+	}
 	var form struct {
 		Name          string `json:"name" validate:"required"`
 		Code          string `json:"code" validate:"required"`
 		ContentTypeID int    `json:"content_type_id" validate:"required"`
 	}
-	var result AmisResult = AmisResult{}
+
 	if err := ctx.ReadJSON(&form); err != nil {
 		result.Status = 1
 		if errs, ok := err.(validator.ValidationErrors); ok {
@@ -85,13 +100,21 @@ func PermissionAdd(ctx iris.Context) {
 
 // 修改权限
 func PermissionEdit(ctx iris.Context) {
+	u, _ := getUserFromJwt(ctx)
+	result := AmisResult{}
+	if !CheckPermission(u, ent.XadminPermission{}, CanEdit) {
+		result.Status = 1
+		result.Msg = "没有权限"
+		ctx.JSON(result)
+		return
+	}
 	var form struct {
 		ID            int    `json:"id"`
 		Name          string `json:"name"`
 		Code          string `json:"code"`
 		ContentTypeID int    `json:"content_type_id"`
 	}
-	var result AmisResult = AmisResult{}
+
 	if err := ctx.ReadJSON(&form); err != nil {
 		result.Status = 1
 		result.Msg = "表单读取错误"
@@ -116,8 +139,15 @@ func PermissionEdit(ctx iris.Context) {
 
 // 删除权限
 func PermissionDelete(ctx iris.Context) {
+	u, _ := getUserFromJwt(ctx)
+	result := AmisResult{}
+	if !CheckPermission(u, ent.XadminPermission{}, CanDel) {
+		result.Status = 1
+		result.Msg = "没有权限"
+		ctx.JSON(result)
+		return
+	}
 	id := ctx.Params().GetIntDefault("id", 0)
-	var result AmisResult = AmisResult{}
 
 	client := database.GetDb()
 	err := client.XadminPermission.DeleteOneID(id).Exec(ctx.Request().Context())
@@ -132,8 +162,16 @@ func PermissionDelete(ctx iris.Context) {
 
 // 获取权限详情
 func PermissionDetail(ctx iris.Context) {
+	u, _ := getUserFromJwt(ctx)
+	result := AmisResult{}
+	if !CheckPermission(u, ent.XadminPermission{}, CanView) {
+		result.Status = 1
+		result.Msg = "没有权限"
+		ctx.JSON(result)
+		return
+	}
 	id := ctx.Params().GetIntDefault("id", 0)
-	var result AmisResult = AmisResult{}
+
 	p, err := database.GetDb().XadminPermission.Query().
 		Where(xadminpermission.ID(id)).
 		First(ctx.Request().Context())

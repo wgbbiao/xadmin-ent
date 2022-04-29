@@ -6,6 +6,14 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+// 权限列表
+const (
+	CanView string = "view"
+	CanAdd  string = "add"
+	CanEdit string = "edit"
+	CanDel  string = "delete"
+)
+
 type validationError struct {
 	ActualTag string `json:"tag"`
 	Namespace string `json:"namespace"`

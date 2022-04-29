@@ -1,6 +1,8 @@
 package main
 
-import "wgbbiao/cmd"
+import (
+	"wgbbiao/cmd"
+)
 
 func main() {
 	cmd.Execute()

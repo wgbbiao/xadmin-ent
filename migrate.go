@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/wgbbiao/xadminent/api"
 	"github.com/wgbbiao/xadminent/database"
 	"github.com/wgbbiao/xadminent/ent"
 	"github.com/wgbbiao/xadminent/ent/migrate"
@@ -61,10 +62,10 @@ func CreatePermission(appLabel string, models []any) {
 	client := database.GetDb()
 	// 权限列表
 	codes := []string{
-		"view",
-		"add",
-		"edit",
-		"delete",
+		api.CanView,
+		api.CanAdd,
+		api.CanEdit,
+		api.CanDel,
 	}
 	for _, model := range models {
 		rt := reflect.TypeOf(model)
