@@ -167,9 +167,11 @@ func getUserFromJwt(ctx iris.Context) (*ent.XadminUser, error) {
 // 添加用户
 func UserAdd(ctx iris.Context) {
 	var form struct {
-		Username string `json:"username" validate:"required"`
-		Password string `json:"password" validate:"required"`
-		IsSuper  bool   `json:"is_super"`
+		Username      string `json:"username" validate:"required"`
+		Password      string `json:"password" validate:"required"`
+		IsSuper       bool   `json:"is_super"`
+		RoleIDs       []int  `json:"role_ids"`
+		PermissionIDs []int  `json:"permission_ids"`
 	}
 	result := AmisResult{}
 	if err := ctx.ReadJSON(&form); err != nil {
@@ -210,6 +212,8 @@ func UserAdd(ctx iris.Context) {
 		SetSalt(string(salt)).
 		SetPassword(MD5(form.Password + string(salt))).
 		SetIsSuper(form.IsSuper).
+		AddRoleIDs(form.RoleIDs...).
+		AddPermissionIDs(form.PermissionIDs...).
 		Save(ctx.Request().Context())
 	if err != nil {
 		result.Status = 1
@@ -234,6 +238,8 @@ func UserDetail(ctx iris.Context) {
 		u, err := database.GetDb().XadminUser.
 			Query().
 			Where(xadminuser.ID(id)).
+			WithPermissions().
+			WithRoles().
 			First(ctx.Request().Context())
 		if err != nil {
 			result.Status = 1
@@ -250,10 +256,12 @@ func UserDetail(ctx iris.Context) {
 // 用户编辑
 func UserEdit(ctx iris.Context) {
 	var form struct {
-		ID       int    `json:"id" validate:"required"`
-		Username string `json:"username" validate:"required"`
-		IsSuper  bool   `json:"is_super"`
+		Username      string `json:"username" validate:"required"`
+		IsSuper       bool   `json:"is_super"`
+		RoleIDs       []int  `json:"role_ids"`
+		PermissionIDs []int  `json:"permission_ids"`
 	}
+	id, _ := ctx.Params().GetInt("id")
 	result := AmisResult{}
 	if err := ctx.ReadJSON(&form); err != nil {
 		result.Status = 1
@@ -274,7 +282,7 @@ func UserEdit(ctx iris.Context) {
 	}
 	u, err := database.GetDb().XadminUser.
 		Query().
-		Where(xadminuser.ID(form.ID)).
+		Where(xadminuser.ID(id)).
 		First(ctx.Request().Context())
 	if err != nil {
 		result.Status = 1
@@ -290,7 +298,11 @@ func UserEdit(ctx iris.Context) {
 	if form.IsSuper != u.IsSuper {
 		q.SetIsSuper(form.IsSuper)
 	}
-	_, err = q.Where(xadminuser.ID(form.ID)).Save(ctx.Request().Context())
+	q = q.ClearRoles().
+		ClearPermissions().
+		AddRoleIDs(form.RoleIDs...).
+		AddPermissionIDs(form.PermissionIDs...)
+	_, err = q.Where(xadminuser.ID(id)).Save(ctx.Request().Context())
 	if err != nil {
 		if sqlgraph.IsUniqueConstraintError(err) {
 			result.Status = 300
