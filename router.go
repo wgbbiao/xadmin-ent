@@ -21,6 +21,10 @@ func AddRoute(r iris.Party) {
 	{
 		role := r.Party("/role", j.VerifyMiddleware())
 		role.Get("/list", api.RoleList)
+		role.Post("/", api.RoleAdd)
+		role.Put("/{id:int}", api.RoleUpdate)
+		role.Delete("/{id:int}", api.RoleDelete)
+		role.Get("/{id:int}", api.RoleDetail)
 	}
 	{
 		permission := r.Party("/permission", j.VerifyMiddleware())
