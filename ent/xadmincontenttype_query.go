@@ -254,12 +254,12 @@ func (xcq *XadminContenttypeQuery) Clone() *XadminContenttypeQuery {
 // Example:
 //
 //	var v []struct {
-//		AppLabel string `json:"app_label,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.XadminContenttype.Query().
-//		GroupBy(xadmincontenttype.FieldAppLabel).
+//		GroupBy(xadmincontenttype.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 //
@@ -281,11 +281,11 @@ func (xcq *XadminContenttypeQuery) GroupBy(field string, fields ...string) *Xadm
 // Example:
 //
 //	var v []struct {
-//		AppLabel string `json:"app_label,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.XadminContenttype.Query().
-//		Select(xadmincontenttype.FieldAppLabel).
+//		Select(xadmincontenttype.FieldCreatedAt).
 //		Scan(ctx, &v)
 //
 func (xcq *XadminContenttypeQuery) Select(fields ...string) *XadminContenttypeSelect {

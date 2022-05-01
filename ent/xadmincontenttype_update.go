@@ -28,6 +28,12 @@ func (xcu *XadminContenttypeUpdate) Where(ps ...predicate.XadminContenttype) *Xa
 	return xcu
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (xcu *XadminContenttypeUpdate) SetUpdatedAt(t time.Time) *XadminContenttypeUpdate {
+	xcu.mutation.SetUpdatedAt(t)
+	return xcu
+}
+
 // SetAppLabel sets the "app_label" field.
 func (xcu *XadminContenttypeUpdate) SetAppLabel(s string) *XadminContenttypeUpdate {
 	xcu.mutation.SetAppLabel(s)
@@ -37,26 +43,6 @@ func (xcu *XadminContenttypeUpdate) SetAppLabel(s string) *XadminContenttypeUpda
 // SetModel sets the "model" field.
 func (xcu *XadminContenttypeUpdate) SetModel(s string) *XadminContenttypeUpdate {
 	xcu.mutation.SetModel(s)
-	return xcu
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (xcu *XadminContenttypeUpdate) SetCreatedAt(t time.Time) *XadminContenttypeUpdate {
-	xcu.mutation.SetCreatedAt(t)
-	return xcu
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (xcu *XadminContenttypeUpdate) SetNillableCreatedAt(t *time.Time) *XadminContenttypeUpdate {
-	if t != nil {
-		xcu.SetCreatedAt(*t)
-	}
-	return xcu
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (xcu *XadminContenttypeUpdate) SetUpdatedAt(t time.Time) *XadminContenttypeUpdate {
-	xcu.mutation.SetUpdatedAt(t)
 	return xcu
 }
 
@@ -167,6 +153,13 @@ func (xcu *XadminContenttypeUpdate) sqlSave(ctx context.Context) (n int, err err
 			}
 		}
 	}
+	if value, ok := xcu.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: xadmincontenttype.FieldUpdatedAt,
+		})
+	}
 	if value, ok := xcu.mutation.AppLabel(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -179,20 +172,6 @@ func (xcu *XadminContenttypeUpdate) sqlSave(ctx context.Context) (n int, err err
 			Type:   field.TypeString,
 			Value:  value,
 			Column: xadmincontenttype.FieldModel,
-		})
-	}
-	if value, ok := xcu.mutation.CreatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: xadmincontenttype.FieldCreatedAt,
-		})
-	}
-	if value, ok := xcu.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: xadmincontenttype.FieldUpdatedAt,
 		})
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, xcu.driver, _spec); err != nil {
@@ -214,6 +193,12 @@ type XadminContenttypeUpdateOne struct {
 	mutation *XadminContenttypeMutation
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (xcuo *XadminContenttypeUpdateOne) SetUpdatedAt(t time.Time) *XadminContenttypeUpdateOne {
+	xcuo.mutation.SetUpdatedAt(t)
+	return xcuo
+}
+
 // SetAppLabel sets the "app_label" field.
 func (xcuo *XadminContenttypeUpdateOne) SetAppLabel(s string) *XadminContenttypeUpdateOne {
 	xcuo.mutation.SetAppLabel(s)
@@ -223,26 +208,6 @@ func (xcuo *XadminContenttypeUpdateOne) SetAppLabel(s string) *XadminContenttype
 // SetModel sets the "model" field.
 func (xcuo *XadminContenttypeUpdateOne) SetModel(s string) *XadminContenttypeUpdateOne {
 	xcuo.mutation.SetModel(s)
-	return xcuo
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (xcuo *XadminContenttypeUpdateOne) SetCreatedAt(t time.Time) *XadminContenttypeUpdateOne {
-	xcuo.mutation.SetCreatedAt(t)
-	return xcuo
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (xcuo *XadminContenttypeUpdateOne) SetNillableCreatedAt(t *time.Time) *XadminContenttypeUpdateOne {
-	if t != nil {
-		xcuo.SetCreatedAt(*t)
-	}
-	return xcuo
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (xcuo *XadminContenttypeUpdateOne) SetUpdatedAt(t time.Time) *XadminContenttypeUpdateOne {
-	xcuo.mutation.SetUpdatedAt(t)
 	return xcuo
 }
 
@@ -377,6 +342,13 @@ func (xcuo *XadminContenttypeUpdateOne) sqlSave(ctx context.Context) (_node *Xad
 			}
 		}
 	}
+	if value, ok := xcuo.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: xadmincontenttype.FieldUpdatedAt,
+		})
+	}
 	if value, ok := xcuo.mutation.AppLabel(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -389,20 +361,6 @@ func (xcuo *XadminContenttypeUpdateOne) sqlSave(ctx context.Context) (_node *Xad
 			Type:   field.TypeString,
 			Value:  value,
 			Column: xadmincontenttype.FieldModel,
-		})
-	}
-	if value, ok := xcuo.mutation.CreatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: xadmincontenttype.FieldCreatedAt,
-		})
-	}
-	if value, ok := xcuo.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: xadmincontenttype.FieldUpdatedAt,
 		})
 	}
 	_node = &XadminContenttype{config: xcuo.config}

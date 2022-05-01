@@ -22,6 +22,34 @@ type XadminUserCreate struct {
 	hooks    []Hook
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (xuc *XadminUserCreate) SetCreatedAt(t time.Time) *XadminUserCreate {
+	xuc.mutation.SetCreatedAt(t)
+	return xuc
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (xuc *XadminUserCreate) SetNillableCreatedAt(t *time.Time) *XadminUserCreate {
+	if t != nil {
+		xuc.SetCreatedAt(*t)
+	}
+	return xuc
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (xuc *XadminUserCreate) SetUpdatedAt(t time.Time) *XadminUserCreate {
+	xuc.mutation.SetUpdatedAt(t)
+	return xuc
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (xuc *XadminUserCreate) SetNillableUpdatedAt(t *time.Time) *XadminUserCreate {
+	if t != nil {
+		xuc.SetUpdatedAt(*t)
+	}
+	return xuc
+}
+
 // SetUsername sets the "username" field.
 func (xuc *XadminUserCreate) SetUsername(s string) *XadminUserCreate {
 	xuc.mutation.SetUsername(s)
@@ -64,34 +92,6 @@ func (xuc *XadminUserCreate) SetLastLoginAt(t time.Time) *XadminUserCreate {
 func (xuc *XadminUserCreate) SetNillableLastLoginAt(t *time.Time) *XadminUserCreate {
 	if t != nil {
 		xuc.SetLastLoginAt(*t)
-	}
-	return xuc
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (xuc *XadminUserCreate) SetCreatedAt(t time.Time) *XadminUserCreate {
-	xuc.mutation.SetCreatedAt(t)
-	return xuc
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (xuc *XadminUserCreate) SetNillableCreatedAt(t *time.Time) *XadminUserCreate {
-	if t != nil {
-		xuc.SetCreatedAt(*t)
-	}
-	return xuc
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (xuc *XadminUserCreate) SetUpdatedAt(t time.Time) *XadminUserCreate {
-	xuc.mutation.SetUpdatedAt(t)
-	return xuc
-}
-
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (xuc *XadminUserCreate) SetNillableUpdatedAt(t *time.Time) *XadminUserCreate {
-	if t != nil {
-		xuc.SetUpdatedAt(*t)
 	}
 	return xuc
 }
@@ -197,10 +197,6 @@ func (xuc *XadminUserCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (xuc *XadminUserCreate) defaults() {
-	if _, ok := xuc.mutation.IsSuper(); !ok {
-		v := xadminuser.DefaultIsSuper
-		xuc.mutation.SetIsSuper(v)
-	}
 	if _, ok := xuc.mutation.CreatedAt(); !ok {
 		v := xadminuser.DefaultCreatedAt()
 		xuc.mutation.SetCreatedAt(v)
@@ -209,10 +205,20 @@ func (xuc *XadminUserCreate) defaults() {
 		v := xadminuser.DefaultUpdatedAt()
 		xuc.mutation.SetUpdatedAt(v)
 	}
+	if _, ok := xuc.mutation.IsSuper(); !ok {
+		v := xadminuser.DefaultIsSuper
+		xuc.mutation.SetIsSuper(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (xuc *XadminUserCreate) check() error {
+	if _, ok := xuc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "XadminUser.created_at"`)}
+	}
+	if _, ok := xuc.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "XadminUser.updated_at"`)}
+	}
 	if _, ok := xuc.mutation.Username(); !ok {
 		return &ValidationError{Name: "username", err: errors.New(`ent: missing required field "XadminUser.username"`)}
 	}
@@ -221,12 +227,6 @@ func (xuc *XadminUserCreate) check() error {
 	}
 	if _, ok := xuc.mutation.Salt(); !ok {
 		return &ValidationError{Name: "salt", err: errors.New(`ent: missing required field "XadminUser.salt"`)}
-	}
-	if _, ok := xuc.mutation.CreatedAt(); !ok {
-		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "XadminUser.created_at"`)}
-	}
-	if _, ok := xuc.mutation.UpdatedAt(); !ok {
-		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "XadminUser.updated_at"`)}
 	}
 	return nil
 }
@@ -255,6 +255,22 @@ func (xuc *XadminUserCreate) createSpec() (*XadminUser, *sqlgraph.CreateSpec) {
 			},
 		}
 	)
+	if value, ok := xuc.mutation.CreatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: xadminuser.FieldCreatedAt,
+		})
+		_node.CreatedAt = value
+	}
+	if value, ok := xuc.mutation.UpdatedAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: xadminuser.FieldUpdatedAt,
+		})
+		_node.UpdatedAt = value
+	}
 	if value, ok := xuc.mutation.Username(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -294,22 +310,6 @@ func (xuc *XadminUserCreate) createSpec() (*XadminUser, *sqlgraph.CreateSpec) {
 			Column: xadminuser.FieldLastLoginAt,
 		})
 		_node.LastLoginAt = &value
-	}
-	if value, ok := xuc.mutation.CreatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: xadminuser.FieldCreatedAt,
-		})
-		_node.CreatedAt = value
-	}
-	if value, ok := xuc.mutation.UpdatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: xadminuser.FieldUpdatedAt,
-		})
-		_node.UpdatedAt = value
 	}
 	if nodes := xuc.mutation.RolesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

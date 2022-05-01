@@ -31,6 +31,12 @@ func (xpu *XadminPermissionUpdate) Where(ps ...predicate.XadminPermission) *Xadm
 	return xpu
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (xpu *XadminPermissionUpdate) SetUpdatedAt(t time.Time) *XadminPermissionUpdate {
+	xpu.mutation.SetUpdatedAt(t)
+	return xpu
+}
+
 // SetName sets the "name" field.
 func (xpu *XadminPermissionUpdate) SetName(s string) *XadminPermissionUpdate {
 	xpu.mutation.SetName(s)
@@ -40,26 +46,6 @@ func (xpu *XadminPermissionUpdate) SetName(s string) *XadminPermissionUpdate {
 // SetCode sets the "code" field.
 func (xpu *XadminPermissionUpdate) SetCode(s string) *XadminPermissionUpdate {
 	xpu.mutation.SetCode(s)
-	return xpu
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (xpu *XadminPermissionUpdate) SetCreatedAt(t time.Time) *XadminPermissionUpdate {
-	xpu.mutation.SetCreatedAt(t)
-	return xpu
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (xpu *XadminPermissionUpdate) SetNillableCreatedAt(t *time.Time) *XadminPermissionUpdate {
-	if t != nil {
-		xpu.SetCreatedAt(*t)
-	}
-	return xpu
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (xpu *XadminPermissionUpdate) SetUpdatedAt(t time.Time) *XadminPermissionUpdate {
-	xpu.mutation.SetUpdatedAt(t)
 	return xpu
 }
 
@@ -287,6 +273,13 @@ func (xpu *XadminPermissionUpdate) sqlSave(ctx context.Context) (n int, err erro
 			}
 		}
 	}
+	if value, ok := xpu.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: xadminpermission.FieldUpdatedAt,
+		})
+	}
 	if value, ok := xpu.mutation.Name(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -299,20 +292,6 @@ func (xpu *XadminPermissionUpdate) sqlSave(ctx context.Context) (n int, err erro
 			Type:   field.TypeString,
 			Value:  value,
 			Column: xadminpermission.FieldCode,
-		})
-	}
-	if value, ok := xpu.mutation.CreatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: xadminpermission.FieldCreatedAt,
-		})
-	}
-	if value, ok := xpu.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: xadminpermission.FieldUpdatedAt,
 		})
 	}
 	if xpu.mutation.ContentTypeCleared() {
@@ -477,6 +456,12 @@ type XadminPermissionUpdateOne struct {
 	mutation *XadminPermissionMutation
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (xpuo *XadminPermissionUpdateOne) SetUpdatedAt(t time.Time) *XadminPermissionUpdateOne {
+	xpuo.mutation.SetUpdatedAt(t)
+	return xpuo
+}
+
 // SetName sets the "name" field.
 func (xpuo *XadminPermissionUpdateOne) SetName(s string) *XadminPermissionUpdateOne {
 	xpuo.mutation.SetName(s)
@@ -486,26 +471,6 @@ func (xpuo *XadminPermissionUpdateOne) SetName(s string) *XadminPermissionUpdate
 // SetCode sets the "code" field.
 func (xpuo *XadminPermissionUpdateOne) SetCode(s string) *XadminPermissionUpdateOne {
 	xpuo.mutation.SetCode(s)
-	return xpuo
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (xpuo *XadminPermissionUpdateOne) SetCreatedAt(t time.Time) *XadminPermissionUpdateOne {
-	xpuo.mutation.SetCreatedAt(t)
-	return xpuo
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (xpuo *XadminPermissionUpdateOne) SetNillableCreatedAt(t *time.Time) *XadminPermissionUpdateOne {
-	if t != nil {
-		xpuo.SetCreatedAt(*t)
-	}
-	return xpuo
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (xpuo *XadminPermissionUpdateOne) SetUpdatedAt(t time.Time) *XadminPermissionUpdateOne {
-	xpuo.mutation.SetUpdatedAt(t)
 	return xpuo
 }
 
@@ -757,6 +722,13 @@ func (xpuo *XadminPermissionUpdateOne) sqlSave(ctx context.Context) (_node *Xadm
 			}
 		}
 	}
+	if value, ok := xpuo.mutation.UpdatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: xadminpermission.FieldUpdatedAt,
+		})
+	}
 	if value, ok := xpuo.mutation.Name(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -769,20 +741,6 @@ func (xpuo *XadminPermissionUpdateOne) sqlSave(ctx context.Context) (_node *Xadm
 			Type:   field.TypeString,
 			Value:  value,
 			Column: xadminpermission.FieldCode,
-		})
-	}
-	if value, ok := xpuo.mutation.CreatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: xadminpermission.FieldCreatedAt,
-		})
-	}
-	if value, ok := xpuo.mutation.UpdatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: xadminpermission.FieldUpdatedAt,
 		})
 	}
 	if xpuo.mutation.ContentTypeCleared() {

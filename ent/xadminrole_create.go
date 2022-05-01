@@ -22,12 +22,6 @@ type XadminRoleCreate struct {
 	hooks    []Hook
 }
 
-// SetName sets the "name" field.
-func (xrc *XadminRoleCreate) SetName(s string) *XadminRoleCreate {
-	xrc.mutation.SetName(s)
-	return xrc
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (xrc *XadminRoleCreate) SetCreatedAt(t time.Time) *XadminRoleCreate {
 	xrc.mutation.SetCreatedAt(t)
@@ -53,6 +47,12 @@ func (xrc *XadminRoleCreate) SetNillableUpdatedAt(t *time.Time) *XadminRoleCreat
 	if t != nil {
 		xrc.SetUpdatedAt(*t)
 	}
+	return xrc
+}
+
+// SetName sets the "name" field.
+func (xrc *XadminRoleCreate) SetName(s string) *XadminRoleCreate {
+	xrc.mutation.SetName(s)
 	return xrc
 }
 
@@ -169,6 +169,12 @@ func (xrc *XadminRoleCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (xrc *XadminRoleCreate) check() error {
+	if _, ok := xrc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "XadminRole.created_at"`)}
+	}
+	if _, ok := xrc.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "XadminRole.updated_at"`)}
+	}
 	if _, ok := xrc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "XadminRole.name"`)}
 	}
@@ -176,12 +182,6 @@ func (xrc *XadminRoleCreate) check() error {
 		if err := xadminrole.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "XadminRole.name": %w`, err)}
 		}
-	}
-	if _, ok := xrc.mutation.CreatedAt(); !ok {
-		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "XadminRole.created_at"`)}
-	}
-	if _, ok := xrc.mutation.UpdatedAt(); !ok {
-		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "XadminRole.updated_at"`)}
 	}
 	return nil
 }
@@ -210,14 +210,6 @@ func (xrc *XadminRoleCreate) createSpec() (*XadminRole, *sqlgraph.CreateSpec) {
 			},
 		}
 	)
-	if value, ok := xrc.mutation.Name(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: xadminrole.FieldName,
-		})
-		_node.Name = value
-	}
 	if value, ok := xrc.mutation.CreatedAt(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -233,6 +225,14 @@ func (xrc *XadminRoleCreate) createSpec() (*XadminRole, *sqlgraph.CreateSpec) {
 			Column: xadminrole.FieldUpdatedAt,
 		})
 		_node.UpdatedAt = value
+	}
+	if value, ok := xrc.mutation.Name(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: xadminrole.FieldName,
+		})
+		_node.Name = value
 	}
 	if nodes := xrc.mutation.UsersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

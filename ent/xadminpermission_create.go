@@ -23,18 +23,6 @@ type XadminPermissionCreate struct {
 	hooks    []Hook
 }
 
-// SetName sets the "name" field.
-func (xpc *XadminPermissionCreate) SetName(s string) *XadminPermissionCreate {
-	xpc.mutation.SetName(s)
-	return xpc
-}
-
-// SetCode sets the "code" field.
-func (xpc *XadminPermissionCreate) SetCode(s string) *XadminPermissionCreate {
-	xpc.mutation.SetCode(s)
-	return xpc
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (xpc *XadminPermissionCreate) SetCreatedAt(t time.Time) *XadminPermissionCreate {
 	xpc.mutation.SetCreatedAt(t)
@@ -60,6 +48,18 @@ func (xpc *XadminPermissionCreate) SetNillableUpdatedAt(t *time.Time) *XadminPer
 	if t != nil {
 		xpc.SetUpdatedAt(*t)
 	}
+	return xpc
+}
+
+// SetName sets the "name" field.
+func (xpc *XadminPermissionCreate) SetName(s string) *XadminPermissionCreate {
+	xpc.mutation.SetName(s)
+	return xpc
+}
+
+// SetCode sets the "code" field.
+func (xpc *XadminPermissionCreate) SetCode(s string) *XadminPermissionCreate {
+	xpc.mutation.SetCode(s)
 	return xpc
 }
 
@@ -209,6 +209,12 @@ func (xpc *XadminPermissionCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (xpc *XadminPermissionCreate) check() error {
+	if _, ok := xpc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "XadminPermission.created_at"`)}
+	}
+	if _, ok := xpc.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "XadminPermission.updated_at"`)}
+	}
 	if _, ok := xpc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "XadminPermission.name"`)}
 	}
@@ -224,12 +230,6 @@ func (xpc *XadminPermissionCreate) check() error {
 		if err := xadminpermission.CodeValidator(v); err != nil {
 			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "XadminPermission.code": %w`, err)}
 		}
-	}
-	if _, ok := xpc.mutation.CreatedAt(); !ok {
-		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "XadminPermission.created_at"`)}
-	}
-	if _, ok := xpc.mutation.UpdatedAt(); !ok {
-		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "XadminPermission.updated_at"`)}
 	}
 	return nil
 }
@@ -258,22 +258,6 @@ func (xpc *XadminPermissionCreate) createSpec() (*XadminPermission, *sqlgraph.Cr
 			},
 		}
 	)
-	if value, ok := xpc.mutation.Name(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: xadminpermission.FieldName,
-		})
-		_node.Name = value
-	}
-	if value, ok := xpc.mutation.Code(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: xadminpermission.FieldCode,
-		})
-		_node.Code = value
-	}
 	if value, ok := xpc.mutation.CreatedAt(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -289,6 +273,22 @@ func (xpc *XadminPermissionCreate) createSpec() (*XadminPermission, *sqlgraph.Cr
 			Column: xadminpermission.FieldUpdatedAt,
 		})
 		_node.UpdatedAt = value
+	}
+	if value, ok := xpc.mutation.Name(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: xadminpermission.FieldName,
+		})
+		_node.Name = value
+	}
+	if value, ok := xpc.mutation.Code(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: xadminpermission.FieldCode,
+		})
+		_node.Code = value
 	}
 	if nodes := xpc.mutation.ContentTypeIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

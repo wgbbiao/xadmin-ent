@@ -30,29 +30,15 @@ func (xru *XadminRoleUpdate) Where(ps ...predicate.XadminRole) *XadminRoleUpdate
 	return xru
 }
 
-// SetName sets the "name" field.
-func (xru *XadminRoleUpdate) SetName(s string) *XadminRoleUpdate {
-	xru.mutation.SetName(s)
-	return xru
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (xru *XadminRoleUpdate) SetCreatedAt(t time.Time) *XadminRoleUpdate {
-	xru.mutation.SetCreatedAt(t)
-	return xru
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (xru *XadminRoleUpdate) SetNillableCreatedAt(t *time.Time) *XadminRoleUpdate {
-	if t != nil {
-		xru.SetCreatedAt(*t)
-	}
-	return xru
-}
-
 // SetUpdatedAt sets the "updated_at" field.
 func (xru *XadminRoleUpdate) SetUpdatedAt(t time.Time) *XadminRoleUpdate {
 	xru.mutation.SetUpdatedAt(t)
+	return xru
+}
+
+// SetName sets the "name" field.
+func (xru *XadminRoleUpdate) SetName(s string) *XadminRoleUpdate {
+	xru.mutation.SetName(s)
 	return xru
 }
 
@@ -230,25 +216,18 @@ func (xru *XadminRoleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := xru.mutation.Name(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: xadminrole.FieldName,
-		})
-	}
-	if value, ok := xru.mutation.CreatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: xadminrole.FieldCreatedAt,
-		})
-	}
 	if value, ok := xru.mutation.UpdatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  value,
 			Column: xadminrole.FieldUpdatedAt,
+		})
+	}
+	if value, ok := xru.mutation.Name(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: xadminrole.FieldName,
 		})
 	}
 	if xru.mutation.UsersCleared() {
@@ -378,29 +357,15 @@ type XadminRoleUpdateOne struct {
 	mutation *XadminRoleMutation
 }
 
-// SetName sets the "name" field.
-func (xruo *XadminRoleUpdateOne) SetName(s string) *XadminRoleUpdateOne {
-	xruo.mutation.SetName(s)
-	return xruo
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (xruo *XadminRoleUpdateOne) SetCreatedAt(t time.Time) *XadminRoleUpdateOne {
-	xruo.mutation.SetCreatedAt(t)
-	return xruo
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (xruo *XadminRoleUpdateOne) SetNillableCreatedAt(t *time.Time) *XadminRoleUpdateOne {
-	if t != nil {
-		xruo.SetCreatedAt(*t)
-	}
-	return xruo
-}
-
 // SetUpdatedAt sets the "updated_at" field.
 func (xruo *XadminRoleUpdateOne) SetUpdatedAt(t time.Time) *XadminRoleUpdateOne {
 	xruo.mutation.SetUpdatedAt(t)
+	return xruo
+}
+
+// SetName sets the "name" field.
+func (xruo *XadminRoleUpdateOne) SetName(s string) *XadminRoleUpdateOne {
+	xruo.mutation.SetName(s)
 	return xruo
 }
 
@@ -602,25 +567,18 @@ func (xruo *XadminRoleUpdateOne) sqlSave(ctx context.Context) (_node *XadminRole
 			}
 		}
 	}
-	if value, ok := xruo.mutation.Name(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: xadminrole.FieldName,
-		})
-	}
-	if value, ok := xruo.mutation.CreatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: xadminrole.FieldCreatedAt,
-		})
-	}
 	if value, ok := xruo.mutation.UpdatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  value,
 			Column: xadminrole.FieldUpdatedAt,
+		})
+	}
+	if value, ok := xruo.mutation.Name(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: xadminrole.FieldName,
 		})
 	}
 	if xruo.mutation.UsersCleared() {

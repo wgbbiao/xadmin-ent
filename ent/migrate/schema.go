@@ -11,10 +11,10 @@ var (
 	// XadminContenttypesColumns holds the columns for the "xadmin_contenttypes" table.
 	XadminContenttypesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "app_label", Type: field.TypeString},
-		{Name: "model", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "app_label", Type: field.TypeString},
+		{Name: "model", Type: field.TypeString},
 	}
 	// XadminContenttypesTable holds the schema information for the "xadmin_contenttypes" table.
 	XadminContenttypesTable = &schema.Table{
@@ -25,22 +25,22 @@ var (
 			{
 				Name:    "xadmincontenttype_app_label",
 				Unique:  false,
-				Columns: []*schema.Column{XadminContenttypesColumns[1]},
+				Columns: []*schema.Column{XadminContenttypesColumns[3]},
 			},
 			{
 				Name:    "xadmincontenttype_model",
 				Unique:  false,
-				Columns: []*schema.Column{XadminContenttypesColumns[2]},
+				Columns: []*schema.Column{XadminContenttypesColumns[4]},
 			},
 		},
 	}
 	// XadminPermissionsColumns holds the columns for the "xadmin_permissions" table.
 	XadminPermissionsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "name", Type: field.TypeString},
-		{Name: "code", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "name", Type: field.TypeString},
+		{Name: "code", Type: field.TypeString},
 		{Name: "xadmin_permission_content_type", Type: field.TypeInt, Nullable: true},
 	}
 	// XadminPermissionsTable holds the schema information for the "xadmin_permissions" table.
@@ -60,21 +60,21 @@ var (
 			{
 				Name:    "xadminpermission_name",
 				Unique:  false,
-				Columns: []*schema.Column{XadminPermissionsColumns[1]},
+				Columns: []*schema.Column{XadminPermissionsColumns[3]},
 			},
 			{
 				Name:    "xadminpermission_code",
 				Unique:  false,
-				Columns: []*schema.Column{XadminPermissionsColumns[2]},
+				Columns: []*schema.Column{XadminPermissionsColumns[4]},
 			},
 		},
 	}
 	// XadminRolesColumns holds the columns for the "xadmin_roles" table.
 	XadminRolesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "name", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "name", Type: field.TypeString},
 	}
 	// XadminRolesTable holds the schema information for the "xadmin_roles" table.
 	XadminRolesTable = &schema.Table{
@@ -85,20 +85,20 @@ var (
 			{
 				Name:    "xadminrole_name",
 				Unique:  false,
-				Columns: []*schema.Column{XadminRolesColumns[1]},
+				Columns: []*schema.Column{XadminRolesColumns[3]},
 			},
 		},
 	}
 	// XadminUsersColumns holds the columns for the "xadmin_users" table.
 	XadminUsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "username", Type: field.TypeString, Unique: true},
 		{Name: "password", Type: field.TypeString},
 		{Name: "salt", Type: field.TypeString},
 		{Name: "is_super", Type: field.TypeBool, Nullable: true, Default: false},
 		{Name: "last_login_at", Type: field.TypeTime, Nullable: true},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
 	}
 	// XadminUsersTable holds the schema information for the "xadmin_users" table.
 	XadminUsersTable = &schema.Table{
@@ -109,7 +109,7 @@ var (
 			{
 				Name:    "xadminuser_is_super",
 				Unique:  false,
-				Columns: []*schema.Column{XadminUsersColumns[4]},
+				Columns: []*schema.Column{XadminUsersColumns[6]},
 			},
 		},
 	}

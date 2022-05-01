@@ -20,18 +20,6 @@ type XadminContenttypeCreate struct {
 	hooks    []Hook
 }
 
-// SetAppLabel sets the "app_label" field.
-func (xcc *XadminContenttypeCreate) SetAppLabel(s string) *XadminContenttypeCreate {
-	xcc.mutation.SetAppLabel(s)
-	return xcc
-}
-
-// SetModel sets the "model" field.
-func (xcc *XadminContenttypeCreate) SetModel(s string) *XadminContenttypeCreate {
-	xcc.mutation.SetModel(s)
-	return xcc
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (xcc *XadminContenttypeCreate) SetCreatedAt(t time.Time) *XadminContenttypeCreate {
 	xcc.mutation.SetCreatedAt(t)
@@ -57,6 +45,18 @@ func (xcc *XadminContenttypeCreate) SetNillableUpdatedAt(t *time.Time) *XadminCo
 	if t != nil {
 		xcc.SetUpdatedAt(*t)
 	}
+	return xcc
+}
+
+// SetAppLabel sets the "app_label" field.
+func (xcc *XadminContenttypeCreate) SetAppLabel(s string) *XadminContenttypeCreate {
+	xcc.mutation.SetAppLabel(s)
+	return xcc
+}
+
+// SetModel sets the "model" field.
+func (xcc *XadminContenttypeCreate) SetModel(s string) *XadminContenttypeCreate {
+	xcc.mutation.SetModel(s)
 	return xcc
 }
 
@@ -143,6 +143,12 @@ func (xcc *XadminContenttypeCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (xcc *XadminContenttypeCreate) check() error {
+	if _, ok := xcc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "XadminContenttype.created_at"`)}
+	}
+	if _, ok := xcc.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "XadminContenttype.updated_at"`)}
+	}
 	if _, ok := xcc.mutation.AppLabel(); !ok {
 		return &ValidationError{Name: "app_label", err: errors.New(`ent: missing required field "XadminContenttype.app_label"`)}
 	}
@@ -158,12 +164,6 @@ func (xcc *XadminContenttypeCreate) check() error {
 		if err := xadmincontenttype.ModelValidator(v); err != nil {
 			return &ValidationError{Name: "model", err: fmt.Errorf(`ent: validator failed for field "XadminContenttype.model": %w`, err)}
 		}
-	}
-	if _, ok := xcc.mutation.CreatedAt(); !ok {
-		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "XadminContenttype.created_at"`)}
-	}
-	if _, ok := xcc.mutation.UpdatedAt(); !ok {
-		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "XadminContenttype.updated_at"`)}
 	}
 	return nil
 }
@@ -192,22 +192,6 @@ func (xcc *XadminContenttypeCreate) createSpec() (*XadminContenttype, *sqlgraph.
 			},
 		}
 	)
-	if value, ok := xcc.mutation.AppLabel(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: xadmincontenttype.FieldAppLabel,
-		})
-		_node.AppLabel = value
-	}
-	if value, ok := xcc.mutation.Model(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: xadmincontenttype.FieldModel,
-		})
-		_node.Model = value
-	}
 	if value, ok := xcc.mutation.CreatedAt(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -223,6 +207,22 @@ func (xcc *XadminContenttypeCreate) createSpec() (*XadminContenttype, *sqlgraph.
 			Column: xadmincontenttype.FieldUpdatedAt,
 		})
 		_node.UpdatedAt = value
+	}
+	if value, ok := xcc.mutation.AppLabel(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: xadmincontenttype.FieldAppLabel,
+		})
+		_node.AppLabel = value
+	}
+	if value, ok := xcc.mutation.Model(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: xadmincontenttype.FieldModel,
+		})
+		_node.Model = value
 	}
 	return _node, _spec
 }

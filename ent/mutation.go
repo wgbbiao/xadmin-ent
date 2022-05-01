@@ -39,10 +39,10 @@ type XadminContenttypeMutation struct {
 	op            Op
 	typ           string
 	id            *int
-	app_label     *string
-	model         *string
 	created_at    *time.Time
 	updated_at    *time.Time
+	app_label     *string
+	model         *string
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*XadminContenttype, error)
@@ -147,78 +147,6 @@ func (m *XadminContenttypeMutation) IDs(ctx context.Context) ([]int, error) {
 	}
 }
 
-// SetAppLabel sets the "app_label" field.
-func (m *XadminContenttypeMutation) SetAppLabel(s string) {
-	m.app_label = &s
-}
-
-// AppLabel returns the value of the "app_label" field in the mutation.
-func (m *XadminContenttypeMutation) AppLabel() (r string, exists bool) {
-	v := m.app_label
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldAppLabel returns the old "app_label" field's value of the XadminContenttype entity.
-// If the XadminContenttype object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *XadminContenttypeMutation) OldAppLabel(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAppLabel is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAppLabel requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAppLabel: %w", err)
-	}
-	return oldValue.AppLabel, nil
-}
-
-// ResetAppLabel resets all changes to the "app_label" field.
-func (m *XadminContenttypeMutation) ResetAppLabel() {
-	m.app_label = nil
-}
-
-// SetModel sets the "model" field.
-func (m *XadminContenttypeMutation) SetModel(s string) {
-	m.model = &s
-}
-
-// Model returns the value of the "model" field in the mutation.
-func (m *XadminContenttypeMutation) Model() (r string, exists bool) {
-	v := m.model
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldModel returns the old "model" field's value of the XadminContenttype entity.
-// If the XadminContenttype object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *XadminContenttypeMutation) OldModel(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldModel is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldModel requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldModel: %w", err)
-	}
-	return oldValue.Model, nil
-}
-
-// ResetModel resets all changes to the "model" field.
-func (m *XadminContenttypeMutation) ResetModel() {
-	m.model = nil
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (m *XadminContenttypeMutation) SetCreatedAt(t time.Time) {
 	m.created_at = &t
@@ -291,6 +219,78 @@ func (m *XadminContenttypeMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
+// SetAppLabel sets the "app_label" field.
+func (m *XadminContenttypeMutation) SetAppLabel(s string) {
+	m.app_label = &s
+}
+
+// AppLabel returns the value of the "app_label" field in the mutation.
+func (m *XadminContenttypeMutation) AppLabel() (r string, exists bool) {
+	v := m.app_label
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAppLabel returns the old "app_label" field's value of the XadminContenttype entity.
+// If the XadminContenttype object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *XadminContenttypeMutation) OldAppLabel(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAppLabel is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAppLabel requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAppLabel: %w", err)
+	}
+	return oldValue.AppLabel, nil
+}
+
+// ResetAppLabel resets all changes to the "app_label" field.
+func (m *XadminContenttypeMutation) ResetAppLabel() {
+	m.app_label = nil
+}
+
+// SetModel sets the "model" field.
+func (m *XadminContenttypeMutation) SetModel(s string) {
+	m.model = &s
+}
+
+// Model returns the value of the "model" field in the mutation.
+func (m *XadminContenttypeMutation) Model() (r string, exists bool) {
+	v := m.model
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldModel returns the old "model" field's value of the XadminContenttype entity.
+// If the XadminContenttype object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *XadminContenttypeMutation) OldModel(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldModel is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldModel requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldModel: %w", err)
+	}
+	return oldValue.Model, nil
+}
+
+// ResetModel resets all changes to the "model" field.
+func (m *XadminContenttypeMutation) ResetModel() {
+	m.model = nil
+}
+
 // Where appends a list predicates to the XadminContenttypeMutation builder.
 func (m *XadminContenttypeMutation) Where(ps ...predicate.XadminContenttype) {
 	m.predicates = append(m.predicates, ps...)
@@ -311,17 +311,17 @@ func (m *XadminContenttypeMutation) Type() string {
 // AddedFields().
 func (m *XadminContenttypeMutation) Fields() []string {
 	fields := make([]string, 0, 4)
-	if m.app_label != nil {
-		fields = append(fields, xadmincontenttype.FieldAppLabel)
-	}
-	if m.model != nil {
-		fields = append(fields, xadmincontenttype.FieldModel)
-	}
 	if m.created_at != nil {
 		fields = append(fields, xadmincontenttype.FieldCreatedAt)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, xadmincontenttype.FieldUpdatedAt)
+	}
+	if m.app_label != nil {
+		fields = append(fields, xadmincontenttype.FieldAppLabel)
+	}
+	if m.model != nil {
+		fields = append(fields, xadmincontenttype.FieldModel)
 	}
 	return fields
 }
@@ -331,14 +331,14 @@ func (m *XadminContenttypeMutation) Fields() []string {
 // schema.
 func (m *XadminContenttypeMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case xadmincontenttype.FieldAppLabel:
-		return m.AppLabel()
-	case xadmincontenttype.FieldModel:
-		return m.Model()
 	case xadmincontenttype.FieldCreatedAt:
 		return m.CreatedAt()
 	case xadmincontenttype.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case xadmincontenttype.FieldAppLabel:
+		return m.AppLabel()
+	case xadmincontenttype.FieldModel:
+		return m.Model()
 	}
 	return nil, false
 }
@@ -348,14 +348,14 @@ func (m *XadminContenttypeMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *XadminContenttypeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case xadmincontenttype.FieldAppLabel:
-		return m.OldAppLabel(ctx)
-	case xadmincontenttype.FieldModel:
-		return m.OldModel(ctx)
 	case xadmincontenttype.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case xadmincontenttype.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case xadmincontenttype.FieldAppLabel:
+		return m.OldAppLabel(ctx)
+	case xadmincontenttype.FieldModel:
+		return m.OldModel(ctx)
 	}
 	return nil, fmt.Errorf("unknown XadminContenttype field %s", name)
 }
@@ -365,20 +365,6 @@ func (m *XadminContenttypeMutation) OldField(ctx context.Context, name string) (
 // type.
 func (m *XadminContenttypeMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case xadmincontenttype.FieldAppLabel:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetAppLabel(v)
-		return nil
-	case xadmincontenttype.FieldModel:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetModel(v)
-		return nil
 	case xadmincontenttype.FieldCreatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
@@ -392,6 +378,20 @@ func (m *XadminContenttypeMutation) SetField(name string, value ent.Value) error
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
+		return nil
+	case xadmincontenttype.FieldAppLabel:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAppLabel(v)
+		return nil
+	case xadmincontenttype.FieldModel:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetModel(v)
 		return nil
 	}
 	return fmt.Errorf("unknown XadminContenttype field %s", name)
@@ -442,17 +442,17 @@ func (m *XadminContenttypeMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *XadminContenttypeMutation) ResetField(name string) error {
 	switch name {
-	case xadmincontenttype.FieldAppLabel:
-		m.ResetAppLabel()
-		return nil
-	case xadmincontenttype.FieldModel:
-		m.ResetModel()
-		return nil
 	case xadmincontenttype.FieldCreatedAt:
 		m.ResetCreatedAt()
 		return nil
 	case xadmincontenttype.FieldUpdatedAt:
 		m.ResetUpdatedAt()
+		return nil
+	case xadmincontenttype.FieldAppLabel:
+		m.ResetAppLabel()
+		return nil
+	case xadmincontenttype.FieldModel:
+		m.ResetModel()
 		return nil
 	}
 	return fmt.Errorf("unknown XadminContenttype field %s", name)
@@ -512,10 +512,10 @@ type XadminPermissionMutation struct {
 	op                  Op
 	typ                 string
 	id                  *int
-	name                *string
-	code                *string
 	created_at          *time.Time
 	updated_at          *time.Time
+	name                *string
+	code                *string
 	clearedFields       map[string]struct{}
 	_ContentType        *int
 	cleared_ContentType bool
@@ -628,78 +628,6 @@ func (m *XadminPermissionMutation) IDs(ctx context.Context) ([]int, error) {
 	}
 }
 
-// SetName sets the "name" field.
-func (m *XadminPermissionMutation) SetName(s string) {
-	m.name = &s
-}
-
-// Name returns the value of the "name" field in the mutation.
-func (m *XadminPermissionMutation) Name() (r string, exists bool) {
-	v := m.name
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldName returns the old "name" field's value of the XadminPermission entity.
-// If the XadminPermission object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *XadminPermissionMutation) OldName(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldName is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldName requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldName: %w", err)
-	}
-	return oldValue.Name, nil
-}
-
-// ResetName resets all changes to the "name" field.
-func (m *XadminPermissionMutation) ResetName() {
-	m.name = nil
-}
-
-// SetCode sets the "code" field.
-func (m *XadminPermissionMutation) SetCode(s string) {
-	m.code = &s
-}
-
-// Code returns the value of the "code" field in the mutation.
-func (m *XadminPermissionMutation) Code() (r string, exists bool) {
-	v := m.code
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCode returns the old "code" field's value of the XadminPermission entity.
-// If the XadminPermission object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *XadminPermissionMutation) OldCode(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCode is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCode requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCode: %w", err)
-	}
-	return oldValue.Code, nil
-}
-
-// ResetCode resets all changes to the "code" field.
-func (m *XadminPermissionMutation) ResetCode() {
-	m.code = nil
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (m *XadminPermissionMutation) SetCreatedAt(t time.Time) {
 	m.created_at = &t
@@ -770,6 +698,78 @@ func (m *XadminPermissionMutation) OldUpdatedAt(ctx context.Context) (v time.Tim
 // ResetUpdatedAt resets all changes to the "updated_at" field.
 func (m *XadminPermissionMutation) ResetUpdatedAt() {
 	m.updated_at = nil
+}
+
+// SetName sets the "name" field.
+func (m *XadminPermissionMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *XadminPermissionMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the XadminPermission entity.
+// If the XadminPermission object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *XadminPermissionMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *XadminPermissionMutation) ResetName() {
+	m.name = nil
+}
+
+// SetCode sets the "code" field.
+func (m *XadminPermissionMutation) SetCode(s string) {
+	m.code = &s
+}
+
+// Code returns the value of the "code" field in the mutation.
+func (m *XadminPermissionMutation) Code() (r string, exists bool) {
+	v := m.code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCode returns the old "code" field's value of the XadminPermission entity.
+// If the XadminPermission object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *XadminPermissionMutation) OldCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCode: %w", err)
+	}
+	return oldValue.Code, nil
+}
+
+// ResetCode resets all changes to the "code" field.
+func (m *XadminPermissionMutation) ResetCode() {
+	m.code = nil
 }
 
 // SetXadminPermissionContentType sets the "xadmin_permission_content_type" field.
@@ -988,17 +988,17 @@ func (m *XadminPermissionMutation) Type() string {
 // AddedFields().
 func (m *XadminPermissionMutation) Fields() []string {
 	fields := make([]string, 0, 5)
-	if m.name != nil {
-		fields = append(fields, xadminpermission.FieldName)
-	}
-	if m.code != nil {
-		fields = append(fields, xadminpermission.FieldCode)
-	}
 	if m.created_at != nil {
 		fields = append(fields, xadminpermission.FieldCreatedAt)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, xadminpermission.FieldUpdatedAt)
+	}
+	if m.name != nil {
+		fields = append(fields, xadminpermission.FieldName)
+	}
+	if m.code != nil {
+		fields = append(fields, xadminpermission.FieldCode)
 	}
 	if m._ContentType != nil {
 		fields = append(fields, xadminpermission.FieldXadminPermissionContentType)
@@ -1011,14 +1011,14 @@ func (m *XadminPermissionMutation) Fields() []string {
 // schema.
 func (m *XadminPermissionMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case xadminpermission.FieldName:
-		return m.Name()
-	case xadminpermission.FieldCode:
-		return m.Code()
 	case xadminpermission.FieldCreatedAt:
 		return m.CreatedAt()
 	case xadminpermission.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case xadminpermission.FieldName:
+		return m.Name()
+	case xadminpermission.FieldCode:
+		return m.Code()
 	case xadminpermission.FieldXadminPermissionContentType:
 		return m.XadminPermissionContentType()
 	}
@@ -1030,14 +1030,14 @@ func (m *XadminPermissionMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *XadminPermissionMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case xadminpermission.FieldName:
-		return m.OldName(ctx)
-	case xadminpermission.FieldCode:
-		return m.OldCode(ctx)
 	case xadminpermission.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case xadminpermission.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case xadminpermission.FieldName:
+		return m.OldName(ctx)
+	case xadminpermission.FieldCode:
+		return m.OldCode(ctx)
 	case xadminpermission.FieldXadminPermissionContentType:
 		return m.OldXadminPermissionContentType(ctx)
 	}
@@ -1049,20 +1049,6 @@ func (m *XadminPermissionMutation) OldField(ctx context.Context, name string) (e
 // type.
 func (m *XadminPermissionMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case xadminpermission.FieldName:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetName(v)
-		return nil
-	case xadminpermission.FieldCode:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCode(v)
-		return nil
 	case xadminpermission.FieldCreatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
@@ -1076,6 +1062,20 @@ func (m *XadminPermissionMutation) SetField(name string, value ent.Value) error 
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
+		return nil
+	case xadminpermission.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case xadminpermission.FieldCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCode(v)
 		return nil
 	case xadminpermission.FieldXadminPermissionContentType:
 		v, ok := value.(int)
@@ -1145,17 +1145,17 @@ func (m *XadminPermissionMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *XadminPermissionMutation) ResetField(name string) error {
 	switch name {
-	case xadminpermission.FieldName:
-		m.ResetName()
-		return nil
-	case xadminpermission.FieldCode:
-		m.ResetCode()
-		return nil
 	case xadminpermission.FieldCreatedAt:
 		m.ResetCreatedAt()
 		return nil
 	case xadminpermission.FieldUpdatedAt:
 		m.ResetUpdatedAt()
+		return nil
+	case xadminpermission.FieldName:
+		m.ResetName()
+		return nil
+	case xadminpermission.FieldCode:
+		m.ResetCode()
 		return nil
 	case xadminpermission.FieldXadminPermissionContentType:
 		m.ResetXadminPermissionContentType()
@@ -1298,9 +1298,9 @@ type XadminRoleMutation struct {
 	op                 Op
 	typ                string
 	id                 *int
-	name               *string
 	created_at         *time.Time
 	updated_at         *time.Time
+	name               *string
 	clearedFields      map[string]struct{}
 	users              map[int]struct{}
 	removedusers       map[int]struct{}
@@ -1411,42 +1411,6 @@ func (m *XadminRoleMutation) IDs(ctx context.Context) ([]int, error) {
 	}
 }
 
-// SetName sets the "name" field.
-func (m *XadminRoleMutation) SetName(s string) {
-	m.name = &s
-}
-
-// Name returns the value of the "name" field in the mutation.
-func (m *XadminRoleMutation) Name() (r string, exists bool) {
-	v := m.name
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldName returns the old "name" field's value of the XadminRole entity.
-// If the XadminRole object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *XadminRoleMutation) OldName(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldName is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldName requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldName: %w", err)
-	}
-	return oldValue.Name, nil
-}
-
-// ResetName resets all changes to the "name" field.
-func (m *XadminRoleMutation) ResetName() {
-	m.name = nil
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (m *XadminRoleMutation) SetCreatedAt(t time.Time) {
 	m.created_at = &t
@@ -1517,6 +1481,42 @@ func (m *XadminRoleMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err
 // ResetUpdatedAt resets all changes to the "updated_at" field.
 func (m *XadminRoleMutation) ResetUpdatedAt() {
 	m.updated_at = nil
+}
+
+// SetName sets the "name" field.
+func (m *XadminRoleMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *XadminRoleMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the XadminRole entity.
+// If the XadminRole object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *XadminRoleMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *XadminRoleMutation) ResetName() {
+	m.name = nil
 }
 
 // AddUserIDs adds the "users" edge to the XadminUser entity by ids.
@@ -1647,14 +1647,14 @@ func (m *XadminRoleMutation) Type() string {
 // AddedFields().
 func (m *XadminRoleMutation) Fields() []string {
 	fields := make([]string, 0, 3)
-	if m.name != nil {
-		fields = append(fields, xadminrole.FieldName)
-	}
 	if m.created_at != nil {
 		fields = append(fields, xadminrole.FieldCreatedAt)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, xadminrole.FieldUpdatedAt)
+	}
+	if m.name != nil {
+		fields = append(fields, xadminrole.FieldName)
 	}
 	return fields
 }
@@ -1664,12 +1664,12 @@ func (m *XadminRoleMutation) Fields() []string {
 // schema.
 func (m *XadminRoleMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case xadminrole.FieldName:
-		return m.Name()
 	case xadminrole.FieldCreatedAt:
 		return m.CreatedAt()
 	case xadminrole.FieldUpdatedAt:
 		return m.UpdatedAt()
+	case xadminrole.FieldName:
+		return m.Name()
 	}
 	return nil, false
 }
@@ -1679,12 +1679,12 @@ func (m *XadminRoleMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *XadminRoleMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case xadminrole.FieldName:
-		return m.OldName(ctx)
 	case xadminrole.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case xadminrole.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
+	case xadminrole.FieldName:
+		return m.OldName(ctx)
 	}
 	return nil, fmt.Errorf("unknown XadminRole field %s", name)
 }
@@ -1694,13 +1694,6 @@ func (m *XadminRoleMutation) OldField(ctx context.Context, name string) (ent.Val
 // type.
 func (m *XadminRoleMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case xadminrole.FieldName:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetName(v)
-		return nil
 	case xadminrole.FieldCreatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
@@ -1714,6 +1707,13 @@ func (m *XadminRoleMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
+		return nil
+	case xadminrole.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
 		return nil
 	}
 	return fmt.Errorf("unknown XadminRole field %s", name)
@@ -1764,14 +1764,14 @@ func (m *XadminRoleMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *XadminRoleMutation) ResetField(name string) error {
 	switch name {
-	case xadminrole.FieldName:
-		m.ResetName()
-		return nil
 	case xadminrole.FieldCreatedAt:
 		m.ResetCreatedAt()
 		return nil
 	case xadminrole.FieldUpdatedAt:
 		m.ResetUpdatedAt()
+		return nil
+	case xadminrole.FieldName:
+		m.ResetName()
 		return nil
 	}
 	return fmt.Errorf("unknown XadminRole field %s", name)
@@ -1893,13 +1893,13 @@ type XadminUserMutation struct {
 	op                 Op
 	typ                string
 	id                 *int
+	created_at         *time.Time
+	updated_at         *time.Time
 	username           *string
 	password           *string
 	salt               *string
 	is_super           *bool
 	last_login_at      *time.Time
-	created_at         *time.Time
-	updated_at         *time.Time
 	clearedFields      map[string]struct{}
 	roles              map[int]struct{}
 	removedroles       map[int]struct{}
@@ -2008,6 +2008,78 @@ func (m *XadminUserMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *XadminUserMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *XadminUserMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the XadminUser entity.
+// If the XadminUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *XadminUserMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *XadminUserMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *XadminUserMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *XadminUserMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the XadminUser entity.
+// If the XadminUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *XadminUserMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *XadminUserMutation) ResetUpdatedAt() {
+	m.updated_at = nil
 }
 
 // SetUsername sets the "username" field.
@@ -2216,78 +2288,6 @@ func (m *XadminUserMutation) ResetLastLoginAt() {
 	delete(m.clearedFields, xadminuser.FieldLastLoginAt)
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (m *XadminUserMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *XadminUserMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the XadminUser entity.
-// If the XadminUser object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *XadminUserMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *XadminUserMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *XadminUserMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *XadminUserMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the XadminUser entity.
-// If the XadminUser object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *XadminUserMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *XadminUserMutation) ResetUpdatedAt() {
-	m.updated_at = nil
-}
-
 // AddRoleIDs adds the "roles" edge to the XadminRole entity by ids.
 func (m *XadminUserMutation) AddRoleIDs(ids ...int) {
 	if m.roles == nil {
@@ -2416,6 +2416,12 @@ func (m *XadminUserMutation) Type() string {
 // AddedFields().
 func (m *XadminUserMutation) Fields() []string {
 	fields := make([]string, 0, 7)
+	if m.created_at != nil {
+		fields = append(fields, xadminuser.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, xadminuser.FieldUpdatedAt)
+	}
 	if m.username != nil {
 		fields = append(fields, xadminuser.FieldUsername)
 	}
@@ -2431,12 +2437,6 @@ func (m *XadminUserMutation) Fields() []string {
 	if m.last_login_at != nil {
 		fields = append(fields, xadminuser.FieldLastLoginAt)
 	}
-	if m.created_at != nil {
-		fields = append(fields, xadminuser.FieldCreatedAt)
-	}
-	if m.updated_at != nil {
-		fields = append(fields, xadminuser.FieldUpdatedAt)
-	}
 	return fields
 }
 
@@ -2445,6 +2445,10 @@ func (m *XadminUserMutation) Fields() []string {
 // schema.
 func (m *XadminUserMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case xadminuser.FieldCreatedAt:
+		return m.CreatedAt()
+	case xadminuser.FieldUpdatedAt:
+		return m.UpdatedAt()
 	case xadminuser.FieldUsername:
 		return m.Username()
 	case xadminuser.FieldPassword:
@@ -2455,10 +2459,6 @@ func (m *XadminUserMutation) Field(name string) (ent.Value, bool) {
 		return m.IsSuper()
 	case xadminuser.FieldLastLoginAt:
 		return m.LastLoginAt()
-	case xadminuser.FieldCreatedAt:
-		return m.CreatedAt()
-	case xadminuser.FieldUpdatedAt:
-		return m.UpdatedAt()
 	}
 	return nil, false
 }
@@ -2468,6 +2468,10 @@ func (m *XadminUserMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *XadminUserMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case xadminuser.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case xadminuser.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	case xadminuser.FieldUsername:
 		return m.OldUsername(ctx)
 	case xadminuser.FieldPassword:
@@ -2478,10 +2482,6 @@ func (m *XadminUserMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldIsSuper(ctx)
 	case xadminuser.FieldLastLoginAt:
 		return m.OldLastLoginAt(ctx)
-	case xadminuser.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case xadminuser.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown XadminUser field %s", name)
 }
@@ -2491,6 +2491,20 @@ func (m *XadminUserMutation) OldField(ctx context.Context, name string) (ent.Val
 // type.
 func (m *XadminUserMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case xadminuser.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case xadminuser.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
 	case xadminuser.FieldUsername:
 		v, ok := value.(string)
 		if !ok {
@@ -2525,20 +2539,6 @@ func (m *XadminUserMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetLastLoginAt(v)
-		return nil
-	case xadminuser.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	case xadminuser.FieldUpdatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown XadminUser field %s", name)
@@ -2604,6 +2604,12 @@ func (m *XadminUserMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *XadminUserMutation) ResetField(name string) error {
 	switch name {
+	case xadminuser.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case xadminuser.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
 	case xadminuser.FieldUsername:
 		m.ResetUsername()
 		return nil
@@ -2618,12 +2624,6 @@ func (m *XadminUserMutation) ResetField(name string) error {
 		return nil
 	case xadminuser.FieldLastLoginAt:
 		m.ResetLastLoginAt()
-		return nil
-	case xadminuser.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	case xadminuser.FieldUpdatedAt:
-		m.ResetUpdatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown XadminUser field %s", name)

@@ -11,14 +11,14 @@ const (
 	Label = "xadmin_permission"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldName holds the string denoting the name field in the database.
-	FieldName = "name"
-	// FieldCode holds the string denoting the code field in the database.
-	FieldCode = "code"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
+	// FieldName holds the string denoting the name field in the database.
+	FieldName = "name"
+	// FieldCode holds the string denoting the code field in the database.
+	FieldCode = "code"
 	// FieldXadminPermissionContentType holds the string denoting the xadmin_permission_content_type field in the database.
 	FieldXadminPermissionContentType = "xadmin_permission_content_type"
 	// EdgeContentType holds the string denoting the contenttype edge name in mutations.
@@ -51,10 +51,10 @@ const (
 // Columns holds all SQL columns for xadminpermission fields.
 var Columns = []string{
 	FieldID,
-	FieldName,
-	FieldCode,
 	FieldCreatedAt,
 	FieldUpdatedAt,
+	FieldName,
+	FieldCode,
 	FieldXadminPermissionContentType,
 }
 
@@ -78,14 +78,14 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// NameValidator is a validator for the "name" field. It is called by the builders before save.
-	NameValidator func(string) error
-	// CodeValidator is a validator for the "code" field. It is called by the builders before save.
-	CodeValidator func(string) error
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
 	DefaultUpdatedAt func() time.Time
 	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
 	UpdateDefaultUpdatedAt func() time.Time
+	// NameValidator is a validator for the "name" field. It is called by the builders before save.
+	NameValidator func(string) error
+	// CodeValidator is a validator for the "code" field. It is called by the builders before save.
+	CodeValidator func(string) error
 )

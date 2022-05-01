@@ -328,12 +328,12 @@ func (xuq *XadminUserQuery) WithPermissions(opts ...func(*XadminPermissionQuery)
 // Example:
 //
 //	var v []struct {
-//		Username string `json:"username,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.XadminUser.Query().
-//		GroupBy(xadminuser.FieldUsername).
+//		GroupBy(xadminuser.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 //
@@ -355,11 +355,11 @@ func (xuq *XadminUserQuery) GroupBy(field string, fields ...string) *XadminUserG
 // Example:
 //
 //	var v []struct {
-//		Username string `json:"username,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.XadminUser.Query().
-//		Select(xadminuser.FieldUsername).
+//		Select(xadminuser.FieldCreatedAt).
 //		Scan(ctx, &v)
 //
 func (xuq *XadminUserQuery) Select(fields ...string) *XadminUserSelect {

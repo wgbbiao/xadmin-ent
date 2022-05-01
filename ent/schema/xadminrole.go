@@ -1,8 +1,6 @@
 package schema
 
 import (
-	"time"
-
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -18,11 +16,6 @@ type XadminRole struct {
 func (XadminRole) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").NotEmpty(),
-		field.Time("created_at").
-			Default(time.Now),
-		field.Time("updated_at").
-			Default(time.Now).
-			UpdateDefault(time.Now),
 	}
 }
 
@@ -38,5 +31,11 @@ func (XadminRole) Edges() []ent.Edge {
 func (XadminRole) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("name"),
+	}
+}
+
+func (XadminRole) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		TimeMixin{},
 	}
 }

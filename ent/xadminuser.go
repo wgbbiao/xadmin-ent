@@ -16,6 +16,10 @@ type XadminUser struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Username holds the value of the "username" field.
 	Username string `json:"username,omitempty"`
 	// Password holds the value of the "password" field.
@@ -26,10 +30,6 @@ type XadminUser struct {
 	IsSuper bool `json:"is_super"`
 	// LastLoginAt holds the value of the "last_login_at" field.
 	LastLoginAt *time.Time `json:"last_login_at,omitempty"`
-	// CreatedAt holds the value of the "created_at" field.
-	CreatedAt time.Time `json:"created_at,omitempty"`
-	// UpdatedAt holds the value of the "updated_at" field.
-	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the XadminUserQuery when eager-loading is set.
 	Edges XadminUserEdges `json:"edges"`
@@ -75,7 +75,7 @@ func (*XadminUser) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullInt64)
 		case xadminuser.FieldUsername, xadminuser.FieldPassword, xadminuser.FieldSalt:
 			values[i] = new(sql.NullString)
-		case xadminuser.FieldLastLoginAt, xadminuser.FieldCreatedAt, xadminuser.FieldUpdatedAt:
+		case xadminuser.FieldCreatedAt, xadminuser.FieldUpdatedAt, xadminuser.FieldLastLoginAt:
 			values[i] = new(sql.NullTime)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type XadminUser", columns[i])
@@ -98,6 +98,18 @@ func (xu *XadminUser) assignValues(columns []string, values []interface{}) error
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			xu.ID = int(value.Int64)
+		case xadminuser.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				xu.CreatedAt = value.Time
+			}
+		case xadminuser.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				xu.UpdatedAt = value.Time
+			}
 		case xadminuser.FieldUsername:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field username", values[i])
@@ -128,18 +140,6 @@ func (xu *XadminUser) assignValues(columns []string, values []interface{}) error
 			} else if value.Valid {
 				xu.LastLoginAt = new(time.Time)
 				*xu.LastLoginAt = value.Time
-			}
-		case xadminuser.FieldCreatedAt:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field created_at", values[i])
-			} else if value.Valid {
-				xu.CreatedAt = value.Time
-			}
-		case xadminuser.FieldUpdatedAt:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
-			} else if value.Valid {
-				xu.UpdatedAt = value.Time
 			}
 		}
 	}
@@ -179,6 +179,10 @@ func (xu *XadminUser) String() string {
 	var builder strings.Builder
 	builder.WriteString("XadminUser(")
 	builder.WriteString(fmt.Sprintf("id=%v", xu.ID))
+	builder.WriteString(", created_at=")
+	builder.WriteString(xu.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", updated_at=")
+	builder.WriteString(xu.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", username=")
 	builder.WriteString(xu.Username)
 	builder.WriteString(", password=<sensitive>")
@@ -189,10 +193,6 @@ func (xu *XadminUser) String() string {
 		builder.WriteString(", last_login_at=")
 		builder.WriteString(v.Format(time.ANSIC))
 	}
-	builder.WriteString(", created_at=")
-	builder.WriteString(xu.CreatedAt.Format(time.ANSIC))
-	builder.WriteString(", updated_at=")
-	builder.WriteString(xu.UpdatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

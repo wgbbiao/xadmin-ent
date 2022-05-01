@@ -16,14 +16,14 @@ type XadminContenttype struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// AppLabel holds the value of the "app_label" field.
-	AppLabel string `json:"app_label,omitempty"`
-	// Model holds the value of the "model" field.
-	Model string `json:"model,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// AppLabel holds the value of the "app_label" field.
+	AppLabel string `json:"app_label,omitempty"`
+	// Model holds the value of the "model" field.
+	Model string `json:"model,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -58,18 +58,6 @@ func (xc *XadminContenttype) assignValues(columns []string, values []interface{}
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			xc.ID = int(value.Int64)
-		case xadmincontenttype.FieldAppLabel:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field app_label", values[i])
-			} else if value.Valid {
-				xc.AppLabel = value.String
-			}
-		case xadmincontenttype.FieldModel:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field model", values[i])
-			} else if value.Valid {
-				xc.Model = value.String
-			}
 		case xadmincontenttype.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
@@ -81,6 +69,18 @@ func (xc *XadminContenttype) assignValues(columns []string, values []interface{}
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
 				xc.UpdatedAt = value.Time
+			}
+		case xadmincontenttype.FieldAppLabel:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field app_label", values[i])
+			} else if value.Valid {
+				xc.AppLabel = value.String
+			}
+		case xadmincontenttype.FieldModel:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field model", values[i])
+			} else if value.Valid {
+				xc.Model = value.String
 			}
 		}
 	}
@@ -110,14 +110,14 @@ func (xc *XadminContenttype) String() string {
 	var builder strings.Builder
 	builder.WriteString("XadminContenttype(")
 	builder.WriteString(fmt.Sprintf("id=%v", xc.ID))
-	builder.WriteString(", app_label=")
-	builder.WriteString(xc.AppLabel)
-	builder.WriteString(", model=")
-	builder.WriteString(xc.Model)
 	builder.WriteString(", created_at=")
 	builder.WriteString(xc.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", updated_at=")
 	builder.WriteString(xc.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", app_label=")
+	builder.WriteString(xc.AppLabel)
+	builder.WriteString(", model=")
+	builder.WriteString(xc.Model)
 	builder.WriteByte(')')
 	return builder.String()
 }

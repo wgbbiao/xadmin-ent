@@ -328,12 +328,12 @@ func (xrq *XadminRoleQuery) WithPermissions(opts ...func(*XadminPermissionQuery)
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.XadminRole.Query().
-//		GroupBy(xadminrole.FieldName).
+//		GroupBy(xadminrole.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 //
@@ -355,11 +355,11 @@ func (xrq *XadminRoleQuery) GroupBy(field string, fields ...string) *XadminRoleG
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.XadminRole.Query().
-//		Select(xadminrole.FieldName).
+//		Select(xadminrole.FieldCreatedAt).
 //		Scan(ctx, &v)
 //
 func (xrq *XadminRoleQuery) Select(fields ...string) *XadminRoleSelect {

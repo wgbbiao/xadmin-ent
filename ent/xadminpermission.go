@@ -17,14 +17,14 @@ type XadminPermission struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// Name holds the value of the "name" field.
-	Name string `json:"name,omitempty"`
-	// Code holds the value of the "code" field.
-	Code string `json:"code,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// Name holds the value of the "name" field.
+	Name string `json:"name,omitempty"`
+	// Code holds the value of the "code" field.
+	Code string `json:"code,omitempty"`
 	// XadminPermissionContentType holds the value of the "xadmin_permission_content_type" field.
 	XadminPermissionContentType int `json:"xadmin_permission_content_type,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -109,18 +109,6 @@ func (xp *XadminPermission) assignValues(columns []string, values []interface{})
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			xp.ID = int(value.Int64)
-		case xadminpermission.FieldName:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field name", values[i])
-			} else if value.Valid {
-				xp.Name = value.String
-			}
-		case xadminpermission.FieldCode:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field code", values[i])
-			} else if value.Valid {
-				xp.Code = value.String
-			}
 		case xadminpermission.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
@@ -132,6 +120,18 @@ func (xp *XadminPermission) assignValues(columns []string, values []interface{})
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
 				xp.UpdatedAt = value.Time
+			}
+		case xadminpermission.FieldName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field name", values[i])
+			} else if value.Valid {
+				xp.Name = value.String
+			}
+		case xadminpermission.FieldCode:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field code", values[i])
+			} else if value.Valid {
+				xp.Code = value.String
 			}
 		case xadminpermission.FieldXadminPermissionContentType:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -182,14 +182,14 @@ func (xp *XadminPermission) String() string {
 	var builder strings.Builder
 	builder.WriteString("XadminPermission(")
 	builder.WriteString(fmt.Sprintf("id=%v", xp.ID))
-	builder.WriteString(", name=")
-	builder.WriteString(xp.Name)
-	builder.WriteString(", code=")
-	builder.WriteString(xp.Code)
 	builder.WriteString(", created_at=")
 	builder.WriteString(xp.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", updated_at=")
 	builder.WriteString(xp.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", name=")
+	builder.WriteString(xp.Name)
+	builder.WriteString(", code=")
+	builder.WriteString(xp.Code)
 	builder.WriteString(", xadmin_permission_content_type=")
 	builder.WriteString(fmt.Sprintf("%v", xp.XadminPermissionContentType))
 	builder.WriteByte(')')

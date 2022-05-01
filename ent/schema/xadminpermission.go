@@ -1,8 +1,6 @@
 package schema
 
 import (
-	"time"
-
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -19,11 +17,6 @@ func (XadminPermission) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").NotEmpty(),
 		field.String("code").NotEmpty(),
-		field.Time("created_at").
-			Default(time.Now),
-		field.Time("updated_at").
-			Default(time.Now).
-			UpdateDefault(time.Now),
 		field.Int("xadmin_permission_content_type").Optional(),
 	}
 }
@@ -44,5 +37,11 @@ func (XadminPermission) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("name"),
 		index.Fields("code"),
+	}
+}
+
+func (XadminPermission) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		TimeMixin{},
 	}
 }

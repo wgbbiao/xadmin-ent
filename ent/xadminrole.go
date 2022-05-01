@@ -16,12 +16,12 @@ type XadminRole struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// Name holds the value of the "name" field.
-	Name string `json:"name,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// Name holds the value of the "name" field.
+	Name string `json:"name,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the XadminRoleQuery when eager-loading is set.
 	Edges XadminRoleEdges `json:"edges"`
@@ -88,12 +88,6 @@ func (xr *XadminRole) assignValues(columns []string, values []interface{}) error
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			xr.ID = int(value.Int64)
-		case xadminrole.FieldName:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field name", values[i])
-			} else if value.Valid {
-				xr.Name = value.String
-			}
 		case xadminrole.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
@@ -105,6 +99,12 @@ func (xr *XadminRole) assignValues(columns []string, values []interface{}) error
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
 				xr.UpdatedAt = value.Time
+			}
+		case xadminrole.FieldName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field name", values[i])
+			} else if value.Valid {
+				xr.Name = value.String
 			}
 		}
 	}
@@ -144,12 +144,12 @@ func (xr *XadminRole) String() string {
 	var builder strings.Builder
 	builder.WriteString("XadminRole(")
 	builder.WriteString(fmt.Sprintf("id=%v", xr.ID))
-	builder.WriteString(", name=")
-	builder.WriteString(xr.Name)
 	builder.WriteString(", created_at=")
 	builder.WriteString(xr.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", updated_at=")
 	builder.WriteString(xr.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", name=")
+	builder.WriteString(xr.Name)
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -1,8 +1,6 @@
 package schema
 
 import (
-	"time"
-
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -23,11 +21,6 @@ func (XadminUser) Fields() []ent.Field {
 		field.Bool("is_super").Optional().
 			Default(false).StructTag(`json:"is_super"`),
 		field.Time("last_login_at").Optional().Nillable(),
-		field.Time("created_at").
-			Default(time.Now).Immutable(),
-		field.Time("updated_at").
-			Default(time.Now).
-			UpdateDefault(time.Now),
 	}
 }
 
@@ -42,5 +35,11 @@ func (XadminUser) Edges() []ent.Edge {
 func (XadminUser) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("is_super"),
+	}
+}
+
+func (XadminUser) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		TimeMixin{},
 	}
 }
